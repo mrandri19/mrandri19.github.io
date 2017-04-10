@@ -1,62 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Andrea Cognolato's blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Andrea Cognolato</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <header>
-        <h1>Andrea Cognolato's blog</h1>
-        <h2>f#, nodejs, rust and tech in general</h2>    
-    </header>
-    <main>
-        <h2>Posts:</h2>
-        <li>
-            <ul><a href="/posts/trie.html">Implementation of a trie in f#</a></ul>
-        </li>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, ipsa, hic. Eius eveniet perspiciatis iste, incidunt quaerat alias velit tenetur quae dolore non quo voluptates corporis assumenda accusamus quia rerum.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, ipsa, hic. Eius eveniet perspiciatis iste, incidunt quaerat alias velit tenetur quae dolore non quo voluptates corporis assumenda accusamus quia rerum.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, ipsa, hic. Eius eveniet perspiciatis iste, incidunt quaerat alias velit tenetur quae dolore non quo voluptates corporis assumenda accusamus quia rerum.
-        </p>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, ipsa, hic. Eius eveniet perspiciatis iste, incidunt quaerat alias velit tenetur quae dolore non quo voluptates corporis assumenda accusamus quia rerum.
-        </p>
-    </main>
+    <div class="container-fluid">
+        <div class="jumbotron">
+            <h1 class="text-center">Andrea Cognolato</h1>
+            <div style="text-align: center">
+                <div stylel="display: inline-block">
+                    <a class="btn btn-primary btn-info" href="#" role="button">Curriculum</a>
+                    <a class="btn btn-primary btn-info" href="#" role="button">Contattami</a>
+                </div>
+            </div>
+        </div>
 
-    <style>
-        img {
-            padding: 1em;
-        }
-        @media (min-width: 768px) {
-            body {
-                margin: auto;
-                width: 75%
-            }
-        }
-        header {
-            text-align: center;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont,
-            "Helvetica Neue", "Droid Sans", sans-serif,
-            "Segoe UI", "Roboto", "Oxygen", 
-            "Ubuntu", "Cantarell", "Fira Sans";
-            line-height: 1.428;
-            font-size: 1.05em;
-            background-color: #f5f5f5;
-            color: #333;
-        }
-    </style>
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <h2>Projects</h2>
 
-    <script id="__bs_script__">//<![CDATA[
-    document.write("<script async src='http://HOST:3001/browser-sync/browser-sync-client.js?v=2.17.2'><\/script>".replace("HOST", location.hostname));
-//]]></script>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-center"><a href="https://app.daniele.ml/">Registro elettronico</a></h3>
+                    </div>
+                    <div class="panel-body">
+                        Un'alternativa al sito web offerto da Spaggiari, usato da decine di migliaia di studenti in tutt'Italia.
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">Typescript</li>
+                        <li class="list-group-item">React</li>
+                        <li class="list-group-item">Redux</li>
+                        <li class="list-group-item">Material Design Lite</li>
+                        <li class="list-group-item">L'intera applicazione in meno di 250KB</li>
+                    </ul>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title text-center"><a href="http://www.internationaltalento.it/">Interational TalenTO</a></h3>
+                    </div>
+                    <div class="panel-body">
+                        Sito web per l'omonimo concorso.
+                    </div>
+                    <ul class="list-group">
+                        <li class="list-group-item">Material Design Lite</li>
+                        <li class="list-group-item">Custom backend</li>
+                    </ul>
+
+                </div>
+
+            </div>
+
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <h2>Side projects (from my <a href="https://github.com/mrandri19">github</a>)</h2>
+                <ul id="repos">
+                    <p class="loading">Loading...</p>
+                </ul>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="index.js"></script>
 </body>
+
 </html>
