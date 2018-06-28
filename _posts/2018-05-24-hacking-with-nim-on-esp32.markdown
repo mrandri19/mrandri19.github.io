@@ -1,8 +1,6 @@
 ---
 layout: post
 title:  "Hacking with the nim language on a ESP32 board"
-date:   2018-05-24 17:07:16 -0500
-categories: jekyll update
 ---
 
 TODO: write it
