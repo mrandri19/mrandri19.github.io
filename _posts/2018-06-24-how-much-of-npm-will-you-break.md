@@ -49,24 +49,24 @@ download it and its dependents again. It is a sort of memoization.
 Unfortunately this approach did not work for any decently sized package:
 after over 30k requests and 5 minutes of waiting I could not count the
 packages dependent on `is-odd`. Making an http request for each package
-was far too slow.
+was way too slow.
 
 ### The second version (C++)
 
-While analyzing the npm registry I found that if `startkey` and `endkey` and in
+While analyzing the npm registry I found that if `startkey` and `endkey` are not set in
 `https://skimdb.npmjs.com/registry/_design/app/_view/dependedUpon?startkey=["is-odd"]&endkey=["is-odd",{}]&reduce=false`
-are not set then CouchDB will return **ALL** of the dependecies for all packages.
-Downloading the file will give you a 220MB JSON file with everything you will need.
+ then CouchDB will return **ALL** of the dependecies for all packages.
+Downloading the file will give you a 220MB JSON file with everything you need.
 
 This however, while solving the download time issue, created another one: how
 do you parse and efficiently traverse a 1.8M line JSON file? [RapidJSON](http://rapidjson.org/) it is.
 
 So I downloaded RapidJSON, and wrote [a C++ program](https://gist.github.com/mrandri19/5263ee93399c724a019fbc62a1d7a0a4)
-which was almost a direct translation of the nodejs one, but instead of downloading it, it would query the JSON
+which was almost a direct translation of the nodejs one, but instead of downloading the packages, it would query the JSON
 using rapidJSON's DOM api.
 
 This worked but it was veeery slow, it took about `20.7` seconds to count the dependecies
-of `jayson` (197 btw).
+of `jayson` (197 dependencies, if you were wondering).
 
 #### Removing recursion
 
@@ -88,6 +88,7 @@ dfs(tree)
 
 {% endhighlight %}
 
+<span id="backnote1"></span>
 This is a recursive implementation of a depth first search but it is not very
 efficient, especially on languages without TCO (tail call optimization).[<sup>[1]</sup>](#note1)
 
@@ -111,7 +112,7 @@ while not s.isEmpty():
         s.push(child)
 {% endhighlight %}
 
-Unfortunately this optimization, while precious for later, was almost useless:
+Unfortunately this optimization, while precious for later, right now was almost useless:
 the average time needed to count the dependencies of `jayson` went from `20.5-21s`
 to `20-20.5s`. Almost unnoticeable.
 
@@ -120,19 +121,27 @@ to `20-20.5s`. Almost unnoticeable.
 After removing the recursion (which I naively thought was the main performance issue) I
 started looking for other problems and ways to speed it up more.
 
-The main issue was that every time we need to get a pacakge's dependencies all
-of the lines in the JSON file need to be scanned to find the dependencies, this
-is $$O(n)$$. Especially slow if that $$n$$ is around 1.8 Million.
+The main issue was that every time we need to get a pacakge's dependencies, all
+of the lines in the JSON file need to be scanned to find the dependencies. This
+is $$O(n)$$, especially slow if that $$n$$ is around 1.8 Million.
 
 {% highlight c++ %}
 vector<string> deps;
-// Count the dependents packages
+
 int n = 0;
+
+// For each line in the file
 for (const auto& row : rows.GetArray()) {
+    // Iterate through the "key" array, usually short so no big bottleneck
     for (const auto& key : row["key"].GetArray()) {
         if (key == package_name.c_str() && row["id"] != package_name.c_str()) {
+            // Get the dependet package's name
             auto id = row["id"].GetString();
+
+            // Add the packages that depend on `package_name` to a list
             deps.push_back(id);
+
+            // Increment the count of the total dependents
             n++;
         }
     }
@@ -158,6 +167,7 @@ all of the lines and you will find something like this:
 {"id":"vue-size-tracker","key":["is-odd","vue-size-tracker","Track size of screen, window, element"],"value":1},
 {% endhighlight %}
 
+<span id="backnote2"></span>
 If this were a database then adding an index on the `key` column would be enough,
 but since we are not using one we need to implement the index ourserves.
 We will store the data in an `HashMap`.[<sup>[2]</sup>](#note2)
@@ -169,7 +179,7 @@ obviously.
 
 In [the Rust version](https://github.com/mrandri19/jenga) the hasmap is built like this:
 
-For each line in the file, get the id the package and its dependent, then insert
+For each line in the file, get the id of the package and its dependent, then insert
 it into the hashmap which maps a package's id to its dependents id.
 
 {% highlight rust %}
@@ -209,10 +219,12 @@ script so that you can try it too. Check it out at [http://somewhere](http://som
 
 ## Notes
 <span id="note1"></span>
-1. This function will still need to be rewritten to benefit from TCO, in this form (recursive calls inside a for)
+<a href="#backnote1">1.</a> This function will still need to be rewritten to benefit from TCO, in this form (recursive calls inside a for)
 it will not get optimised at all.
+
+
 <span id="note2"></span>
-2. I believe that when an index is created in a database the data structure behind that is a B-Tree which has
+<a href="#backnote2">2.</a> I believe that when an index is created in a database the data structure behind that is a B-Tree which has
 $$O(\log{n})$$ index access.
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
