@@ -15,7 +15,7 @@ and weaken the robustness of your application, so be cautious.
 
 ## The website
 
-[This website](http://somewhere) was made to make people realize how many popular packages depend
+[This website](http://howmuchofnpmcanyoubreak.ml/) was made to make people realize how many popular packages depend
 on smaller ones which could be easily compromised, therefore infecting a large
 segment of the ecosystem. There is no reason for over 40k packages to depend on
 an [8 line package](https://github.com/jonschlinkert/is-number/blob/master/index.js).
@@ -215,7 +215,7 @@ This map gets created in less than 3 seconds and querying for `lodash`, the
 most depended upon package takes less than 150ms.
 
 I've then created using [Rocket](https://rocket.rs) a simple frontend to this
-script so that you can try it too. Check it out at [http://somewhere](http://somewhere)
+script so that you can try it too. Check it out at [http://howmuchofnpmcanyoubreak.ml/](http://howmuchofnpmcanyoubreak.ml/)
 
 ## Notes
 <span id="note1"></span>
