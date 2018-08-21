@@ -14,7 +14,6 @@
         h1,
         h2,
         h3 {
-            font-family: 'Cutive Mono', monospace;
             color: #FF757D;
         }
 
@@ -31,7 +30,7 @@
             margin: 0;
             padding: 0;
             font-size: 1.1em;
-            font-family: 'Open Sans', sans-serif;
+            font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
         }
 
         a {
@@ -302,21 +301,6 @@
             </section>
         </section>
     </main>
-    <script>
-        // Lazy load fonts
-        var sansFont = new FontFace("Open Sans", "url(OpenSans-Regular.ttf)", {
-            style: 'normal', unicodeRange: 'U+000-5FF', weight: '400'
-        });
-        var monoFont = new FontFace("Cutive Mono", "url(CutiveMono-Regular.ttf)", {
-            style: 'normal', unicodeRange: 'U+000-5FF', weight: '400'
-        });
-        monoFont.load().then(function () {
-            document.fonts.add(monoFont);
-        })
-        sansFont.load().then(function () {
-            document.fonts.add(sansFont);
-        });
-    </script>
 </body>
 
 </html>
