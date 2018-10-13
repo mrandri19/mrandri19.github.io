@@ -15,7 +15,7 @@ and weaken the robustness of your application, so be cautious.
 
 ## The website
 
-[This website](http://howmuchofnpmcanyoubreak.ml/) was made to make people realize how many popular packages depend
+[This website](http://howmuchofnpmcanyoubreak.tk/) was made to make people realize how many popular packages depend
 on smaller ones which could be easily compromised, therefore infecting a large
 segment of the ecosystem. There is no reason for over 40k packages to depend on
 an [8 line package](https://github.com/jonschlinkert/is-number/blob/master/index.js).
