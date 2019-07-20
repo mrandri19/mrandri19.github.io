@@ -1,451 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Andrea Cognolato</title>
-    <meta name="theme-color" content="#322F7C" />
-    <link rel="manifest" href="/manifest.json" />
 
-    <meta
-      name="Description"
-      content="Andrea Cognolato's personal website and portfolio, contains his personal projects, resume and contact information."
-    />
-    <style>
-      h1,
-      h2,
-      h3 {
-        color: #ff757d;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>Andrea Cognolato</title>
+  <meta name="theme-color" content="#322F7C" />
+  <link rel="manifest" href="/manifest.json" />
 
-      ul {
-        padding: 1em;
-        padding-top: 0;
-        padding-bottom: 0;
-        list-style-type: square;
-      }
+  <meta name="Description"
+    content="Andrea Cognolato's personal website and portfolio, contains his personal projects, resume and contact information." />
+  <link rel="stylesheet" href="/assets/main.css">
+  <style>
+    ul {
+      padding: 1em;
+      padding-top: 0;
+      padding-bottom: 0;
+      list-style-type: square;
+    }
 
-      body {
-        background: #322f7c;
-        color: #dfdfdf;
-        margin: 0;
-        padding: 0;
-        font-size: 1.1em;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-      }
+    main {
+      max-width: 70rem;
+      margin: auto;
+      padding: 4%;
+      padding-top: 0;
+    }
 
-      a {
-        color: #dfdfdf;
-      }
+    header {
+      text-align: center;
+      margin-top: 1em;
+    }
 
-      a:visited {
-        color: #eabcbe;
-      }
+    #projects>section {
+      margin-bottom: 1em;
+    }
 
-      main {
-        max-width: 70rem;
-        margin: auto;
-        padding: 4%;
-        padding-top: 0;
-      }
+    nav>ul {
+      list-style-type: none;
+      text-decoration: none;
+    }
 
-      header {
-        text-align: center;
-      }
+    nav>ul>li:not(:last-child):after {
+      content: "\00a0 \00a0 /";
+    }
 
-      nav > ul {
-        list-style-type: none;
-        text-decoration: none;
-      }
+    nav>ul>li {
+      padding: 0.5rem;
+      padding-top: 0;
+      display: inline-block;
+    }
 
-      nav > ul > li:not(:last-child):after {
-        content: "\00a0 \00a0 /";
-      }
+    .label {
+      background: #6c757d;
+      color: #fff;
+      display: inline-block;
+      padding: 0.5rem 0.4rem;
+      font-size: 80%;
+      font-weight: 700;
+      line-height: 1;
+      text-align: center;
+      white-space: nowrap;
+      vertical-align: baseline;
+      border-radius: 0.25rem;
+    }
+  </style>
+</head>
 
-      nav > ul > li {
-        padding: 0.5rem;
-        padding-top: 0;
-        display: inline-block;
-      }
-
-      .label {
-        background: #6c757d;
-        color: #fff;
-        display: inline-block;
-        padding: 0.5rem 0.4rem;
-        font-size: 80%;
-        font-weight: 700;
-        line-height: 1;
-        text-align: center;
-        white-space: nowrap;
-        vertical-align: baseline;
-        border-radius: 0.25rem;
-      }
-    </style>
-  </head>
-
-  <body>
-    <header>
-      <h1>Andrea Cognolato</h1>
-      <nav>
+<body>
+  <header>
+    <h1>Andrea Cognolato</h1>
+    <nav>
+      <ul>
+        <li>
+          <a href="https://github.com/mrandri19/">github.com/mrandri19</a>
+        </li>
+        <li><a href="resume.html">Resume</a></li>
+        <li><a href="CV v2 English.pdf">Resume (pdf)</a></li>
+        <li>
+          <a href="https://www.linkedin.com/in/andrea-cognolato">LinkedIn</a>
+        </li>
+        <li>
+          <a href="mailto:andrecogno@hotmail.it">andrecogno@hotmail.it</a>
+        </li>
+        <li><a href="blog">Blog</a></li>
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>About me</h2>
+      <p>
+        I am a student and developer interested in web development, machine
+        learning, functional programming, compilers and finance. I am studying
+        Computer Engineering at Politecnico di Torino.
+      </p>
+      <p>Currently seeking an internship for Summer 2020.</p>
+    </section>
+    <section>
+      <a href="resume.html">
+        <h2>Resume</h2>
+      </a>
+    </section>
+    <section id="projects">
+      <h2>Projects</h2>
+      <section>
+        <h3>
+          How much of npm can you break
+        </h3>
+        <p>
+          Built a website to check which and how many npm packages would break
+          if one of its dependecies was removed from npmjs.com
+        </p>
+        <p>
+          To build this application I've used the Rust programming language. I
+          have chosen this language because of its excellent performance and
+          concurrency safety guarantees which, along with some ad-hoc
+          algorithm choiches, let me get very high performance while
+          processing a 1.8GiB JSON file.
+        </p>
+        <span class="label">Rust</span>
+        <span class="label">Data Structures</span>
+        <span class="label">JSON</span>
+      </section>
+      <section>
+        <h3>
+          <a href="https://github.com/mrandri19/registro-react">Registro-react</a>
+        </h3>
+        <p>
+          Created, along with Daniele Monteleone, registro-react: an
+          alternative frontend for the online grade register our school used.
+        </p>
+        <p>
+          The backend, written in typescript with expressjs, crawled the
+          original
+          <a href="https://web.spaggiari.eu/home/app/default/login.php">website</a>,
+          parsed its html and exposed the grades and communications as a
+          JSON api. The frontend, written in typescript with React,
+          communicated with the backend api and handled login, notifications
+          and showing the data to the users in an graphically appealing
+          manner.
+        </p>
+        <span class="label">React</span>
+        <span class="label">Typescript</span>
+        <span class="label">Front-end development</span>
+      </section>
+      <section>
+        <h3>
+          <a
+            href="https://github.com/mrandri19/comments-as-a-graph">Comments-as-a-graph</a>
+        </h3>
+        <p>
+          Comments-as-a-graph is an experiment in visualizing comments from
+          communities such as 4chan.org, reddit and Hacker News using a graph.
+        </p>
+        <p>
+          A Python script downloads the comments from a thread and parses them
+          to output a graphviz dot language file which describes the graph.
+          Then the client side javascript downloads the .gv file, and using
+          Viz.js renders it to the screen. The Viz.js was custom compiled
+          using emscripten to reduce the payload size by 25%.
+        </p>
+        <span class="label">Graphviz</span>
+        <span class="label">Emscripten</span>
+        <span class="label">Front-end development</span>
+      </section>
+      <section>
+        <h3>
+          <a href="https://github.com/mrandri19/freetype-opengl-experiments">OpenGL Font
+            renderer
+          </a>
+        </h3>
+        <p>
+          A GPU accelerated text viewer built using FreeType for text
+          rendering, HarbBuzz for text shaping and GLFW for window management.
+        </p>
+        <span class="label">C++</span>
+        <span class="label">OpenGL</span>
+      </section>
+      <section>
+        <h3>
+          PURK Blockchain explorer
+        </h3>
+        <p>
+          As a contractor on Upwork one of my tasks was to port a blockchain
+          explorer written for the BoolBerry (BBR) coin to PURK. This involved
+          fixing some of the frontend Javascript code but most importantly
+          implementing new JSON-RPC 2.0 methods directly into the coin's
+          daemon source code, written in C++.
+        </p>
+        <span class="label">C++</span> <span class="label">Blockchain</span>
+        <span class="label">Cryptocurrencies</span>
+      </section>
+    </section>
+    <section>
+      <h2>Other things</h2>
+      <section>
+        <h3>2019</h3>
         <ul>
           <li>
-            <a href="https://github.com/mrandri19/">github.com/mrandri19</a>
+            <p>
+              Wrote a tool to convert Notability's .notability notes into SVG
+              files.
+            </p>
+            <p>
+              I initially
+              <a href="https://github.com/mrandri19/notability2svg-python">wrote it in
+                Python</a>, then optimized it until I was satisfied with its performance,
+              and then
+              <a href="https://github.com/mrandri19/notability2svg-rust">rewrote it in
+                Rust</a>. anyway.
+            </p>
           </li>
-          <li><a href="resume.html">Resume</a></li>
-          <li><a href="CV v2 English.pdf">Resume (pdf)</a></li>
           <li>
-            <a href="https://www.linkedin.com/in/andrea-cognolato">LinkedIn</a>
+            <p>
+              Wrote
+              <a
+                href="https://github.com/mrandri19/AlgoritmiEProgrammazionePolito20182019">several
+                thousand lines of C</a>
+              for my Data Structures and Algorithms course.
+            </p>
           </li>
           <li>
-            <a href="mailto:andrecogno@hotmail.it">andrecogno@hotmail.it</a>
+            <p>
+              Wrote
+              <a
+                href="https://github.com/mrandri19/Wand87-A-Simple-Algorithm-and-Proof-for-Type-Inference">an
+                OCaml implementation</a>
+              of Mitchell Wand's 1987 paper: "A Simple Algorithm and Proof for
+              Type Inference".
+            </p>
           </li>
-          <li><a href="blog">Blog</a></li>
         </ul>
-      </nav>
-    </header>
-    <main>
-      <section>
-        <h2>About me</h2>
-        <p>
-          I am a student and developer interested in web development, machine
-          learning, functional programming, compilers and finance. I am studying
-          Computer Engineering at Politecnico di Torino.
-        </p>
-        <p>Currently seeking an internship for Summer 2020.</p>
       </section>
       <section>
-        <h2>Resume</h2>
-        <a href="resume.html">See it here.</a>
+        <h3>2018</h3>
+        <ul>
+          <li>
+            <p>
+              (Unfinished) Wrote
+              <a
+                href="https://mrandri19.github.io/react-parser-viz/">react-parser-viz</a>:
+              a react based web application to visualize how a recursive
+              descent parser works.
+            </p>
+          </li>
+          <li>
+            <p>
+              Implemented
+              <a href="https://github.com/mrandri19/test-lang">test-lang</a>:
+              a programming language based on lambda calculus in both Ocaml
+              and Haskell.
+            </p>
+          </li>
+          <li>
+            <p>
+              Worked as a freelancer on Upwork.com
+              <a href="https://www.upwork.com/o/profiles/users/_~018ea18d1e57db6ffa/">(my
+                profile)</a>
+            </p>
+            <p>
+              A large section of my work consisted in working with
+              cryptocurrencies and porting software such as blockchain
+              explorers and mining pools to new currencies, ensuring that the
+              compatibility issues between implementations were fixed.
+            </p>
+          </li>
+          <li>
+            <p>
+              Contributed to
+              <a href="https://github.com/facebook/reason"> facebook/reason</a>.
+            </p>
+          </li>
+        </ul>
       </section>
       <section>
-        <h2>Projects</h2>
-        <section>
-          <h3>
-            How much of npm can you break
-          </h3>
-          <p>
-            Built a website to check which and how many npm packages would break
-            if one of its dependecies was removed from npmjs.com
-          </p>
-          <p>
-            To build this application I've used the Rust programming language. I
-            have chosen this language because of its excellent performance and
-            concurrency safety guarantees which, along with some ad-hoc
-            algorithm choiches, let me get very high performance while
-            processing a 1.8GiB JSON file.
-          </p>
-          <span class="label">Rust</span>
-          <span class="label">Data Structures</span>
-          <span class="label">JSON</span>
-        </section>
-        <section>
-          <h3>
-            <a href="https://github.com/mrandri19/registro-react"
-              >Registro-react</a
-            >
-          </h3>
-          <p>
-            Created, along with Daniele Monteleone, registro-react: an
-            alternative frontend for the online grade register our school used.
-          </p>
-          <p>
-            The backend, written in typescript with expressjs, crawled the
-            original
-            <a href="https://web.spaggiari.eu/home/app/default/login.php"
-              >website</a
-            >, parsed its html and exposed the grades and communications as a
-            JSON api. The frontend, written in typescript with React,
-            communicated with the backend api and handled login, notifications
-            and showing the data to the users in an graphically appealing
-            manner.
-          </p>
-          <span class="label">React</span>
-          <span class="label">Typescript</span>
-          <span class="label">Front-end development</span>
-        </section>
-        <section>
-          <h3>
-            <a href="https://github.com/mrandri19/comments-as-a-graph"
-              >Comments-as-a-graph</a
-            >
-          </h3>
-          <p>
-            Comments-as-a-graph is an experiment in visualizing comments from
-            communities such as 4chan.org, reddit and Hacker News using a graph.
-          </p>
-          <p>
-            A Python script downloads the comments from a thread and parses them
-            to output a graphviz dot language file which describes the graph.
-            Then the client side javascript downloads the .gv file, and using
-            Viz.js renders it to the screen. The Viz.js was custom compiled
-            using emscripten to reduce the payload size by 25%.
-          </p>
-          <span class="label">Graphviz</span>
-          <span class="label">Emscripten</span>
-          <span class="label">Front-end development</span>
-        </section>
-        <section>
-          <h3>
-            <a href="https://github.com/mrandri19/freetype-opengl-experiments"
-              >OpenGL Font renderer
-            </a>
-          </h3>
-          <p>
-            A GPU accelerated text viewer built using FreeType for text
-            rendering, HarbBuzz for text shaping and GLFW for window management.
-          </p>
-          <span class="label">C++</span>
-          <span class="label">OpenGL</span>
-        </section>
-        <section>
-          <h3>
-            PURK Blockchain explorer
-          </h3>
-          <p>
-            As a contractor on Upwork one of my tasks was to port a blockchain
-            explorer written for the BoolBerry (BBR) coin to PURK. This involved
-            fixing some of the frontend Javascript code but most importantly
-            implementing new JSON-RPC 2.0 methods directly into the coin's
-            daemon source code, written in C++.
-          </p>
-          <span class="label">C++</span> <span class="label">Blockchain</span>
-          <span class="label">Cryptocurrencies</span>
-        </section>
-      </section>
-      <section>
-        <h2>Other things</h2>
-        <section>
-          <h3>2019</h3>
-          <ul>
-            <li>
-              <p>
-                Wrote a tool to convert Notability's .notability notes into SVG
-                files.
-              </p>
-              <p>
-                I initially
-                <a href="https://github.com/mrandri19/notability2svg-python"
-                  >wrote it in Python</a
-                >, then optimized it until I was satisfied with its performance,
-                and then
-                <a href="https://github.com/mrandri19/notability2svg-rust"
-                  >rewrote it in Rust</a
-                >. anyway.
-              </p>
-            </li>
-            <li>
-              <p>
-                Wrote
-                <a
-                  href="https://github.com/mrandri19/AlgoritmiEProgrammazionePolito20182019"
-                  >several thousand lines of C</a
-                >
-                for my Data Structures and Algorithms course.
-              </p>
-            </li>
-            <li>
-              <p>
-                Wrote
-                <a
-                  href="https://github.com/mrandri19/Wand87-A-Simple-Algorithm-and-Proof-for-Type-Inference"
-                  >an OCaml implementation</a
-                >
-                of Mitchell Wand's 1987 paper: "A Simple Algorithm and Proof for
-                Type Inference".
-              </p>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h3>2018</h3>
-          <ul>
-            <li>
-              <p>
-                (Unfinished) Wrote
-                <a href="https://mrandri19.github.io/react-parser-viz/"
-                  >react-parser-viz</a
-                >: a react based web application to visualize how a recursive
-                descent parser works.
-              </p>
-            </li>
-            <li>
-              <p>
-                Implemented
-                <a href="https://github.com/mrandri19/test-lang">test-lang</a>:
-                a programming language based on lambda calculus in both Ocaml
-                and Haskell.
-              </p>
-            </li>
-            <li>
-              <p>
-                Worked as a freelancer on Upwork.com
-                <a
-                  href="https://www.upwork.com/o/profiles/users/_~018ea18d1e57db6ffa/"
-                  >(my profile)</a
-                >
-              </p>
-              <p>
-                A large section of my work consisted in working with
-                cryptocurrencies and porting software such as blockchain
-                explorers and mining pools to new currencies, ensuring that the
-                compatibility issues between implementations were fixed.
-              </p>
-            </li>
-            <li>
-              <p>
-                Contributed to
-                <a href="https://github.com/facebook/reason"> facebook/reason</a
-                >.
-              </p>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h3>2017</h3>
-          <ul>
-            <li>
-              <p>
-                Wrote
-                <a href="https://github.com/mrandri19/channed">channed</a>: an
-                small 4chan client built with ReactJS.
-              </p>
-            </li>
-            <li>
-              <p>
-                Wrote
-                <a href="https://github.com/mrandri19/rust-editorconfig"
-                  >rust-editorconfig</a
-                >: a Rust library which implemented the editorconfig file format
-                for text editor plugins.
-              </p>
-            </li>
+        <h3>2017</h3>
+        <ul>
+          <li>
+            <p>
+              Wrote
+              <a href="https://github.com/mrandri19/channed">channed</a>: an
+              small 4chan client built with ReactJS.
+            </p>
+          </li>
+          <li>
+            <p>
+              Wrote
+              <a
+                href="https://github.com/mrandri19/rust-editorconfig">rust-editorconfig</a>:
+              a Rust library which implemented the editorconfig file format
+              for text editor plugins.
+            </p>
+          </li>
 
-            <li>
-              <p>
-                Tinkered with the ESP8266 and wrote a
-                <a href="https://github.com/mrandri19/cWebsocketLed"
-                  >custom web UI</a
-                >
-                to control my IKEA led strips.
-              </p>
-            </li>
-            <li><p>Competed at regional level in flatwater kayaking.</p></li>
-            <li>
-              <p>
-                Read
-                <a href="http://neuralnetworksanddeeplearning.com/index.html"
-                  >neuralnetworksanddeeplearning.com</a
-                >
-                and implemented my neural network to learn on the MNIST digit
-                dataset in numpy+pandas and Tensorflow.
-              </p>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h3>2016</h3>
-          <ul>
-            <li><p>Wrote an online shopping list for my family.</p></li>
-            <li>
-              <p>
-                Wrote a
-                <a href="https://github.com/mrandri19/crawler_latino">
-                  >crawler
-                </a>
-                in F# for the latin dictionary www.dizionario-latino.com.
-              </p>
-            </li>
-
-            <li>
-              <p>
-                Wrote for a friend
-                <a href="https://github.com/mrandri19/magicBot">magicBot</a>: a
-                python crawler with a web UI which parsed an online market of
-                Magic: The Gathering cards to show the average price of a card
-                between various editions.
-              </p>
-            </li>
-            <li>
-              <p>
-                Tinkered with elm and wrote a
-                <a href="https://github.com/mrandri19/elm-remote-api-data"
-                  >simple web app</a
-                >
-                to show data from a local api.
-              </p>
-            </li>
-            <li>
-              <p>
-                Competed at regional level in flatwater
-                <a
-                  href="https://www.youtube.com/watch?v=8U0U-GijrOU"
-                  onclick="alert('You provably dont wanna see this, I wonder if you will be my next employer.')"
-                  >kayaking</a
-                >.
-              </p>
-            </li>
-            <li>
-              <p>
-                Read
-                <a href="http://book.realworldhaskell.org/"
-                  >Real World Haskell</a
-                >
-                and
-                <a href="https://realworldocaml.org/">Real World OCaml</a> which
-                sparked my interest in functional programming and compilers.
-              </p>
-            </li>
-          </ul>
-        </section>
-        <section>
-          <h3>2015</h3>
-          <ul>
-            <li>
-              <p>
-                Wrote
-                <a href="https://github.com/mrandri19/xresthemechanger"
-                  >xresthemechanger</a
-                >: a python script to change the <code>.Xresources</code> color
-                theme.
-              </p>
-            </li>
-            <li>
-              <p>
-                Wrote a
-                <a href="https://github.com/mrandri19/tinyCserver"
-                  >tiny TPC server</a
-                >
-                in C using the unix system calls.
-              </p>
-            </li>
-            <li>
-              <p>
-                Wrote
-                <a href="https://github.com/mrandri19/Drinkcraft">Drinkcraft</a
-                >: a simple Minecraft mod in Java.
-              </p>
-            </li>
-            <li>
-              <p>Switched to Archlinux and installed and configured it.</p>
-            </li>
-            <li>
-              <p>
-                Won my school's Informatics Olympiad and competed in the
-                regional selections.
-              </p>
-            </li>
-            <li>
-              <p>
-                Won, along with two other students, the science fair with a
-                project on the effects of exposure to non ionizing radiations.
-              </p>
-            </li>
-          </ul>
-        </section>
+          <li>
+            <p>
+              Tinkered with the ESP8266 and wrote a
+              <a href="https://github.com/mrandri19/cWebsocketLed">custom web UI</a>
+              to control my IKEA led strips.
+            </p>
+          </li>
+          <li>
+            <p>Competed at regional level in flatwater kayaking.</p>
+          </li>
+          <li>
+            <p>
+              Read
+              <a
+                href="http://neuralnetworksanddeeplearning.com/index.html">neuralnetworksanddeeplearning.com</a>
+              and implemented my neural network to learn on the MNIST digit
+              dataset in numpy+pandas and Tensorflow.
+            </p>
+          </li>
+        </ul>
       </section>
-    </main>
-  </body>
+      <section>
+        <h3>2016</h3>
+        <ul>
+          <li>
+            <p>Wrote an online shopping list for my family.</p>
+          </li>
+          <li>
+            <p>
+              Wrote a
+              <a href="https://github.com/mrandri19/crawler_latino">
+                >crawler
+              </a>
+              in F# for the latin dictionary www.dizionario-latino.com.
+            </p>
+          </li>
+
+          <li>
+            <p>
+              Wrote for a friend
+              <a href="https://github.com/mrandri19/magicBot">magicBot</a>: a
+              python crawler with a web UI which parsed an online market of
+              Magic: The Gathering cards to show the average price of a card
+              between various editions.
+            </p>
+          </li>
+          <li>
+            <p>
+              Tinkered with elm and wrote a
+              <a href="https://github.com/mrandri19/elm-remote-api-data">simple web
+                app</a>
+              to show data from a local api.
+            </p>
+          </li>
+          <li>
+            <p>
+              Competed at regional level in flatwater
+              <a href="https://www.youtube.com/watch?v=8U0U-GijrOU"
+                onclick="alert('You provably dont wanna see this, I wonder if you will be my next employer.')">kayaking</a>.
+            </p>
+          </li>
+          <li>
+            <p>
+              Read
+              <a href="http://book.realworldhaskell.org/">Real World Haskell</a>
+              and
+              <a href="https://realworldocaml.org/">Real World OCaml</a> which
+              sparked my interest in functional programming and compilers.
+            </p>
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h3>2015</h3>
+        <ul>
+          <li>
+            <p>
+              Wrote
+              <a
+                href="https://github.com/mrandri19/xresthemechanger">xresthemechanger</a>:
+              a python script to change the <code>.Xresources</code> color
+              theme.
+            </p>
+          </li>
+          <li>
+            <p>
+              Wrote a
+              <a href="https://github.com/mrandri19/tinyCserver">tiny TPC server</a>
+              in C using the unix system calls.
+            </p>
+          </li>
+          <li>
+            <p>
+              Wrote
+              <a href="https://github.com/mrandri19/Drinkcraft">Drinkcraft</a>: a simple
+              Minecraft mod in Java.
+            </p>
+          </li>
+          <li>
+            <p>Switched to Archlinux and installed and configured it.</p>
+          </li>
+          <li>
+            <p>
+              Won my school's Informatics Olympiad and competed in the
+              regional selections.
+            </p>
+          </li>
+          <li>
+            <p>
+              Won, along with two other students, the science fair with a
+              project on the effects of exposure to non ionizing radiations.
+            </p>
+          </li>
+        </ul>
+      </section>
+    </section>
+  </main>
+</body>
+
 </html>
