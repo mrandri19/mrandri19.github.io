@@ -3,21 +3,15 @@ layout: post
 title: "Deriving the gradient descent equations for multivariate linear regression"
 ---
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
-
-<!-- The loading of KaTeX is deferred to speed up page rendering -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js" integrity="sha384-9Nhn55MVVN0/4OFx7EE5kpFBPsEMZxKTCnA+4fqDmg12eCTqGi6+BB2LjY8brQxJ" crossorigin="anonymous"></script>
-
-<!-- To automatically render math in text elements, include the auto-render extension: -->
-<script defer src="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/contrib/auto-render.min.js" integrity="sha384-kWPLUVMOks5AQFrykwIup5lo0m3iMkkHrD0uJ4H5cjeGihAutqP0yW0J6dpFiVkI" crossorigin="anonymous"></script>
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    renderMathInElement(document.body, {delimiters: [
-    					{left: "$$", right: "$$", display: true},
-					  {left: "$", right: "$", display: false}
-]});
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    processEscapes: true
+  }
 });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script>
 
 Multivariate linear regression (or general linear regression) is one of the main
 building blocks of neural networks. It allows to approximate a linear function with
@@ -27,7 +21,7 @@ But, while reading the excellent [neural networks and deep learning](http://neur
 by Michael Nielsen I could not find a proof for the matrix version of these formulae.
 
 In the book a generic cost function is given, whereas here we use mean squared error,
-but extending it should be as simple as an additional [Hadamard product](<https://en.wikipedia.org/wiki/Hadamard_product_(matrices)>) before multiplying
+but extending it should be as simple as an additional [Hadamard product](https://en.wikipedia.org/wiki/Hadamard_product_(matrices)) before multiplying
 by the transpose of $\mathbf x$.
 
 Let $f: \mathbb R^{n} \to \mathbb R^{m}$, where:
@@ -87,7 +81,7 @@ A\mathbf x + \mathbf b - \mathbf y =
 \end{bmatrix}
 $$
 
-$$
+$$=
 \begin{bmatrix}
     a_{11} x_1 + a_{12} x_2 + \cdots + a_{1n}x_n  \\
     a_{21} x_1 + a_{22} x_2 + \cdots + a_{2n}x_n  \\
@@ -110,7 +104,7 @@ $$
 \end{bmatrix}
 $$
 
-$$
+$$=
 \begin{bmatrix}
     a_{11} x_1 + a_{12} x_2 + \cdots + a_{1n}x_n + b_1 - y_{1}  \\
     a_{21} x_1 + a_{22} x_2 + \cdots + a_{2n}x_n + b_2 - y_{2}  \\
@@ -148,7 +142,7 @@ $$
 \frac{1}{2} \dfrac{\partial}{\partial a_{11}} \sum_{k=1}^m (a_{k1} x_1 + a_{k2} x_2 + \cdots + a_{kn}x_n + b_k - y_{k})^2
 $$
 
-$$
+$$=
 \frac{1}{2} \dfrac{\partial}{\partial a_{11}} [
   (a_{11} x_1 + a_{12} x_2 + \cdots + a_{1n}x_n + b_1 - y_{1})^2 + \\
   (a_{21} x_1 + a_{22} x_2 + \cdots + a_{2n}x_n + b_2 - y_{2})^2 + \\
@@ -157,7 +151,7 @@ $$
 ]
 $$
 
-$$
+$$=
 (a_{11} x_1 + a_{12} x_2 + \cdots + a_{1n}x_n + b_1 - y_{1})x_1
 $$
 
@@ -176,7 +170,7 @@ $$=\dfrac{\partial C}{\partial a_{ij}} = (\sum^n_{k=1} a_{ik}x_k + b_i - y_i)x_j
 
 or a scalar product:
 
-$$
+$$=
 (\mathbf a_i \cdot \mathbf x + b_i - y_i)x_j
 $$
 
@@ -195,7 +189,7 @@ $$
 \end{bmatrix}
 $$
 
-$$
+$$=
 \begin{bmatrix}
     (\mathbf a_1 \cdot \mathbf x + b_1 - y_1) \mathbf x  \\
     (\mathbf a_2 \cdot \mathbf x + b_2 - y_2) \mathbf x  \\
@@ -214,7 +208,7 @@ $$
 \end{bmatrix}
 $$
 
-$$
+$$=
 (A \mathbf x + \mathbf b - \mathbf y) \mathbf x^\intercal
 $$
 
