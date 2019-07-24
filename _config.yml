@@ -18,8 +18,12 @@ email: andrecogno@hotmail.it
 description: >- # this means to ignore newlines until "baseurl:"
   My technical ramblings, come have a look.
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "mrandri19.github.io" # the base hostname & protocol for your site, e.g. http://example.com
-github_username:  mrandri19
+url: "https://mrandri19.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+github_username: mrandri19
+author:
+  name: Andrea Cognolato
+  email: andrecogno@hotmail.it
+  url: "https://mrandri19.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
 # Build settings
 markdown: kramdown
