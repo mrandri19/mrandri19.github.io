@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Deriving the gradient descent equations for multivariate linear regression"
+author: andrea
 ---
 
 <script type="text/x-mathjax-config">
