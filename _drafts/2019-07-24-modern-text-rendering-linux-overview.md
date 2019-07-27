@@ -84,6 +84,18 @@ corresponding codepoints (also called glyphs). HarfBuzz takes a Unicode string,
 three properties: direction, script, and language, and a font file. It returns
 a list of codepoints and you can also query the GPOS table to get the kerning data.
 
+Examples:
+
+`Hello, world` becomes `43 72 79 79 82 15 3 90 82 85 79 71` with font: Ubuntu Mono
+
+`->` becomes `16 33` with font: Ubuntu Mono
+
+`->` becomes `1603 1064` with font: Fira Code Retina
+
+### FreeType
+
+daw
+
 ## Sources
 
 - [State of Text Rendering](http://behdad.org/text/) by Behdad Esfahbod (2010)
