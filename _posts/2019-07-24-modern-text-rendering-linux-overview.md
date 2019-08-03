@@ -82,9 +82,8 @@ style="max-width: auto; display: block; margin: auto;"/>
 </figure>
 
 HarfBuzz is the text shaping engine: it maps codepoints from a string to their
-corresponding glyph indices. HarfBuzz takes a Unicode string,
-three properties: direction, script, and language, and a font file. It returns
-a list of glyph indices and you can also query the GPOS table to get the kerning data.
+corresponding glyph indices.
+HarfBuzz takes a Unicode string, three properties: direction, script, language, and a font. It returns a list of glyph indices, each with a position in x, y coordinates, which incorporates kerning data from the font's GPOS table.
 
 Examples:
 
