@@ -81,10 +81,10 @@ Because Arabic or Hebrew are Right-To-Left languages whereas English is Left-To-
 style="max-width: auto; display: block; margin: auto;"/>
 </figure>
 
-HarfBuzz is the text shaping engine: it maps characters from a string to their
-corresponding codepoints (also called glyphs). HarfBuzz takes a Unicode string,
+HarfBuzz is the text shaping engine: it maps codepoints from a string to their
+corresponding glyph indices. HarfBuzz takes a Unicode string,
 three properties: direction, script, and language, and a font file. It returns
-a list of codepoints and you can also query the GPOS table to get the kerning data.
+a list of glyph indices and you can also query the GPOS table to get the kerning data.
 
 Examples:
 
@@ -104,7 +104,7 @@ every language except English.
 style="max-width: auto; display: block; margin: auto;"/>
 </figure>
 
-FreeType is the text rendering engine: it takes a codepoint and a font, then renders an image of that codepoint. It also provides basic kerning support.
+FreeType is the text rendering engine: it takes a glyph index and a font, then renders an image of that glyph index. It also provides basic kerning support.
 You can configure it by specifying the hinting level and which and how much antialiasing to use.
 
 ## Sources
