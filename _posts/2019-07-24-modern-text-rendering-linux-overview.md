@@ -5,7 +5,7 @@ title: "Modern text rendering with Linux: Overview"
 
 ## Introduction
 
-Text an essential part of Human-computer Interaction. In the age of Instagram,
+Text is an essential part of Human-computer Interaction. In the age of Instagram,
 YouTube, and VR we still consume information primarily through text. Computing
 started with text-only interfaces and every major Operating System provides
 libraries to render text.
@@ -39,7 +39,7 @@ style="max-width: auto; display: block; margin: auto;"/>
 
 Fontconfig takes a list of font properties (name, width, weight, style, etc.),
 then selects a font file on your system which most closely matches the properties
-you requested. It is configured with a XML-based language which allows you to
+you requested. It is configured with an XML-based language which allows you to
 specify default fonts, whitelist or blacklist them, create bold and italic styles
 for incomplete fonts, set the hinting and antialiasing levels and much more.
 The [Arch Wiki](https://wiki.archlinux.org/index.php/Font_configuration) is an
