@@ -1,6 +1,7 @@
 ---
 layout: post
 title: "Modern text rendering with Linux: Overview"
+author: andrea
 ---
 
 ## Introduction

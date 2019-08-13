@@ -274,7 +274,7 @@ FreeType's version is 2.8.1
    .*******..
 ```
 
-You can find the complete code [here](https://gist.github.com/mrandri19/245237a6bde246f119ab2b6245e540ba) is the code.
+You can find the complete code [here](https://gist.github.com/mrandri19/245237a6bde246f119ab2b6245e540ba).
 
 ## Conclusion
 
