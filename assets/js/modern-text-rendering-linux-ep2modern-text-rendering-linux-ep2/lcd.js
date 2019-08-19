@@ -1,163 +1,199 @@
 (() => {
-  const l = console.log
-  function get_x_y({ clientX, clientY }) {
-    const { left, top } = canvas.getBoundingClientRect()
+  function get_x_y(e) {
+    // Disable scrolling on touch events, and selections on double click
+    e.preventDefault();
+
+    let { clientX, clientY } = e;
+
+    // clientX/Y are NaN on touch events, so use the correct one
+    if (isNaN(clientX) || isNaN(clientY)) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    }
+
+    const { left, top } = canvas.getBoundingClientRect();
 
     const x = clientX - left;
     const y = clientY - top;
-    return [x, y]
+    return [x, y];
   }
 
-  const canvas = document.getElementById('canvas-lcd')
-  const ctx = canvas.getContext('2d')
+  const canvas = document.getElementById("canvas-lcd");
+  const ctx = canvas.getContext("2d");
 
-  const w = canvas.width
-  const h = canvas.height
+  canvas.setAttribute("width", 300);
+  canvas.setAttribute("height", 300);
+  const w = canvas.width;
+  const h = canvas.height;
 
-  // Draw bg
-  ctx.fillStyle = "#ffffff"
-  ctx.fillRect(0, 0, w, h)
+  const grid_edge = 20;
 
-  const grid_edge = 20
+  function draw_grid(strokeStyle) {
+    const old_lineWidth = ctx.lineWidth;
+    const old_strokeStyle = ctx.strokeStyle;
 
-  function draw_grid() {
-    const old_lineWidth = ctx.lineWidth
-    const old_strokeStyle = ctx.strokeStyle
+    ctx.strokeStyle = strokeStyle;
+    ctx.lineWidth = 1;
 
-    ctx.strokeStyle = "#999999"
-    ctx.lineWidth = 1
-
-    ctx.beginPath()
-    for (let x = 0; x < w; x += grid_edge) {
+    ctx.beginPath();
+    for (let x = grid_edge; x < w; x += grid_edge) {
       ctx.moveTo(x, 0);
-      ctx.lineTo(x, h)
-      ctx.stroke()
+      ctx.lineTo(x, h);
+      ctx.stroke();
     }
-    for (let y = 0; y < w; y += grid_edge) {
+    for (let y = grid_edge; y < w; y += grid_edge) {
       ctx.moveTo(0, y);
-      ctx.lineTo(w, y)
-      ctx.stroke()
+      ctx.lineTo(w, y);
+      ctx.stroke();
     }
-    ctx.closePath()
+    ctx.closePath();
 
-    ctx.strokeStyle = old_strokeStyle
-    ctx.lineWidth = old_lineWidth
+    ctx.strokeStyle = old_strokeStyle;
+    ctx.lineWidth = old_lineWidth;
   }
-  draw_grid()
+
+  function clear() {
+    // Draw bg
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, w, h);
+
+    draw_grid("#777777");
+  }
+  clear();
 
   // Paint with mouse
   function setup_mouse_painting() {
-    ctx.lineWidth = 25
-    ctx.lineCap = 'round'
-    ctx.lineJoin = 'round'
-    ctx.strokeStyle = "#000000"
+    ctx.lineWidth = 25;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#000000";
 
     let x, y;
     let mouse_down = false;
-    canvas.onmousedown = e => {
+    canvas.onmousedown = canvas.ontouchstart = e => {
       mouse_down = true;
-      ctx.beginPath()
+      ctx.beginPath();
 
-      const [new_x, new_y] = get_x_y(e)
+      const [new_x, new_y] = get_x_y(e);
 
-      x = new_x
-      y = new_y
-    }
-    canvas.onmouseup = e => {
+      x = new_x;
+      y = new_y;
+    };
+    canvas.onmouseup = canvas.ontouchend = e => {
       mouse_down = false;
-      ctx.closePath()
+      ctx.closePath();
 
-      const [new_x, new_y] = get_x_y(e)
+      const [new_x, new_y] = get_x_y(e);
 
-      x = new_x
-      y = new_y
-    }
-    canvas.onmousemove = e => {
-      const [new_x, new_y] = get_x_y(e)
+      x = new_x;
+      y = new_y;
+    };
+    canvas.onmousemov = canvas.ontouchmove = e => {
+      const [new_x, new_y] = get_x_y(e);
 
       if (mouse_down) {
-        ctx.moveTo(x, y)
-        ctx.lineTo(new_x, new_y)
-        ctx.stroke()
+        ctx.moveTo(x, y);
+        ctx.lineTo(new_x, new_y);
+        ctx.stroke();
       }
 
-      x = new_x
-      y = new_y
-    }
+      x = new_x;
+      y = new_y;
+    };
     canvas.onmouseout = () => {
-      mouse_down = false
-    }
+      mouse_down = false;
+    };
   }
-  setup_mouse_painting()
-
+  setup_mouse_painting();
 
   function sample() {
-    const image_data = ctx.getImageData(0, 0, w, h)
-    const { data } = image_data
+    function is_black(data, i, j, w, h) {
+      return (
+        data[i * 4 * w + j * 4 + 0] == 0x00 &&
+        data[i * 4 * w + j * 4 + 1] == 0x00 &&
+        data[i * 4 * w + j * 4 + 2] == 0x00
+      );
+    }
+    const R = Math.round;
+    const edge_third = grid_edge / 3;
+    const pixels_in_third = grid_edge * edge_third;
 
-    // For each grid square
-    for (let grid_x = 0; grid_x < w; grid_x += grid_edge) {
-      for (let grid_y = 0; grid_y < h; grid_y += grid_edge) {
+    const image_data = ctx.getImageData(0, 0, w, h);
+    const { data } = image_data;
 
-        let count_left = 0;
-        let count_center = 0;
-        let count_right = 0;
+    // For each square in the grid
+    for (let grid_y = 0; grid_y < h; grid_y += grid_edge) {
+      for (let grid_x = 0; grid_x < w; grid_x += grid_edge) {
+        let count_left = 0,
+          count_center = 0,
+          count_right = 0;
 
-        for (let i = grid_x; i < Math.round(grid_x + grid_edge / 3); i++) {
-          for (let j = grid_y; j < grid_edge + grid_y; j++) {
-            if (data[(i * 4 * w) + j * 4 + 0] == 0x00 &&
-              data[(i * 4 * w) + j * 4 + 1] == 0x00 &&
-              data[(i * 4 * w) + j * 4 + 2] == 0x00) {
+        // For each pixel in the 1st third of the square
+        for (let i = grid_y; i < grid_edge + grid_y; i++) {
+          for (let j = grid_x; j < R(grid_x + edge_third); j++) {
+            if (is_black(data, i, j, w, h)) {
               count_left++;
             }
           }
         }
-        for (let i = Math.round(grid_x + grid_edge / 3);
-          i < Math.round(grid_x + 2 * grid_edge / 3);
-          i++) {
-          for (let j = grid_y; j < grid_edge + grid_y; j++) {
-            if (data[(i * 4 * w) + j * 4 + 0] == 0x00 &&
-              data[(i * 4 * w) + j * 4 + 1] == 0x00 &&
-              data[(i * 4 * w) + j * 4 + 2] == 0x00) {
+
+        // For each pixel in the 2nd third of the square
+        for (let i = grid_y; i < grid_edge + grid_y; i++) {
+          for (let j = R(grid_x + edge_third); j < R(grid_x + 2 * edge_third); j++) {
+            if (is_black(data, i, j, w, h)) {
               count_center++;
             }
           }
         }
-        for (let i = Math.round(grid_x + 2 * grid_edge / 3);
-          i < grid_x + grid_edge;
-          i++) {
-          for (let j = grid_y; j < grid_edge + grid_y; j++) {
-            if (data[(i * 4 * w) + j * 4 + 0] == 0x00 &&
-              data[(i * 4 * w) + j * 4 + 1] == 0x00 &&
-              data[(i * 4 * w) + j * 4 + 2] == 0x00) {
+
+        // For each pixel in the 3rd third of the square
+        for (let i = grid_y; i < grid_edge + grid_y; i++) {
+          for (let j = R(grid_x + 2 * edge_third); j < grid_x + grid_edge; j++) {
+            if (is_black(data, i, j, w, h)) {
               count_right++;
             }
           }
         }
 
-        for (let i = grid_x;
-          i < grid_edge + grid_x;
-          i++) {
-          for (let j = grid_y; j < grid_edge + grid_y; j++) {
-            // We assume that red pixels are on the left, green in the
-            // center and blue on the right
-            data[(i * 4 * w) + j * 4 + 0] =
-              Math.round((1 - count_left / (grid_edge * grid_edge / 3)) * 256)
-            data[(i * 4 * w) + j * 4 + 1] =
-              Math.round((1 - count_center / (grid_edge * grid_edge / 3)) * 256)
-            data[(i * 4 * w) + j * 4 + 2] =
-              Math.round((1 - count_right / (grid_edge * grid_edge / 3)) * 256)
-            data[(i * 4 * w) + j * 4 + 3] = 0xff
+        // For each pixel in the 1st third of the square
+        for (let i = grid_y; i < grid_edge + grid_y; i++) {
+          for (let j = grid_x; j < R(grid_x + edge_third); j++) {
+            data[i * 4 * w + j * 4 + 0] = R((count_left / pixels_in_third) * 256);
+            data[i * 4 * w + j * 4 + 1] = 0;
+            data[i * 4 * w + j * 4 + 2] = 0;
+            data[i * 4 * w + j * 4 + 3] = 0xff;
+          }
+        }
+
+        // For each pixel in the 2nd third of the square
+        for (let i = grid_y; i < grid_edge + grid_y; i++) {
+          for (let j = R(grid_x + edge_third); j < R(grid_x + 2 * edge_third); j++) {
+            data[i * 4 * w + j * 4 + 0] = 0;
+            data[i * 4 * w + j * 4 + 1] = R((count_center / pixels_in_third) * 256);
+            data[i * 4 * w + j * 4 + 2] = 0;
+            data[i * 4 * w + j * 4 + 3] = 0xff;
+          }
+        }
+
+        // For each pixel in the 3rd third of the square
+        for (let i = grid_y; i < grid_edge + grid_y; i++) {
+          for (let j = R(grid_x + 2 * edge_third); j < grid_x + grid_edge; j++) {
+            data[i * 4 * w + j * 4 + 0] = 0;
+            data[i * 4 * w + j * 4 + 1] = 0;
+            data[i * 4 * w + j * 4 + 2] = R((count_right / pixels_in_third) * 256);
+            data[i * 4 * w + j * 4 + 3] = 0xff;
           }
         }
       }
     }
 
-    ctx.putImageData(image_data, 0, 0)
-
-    draw_grid()
+    ctx.putImageData(image_data, 0, 0);
+    draw_grid("#999999");
   }
 
-  const button = document.getElementById('sample-lcd')
-  button.onclick = sample
-})()
+  const sample_button = document.getElementById("sample-lcd");
+  sample_button.onclick = sample;
+
+  const clear_button = document.getElementById("clear-lcd");
+  clear_button.onclick = clear;
+})();

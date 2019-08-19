@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Modern text rendering with Linux: Part 2"
+title: "Modern text rendering with Linux: Antialiasing"
 author: andrea
 ---
 
@@ -11,9 +11,8 @@ in the series:
 [part 1]({{ site.baseurl }}{% post_url 2019-07-18-modern-text-rendering-linux-ep1 %}) and
 [Overview]({{ site.baseurl }}{% post_url 2019-07-24-modern-text-rendering-linux-overview %}).
 
-In this post I will show how to render a glyph to an image, the differences
-between grayscale and LCD (subpixel) antialiasing, and then discuss gamma encoding
-and LCD filtering.
+In this post I will show how to render a glyph to an image and the differences
+between grayscale and LCD (subpixel) antialiasing.
 
 ## Setup
 
@@ -38,6 +37,7 @@ style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
 </div>
 
 Let's start right back from where we stopped last time:
+
 ```shell
 $ clang -I/usr/include/freetype2 \
         -I/usr/include/libpng16  \
@@ -69,14 +69,16 @@ To render a glyph to a JPG image we will use nothing's
 [stb_image_write](https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h).
 
 In the same folder as `main.c` run:
+
 ```shell
 $ wget https://raw.githubusercontent.com/nothings/stb/master/stb_image_write.h
 ```
 
 If wget is not installed run `sudo apt install wget` to install it
- and then retry the previous command.
+and then retry the previous command.
 
 In `main.c` add the library to the includes.
+
 ```diff
  #include <freetype2/ft2build.h>
  #include FT_FREETYPE_H
@@ -91,6 +93,7 @@ In `main.c` add the library to the includes.
 
 First of all extract `face->glyph->bitmap` to a variable to make the
 code tidier.
+
 ```diff
 +  FT_Bitmap bitmap = face->glyph->bitmap;
 -  for (size_t i = 0; i < face->glyph->bitmap.rows; i++) {
@@ -111,9 +114,10 @@ code tidier.
    }
    printf("\n");
  }
- ```
+```
 
 Create a buffer for the image data (remember to `free` it at the end).
+
 ```diff
   FT_Bitmap bitmap = face->glyph->bitmap;
 +
@@ -124,6 +128,7 @@ Create a buffer for the image data (remember to `free` it at the end).
 ```
 
 Delete the printing instructions and copy the pixel data into the buffer.
+
 ```diff
   for (size_t i = 0; i < bitmap.rows; i++) {
     for (size_t j = 0; j < bitmap.width; j++) {
@@ -143,6 +148,7 @@ Delete the printing instructions and copy the pixel data into the buffer.
 ```
 
 Finally, write the image to a JPG file called `image.jpg`.
+
 ```diff
   }
 +
@@ -165,6 +171,7 @@ Finally, write the image to a JPG file called `image.jpg`.
 Changing the antialiasing technique is easy with FreeType.
 
 Add this header to include the LCD filtering functionality.
+
 ```diff
   #include FT_FREETYPE_H
 + #include FT_LCD_FILTER_H
@@ -176,6 +183,7 @@ Set which LCD filter to use. For a
 list of filters check the
 [FreeType docs](https://www.freetype.org/freetype2/docs/reference/ft2-lcd_rendering.html)
 on Subpixel Rendering. We will use the default one.
+
 ```diff
   FT_Int major, minor, patch;
   FT_Library_Version(ft, &major, &minor, &patch);
@@ -231,82 +239,87 @@ of three channels: R,G,B.
 
 ## How do they work?
 
-Draw on the grids, then click the sample button.
+Draw on the grids, then click **sample** to see how the different antialiasing tecniques work.
+Try drawing the same shape in both, for example an 'A', and then compare the results.
 
 <div style="
     display: flex;
     flex-flow: row wrap;
     justify-content: space-around;
-    text-align: center;">
-  <style>
-    .my-button {
-      align-items:center;
-      background-color:rgb(255, 255, 255);
-      border-bottom-color:rgb(219, 219, 219);
-      border-bottom-left-radius:4px;
-      border-bottom-right-radius:4px;
-      border-bottom-style:solid;
-      border-bottom-width:1px;
-      border-image-outset:0px;
-      border-image-repeat:stretch;
-      border-image-slice:100%;
-      border-image-source:none;
-      border-image-width:1;
-      border-left-color:rgb(219, 219, 219);
-      border-left-style:solid;
-      border-left-width:1px;
-      border-right-color:rgb(219, 219, 219);
-      border-right-style:solid;
-      border-right-width:1px;
-      border-top-color:rgb(219, 219, 219);
-      border-top-left-radius:4px;
-      border-top-right-radius:4px;
-      border-top-style:solid;
-      border-top-width:1px;
-      box-shadow:none;
-      box-sizing:border-box;
-      color:rgb(54, 54, 54);
-      cursor:pointer;
-      display:flex;
-      font-family:BlinkMacSystemFont, -apple-system, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-size:16px;
-      font-weight:400;
-      height:36px;
-      justify-content:center;
-      line-height:24px;
-      margin-bottom:8px;
-      padding-bottom:5px;
-      padding-left:12px;
-      padding-right:12px;
-      padding-top:5px;
-      position:relative;
-      text-align:center;
-      text-decoration-color:rgb(54, 54, 54);
-      text-decoration-line:none;
-      text-decoration-style:solid;
-      text-size-adjust:100%;
-      user-select:none;
-      vertical-align:top;
-      white-space:nowrap;
-      width:76.75px;
-      -webkit-appearance:none;
-      margin: auto;
-      margin-top: 1rem;
-     }
-  </style>
+    text-align: center;
+    margin-bottom: 1.5rem;">
   <div>
     <p style="margin: auto;">Grayscale</p>
-    <canvas width="301" height="301" id="canvas-grayscale" style="display: block;"></canvas>
+    <canvas id="canvas-grayscale" style="display: block;"></canvas>
     <button id="sample-grayscale" class="my-button">Sample</button>
+    <button id="clear-grayscale" class="my-button">Clear</button>
     <script src="/assets/js/modern-text-rendering-linux-ep2modern-text-rendering-linux-ep2/grayscale.js"></script>
   </div>
 
   <div>
     <p style="margin: auto;">LCD</p>
-    <canvas width="301" height="301" id="canvas-lcd" style="display: block;"></canvas>
+    <canvas id="canvas-lcd" style="display: block;"></canvas>
     <button id="sample-lcd" class="my-button">Sample</button>
+    <button id="clear-lcd" class="my-button">Clear</button>
     <script src="/assets/js/modern-text-rendering-linux-ep2modern-text-rendering-linux-ep2/lcd.js"></script>
   </div>
 </div>
 
-TODO: Finish
+What you should be seeing after drawing and clicking sample.
+
+<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+   <figure style="display: inline-block;">
+      <img src="/assets/images/modern-text-rendering-linux-ep2/interactive-example-screenshot.png"
+      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      <figcaption style="text-align: center; margin-top: 1rem;"></figcaption>
+   </figure>
+</div>
+
+### Grayscale Antialiasing
+
+<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+   <figure style="display: inline-block;">
+      <img src="/assets/images/modern-text-rendering-linux-ep2/rasterization-strategies.png"
+      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      <figcaption style="text-align: center; margin-top: 1rem;">Ideal shape, monochrome and grayscale antialiasing<br>
+        Image taken from <a href="https://www.smashingmagazine.com/2012/04/a-closer-look-at-font-rendering/">Smashing Magazine</a>
+      </figcaption>
+   </figure>
+</div>
+
+Grayscale Antialiasing divides the image to render in a grid, then, for
+each square in the grid, counts how much the area of a grid's square is covered by
+the image. If 100% of the square is covered then the pixel will have 100%
+opacity, if 50% of the square is covered then the pixel will be half-transparent.
+
+### LCD (Subpixel) Antialiasing
+
+<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+   <figure style="display: inline-block;">
+      <img src="/assets/images/modern-text-rendering-linux-ep2/rasterization-subpixel.png"
+      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      <figcaption style="text-align: center; margin-top: 1rem;">An LCD
+      antialiased glyph, showing an RGB image, showing its individual
+      subpixels, showing each subpixel's brightness. The white square
+      represents a single pixel.<br>
+        Image taken from <a href="https://www.smashingmagazine.com/2012/04/a-closer-look-at-font-rendering/">Smashing Magazine</a>
+      </figcaption>
+   </figure>
+</div>
+
+LCD Antialiasing exploits the fact that each pixel is made of three independent
+light sources, usually thin rectangles, which we call subpixels. By knowing
+the order (Red Green Blue or Blue Green Red) in which these subpixels form a pixel, we can turn them on individually
+to triple the horizontal resolution.
+
+The main downside of this method is that when rendering an image, you need to know the
+order in which subpixels are placed on the screen, which may not be available.
+Also think of a phone screen being rotated 90 degrees, the images need to be re-rendered (or at least re-antialiased)
+because the subpixels are now one on top of the other instead of side by side.
+This is the reason why iOS doesn't use subpixel rendering while macOS pre 10.14 does.
+
+## Sources
+
+- [A closer look at font rendering](https://www.smashingmagazine.com/2012/04/a-closer-look-at-font-rendering/) by Smashing Magazine
+- [Sub-pixel, gamma correct, font rendering](http://www.puredevsoftware.com/blog/2019/01/22/sub-pixel-gamma-correct-font-rendering/) by Puredev Software
+- [Font Rasterization](https://web.archive.org/web/20180921225907/http://antigrain.com/research/font_rasterization/index.html#FONT_RASTERIZATION) by The AGG Project
