@@ -88,7 +88,7 @@
       x = new_x;
       y = new_y;
     };
-    canvas.onmousemov = canvas.ontouchmove = e => {
+    canvas.onmousemove = canvas.ontouchmove = e => {
       const [new_x, new_y] = get_x_y(e);
 
       if (mouse_down) {

@@ -20,7 +20,7 @@ I will use the same code, OS, compiler and libraries used in
 [part 1]({{ site.baseurl }}{% post_url 2019-07-18-modern-text-rendering-linux-ep1 %})
 and extend the code.
 
-This will be our final result.
+This will be our final result. And [here](https://gist.github.com/mrandri19/fe5dc2709d761568d749f8125d0f4490) is the code.
 
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
 <figure style="display: inline-block;">
@@ -236,6 +236,8 @@ of three channels: R,G,B.
       style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
    </figure>
 </div>
+
+You can find the complete code [here](https://gist.github.com/mrandri19/fe5dc2709d761568d749f8125d0f4490).
 
 ## How do they work?
 
