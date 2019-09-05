@@ -25,13 +25,13 @@ This will be our final result. And [here](https://gist.github.com/mrandri19/fe5d
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
 <figure style="display: inline-block;">
 <img src="/assets/images/modern-text-rendering-linux-ep2/grayscale.jpg"
-style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+style="min-height: 8rem;image-rendering: pixelated;image-rendering: crisp-edges; margin: auto;"/>
 <figcaption style="text-align: center; margin-top: 1rem;">A grayscale antialiased glyph</figcaption>
 </figure>
 
 <figure style="display: inline-block;">
 <img src="/assets/images/modern-text-rendering-linux-ep2/lcd.jpg"
-style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+style="min-height: 8rem;image-rendering: pixelated;image-rendering: crisp-edges; margin: auto;"/>
 <figcaption style="text-align: center; margin-top: 1rem;">A subpixel antialiased glyph</figcaption>
 </figure>
 </div>
