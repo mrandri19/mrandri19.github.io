@@ -162,7 +162,7 @@ Finally, write the image to a JPG file called `image.jpg`.
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
    <figure style="display: inline-block;">
       <img src="/assets/images/modern-text-rendering-linux-ep2/grayscale.jpg"
-      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      style="min-height: 8rem;image-rendering: pixelated; image-rendering: crisp-edges; margin: auto;"/>
    </figure>
 </div>
 
@@ -208,7 +208,7 @@ is a list of the available render modes.
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
    <figure style="display: inline-block;">
       <img src="/assets/images/modern-text-rendering-linux-ep2/thicc.jpg"
-      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      style="min-height: 8rem;image-rendering: pixelated; image-rendering: crisp-edges; margin: auto;"/>
    </figure>
 </div>
 
@@ -233,7 +233,7 @@ of three channels: R,G,B.
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
    <figure style="display: inline-block;">
       <img src="/assets/images/modern-text-rendering-linux-ep2/lcd.jpg"
-      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      style="min-height: 8rem;image-rendering: pixelated; image-rendering: crisp-edges; margin: auto;"/>
    </figure>
 </div>
 
@@ -272,7 +272,7 @@ What you should be seeing after drawing and clicking sample.
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
    <figure style="display: inline-block;">
       <img src="/assets/images/modern-text-rendering-linux-ep2/interactive-example-screenshot.png"
-      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      style="min-height: 8rem;image-rendering: pixelated; image-rendering: crisp-edges; margin: auto;"/>
       <figcaption style="text-align: center; margin-top: 1rem;"></figcaption>
    </figure>
 </div>
@@ -282,7 +282,7 @@ What you should be seeing after drawing and clicking sample.
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
    <figure style="display: inline-block;">
       <img src="/assets/images/modern-text-rendering-linux-ep2/rasterization-strategies.png"
-      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      style="min-height: 8rem;image-rendering: pixelated; image-rendering: crisp-edges; margin: auto;"/>
       <figcaption style="text-align: center; margin-top: 1rem;">Ideal shape, monochrome and grayscale antialiasing<br>
         Image taken from <a href="https://www.smashingmagazine.com/2012/04/a-closer-look-at-font-rendering/">Smashing Magazine</a>
       </figcaption>
@@ -299,7 +299,7 @@ opacity, if 50% of the square is covered then the pixel will be half-transparent
 <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
    <figure style="display: inline-block;">
       <img src="/assets/images/modern-text-rendering-linux-ep2/rasterization-subpixel.png"
-      style="min-height: 8rem;image-rendering: pixelated; margin: auto;"/>
+      style="min-height: 8rem;image-rendering: pixelated;  image-rendering: crisp-edges; margin: auto;"/>
       <figcaption style="text-align: center; margin-top: 1rem;">An LCD
       antialiased glyph, showing an RGB image, showing its individual
       subpixels, showing each subpixel's brightness. The white square
