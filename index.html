@@ -105,103 +105,26 @@
         <h2>Resume</h2>
       </a>
     </section>
-    <section id="projects">
-      <h2>Projects</h2>
-      <section>
-        <h3>
-          How much of npm can you break
-        </h3>
-        <p>
-          Built a website to check which and how many npm packages would break
-          if one of its dependecies was removed from npmjs.com
-        </p>
-        <p>
-          To build this application I've used the Rust programming language. I
-          have chosen this language because of its excellent performance and
-          concurrency safety guarantees which, along with some ad-hoc
-          algorithm choiches, let me get very high performance while
-          processing a 1.8GiB JSON file.
-        </p>
-        <span class="label">Rust</span>
-        <span class="label">Data Structures</span>
-        <span class="label">JSON</span>
-      </section>
-      <section>
-        <h3>
-          <a href="https://github.com/mrandri19/registro-react">Registro-react</a>
-        </h3>
-        <p>
-          Created, along with Daniele Monteleone, registro-react: an
-          alternative frontend for the online grade register our school used.
-        </p>
-        <p>
-          The backend, written in typescript with expressjs, crawled the
-          original
-          <a href="https://web.spaggiari.eu/home/app/default/login.php">website</a>,
-          parsed its html and exposed the grades and communications as a
-          JSON api. The frontend, written in typescript with React,
-          communicated with the backend api and handled login, notifications
-          and showing the data to the users in an graphically appealing
-          manner.
-        </p>
-        <span class="label">React</span>
-        <span class="label">Typescript</span>
-        <span class="label">Front-end development</span>
-      </section>
-      <section>
-        <h3>
-          <a
-            href="https://github.com/mrandri19/comments-as-a-graph">Comments-as-a-graph</a>
-        </h3>
-        <p>
-          Comments-as-a-graph is an experiment in visualizing comments from
-          communities such as 4chan.org, reddit and Hacker News using a graph.
-        </p>
-        <p>
-          A Python script downloads the comments from a thread and parses them
-          to output a graphviz dot language file which describes the graph.
-          Then the client side javascript downloads the .gv file, and using
-          Viz.js renders it to the screen. The Viz.js was custom compiled
-          using emscripten to reduce the payload size by 25%.
-        </p>
-        <span class="label">Graphviz</span>
-        <span class="label">Emscripten</span>
-        <span class="label">Front-end development</span>
-      </section>
-      <section>
-        <h3>
-          <a href="https://github.com/mrandri19/freetype-opengl-experiments">OpenGL Font
-            renderer
-          </a>
-        </h3>
-        <p>
-          A GPU accelerated text viewer built using FreeType for text
-          rendering, HarbBuzz for text shaping and GLFW for window management.
-        </p>
-        <span class="label">C++</span>
-        <span class="label">OpenGL</span>
-      </section>
-      <section>
-        <h3>
-          PURK Blockchain explorer
-        </h3>
-        <p>
-          As a contractor on Upwork one of my tasks was to port a blockchain
-          explorer written for the BoolBerry (BBR) coin to PURK. This involved
-          fixing some of the frontend Javascript code but most importantly
-          implementing new JSON-RPC 2.0 methods directly into the coin's
-          daemon source code, written in C++.
-        </p>
-        <span class="label">C++</span> <span class="label">Blockchain</span>
-        <span class="label">Cryptocurrencies</span>
-      </section>
-    </section>
     <section>
-      <h2>Other things</h2>
-
+      <h2>Projects</h2>
       <section>
         <h3>2020</h3>
         <ul>
+          <li>
+            <p>Wrote <a href="https://github.com/mrandri19/i2c_accelerometer_MMA7455L">a
+                gui </a>for an accelerometer usign the ESP32-WROOM, esp-idf, and python.
+            </p>
+          </li>
+          <li>
+            <p>Taught myself various automatic differentiation techniques and <a
+                href="https://github.com/mrandri19/automatic-differentiantion">implemented</a>
+              them in python</p>
+          </li>
+          <li>
+            <p><a href="https://github.com/mrandri19/opengl-compute-shaders">Implemented
+                various algorithms</a> from coursera's CS344 in modern OpenGL using
+              compute shaders</p>
+          </li>
           <li>
             <p>Started working through <a
                 href="http://jeapostrophe.github.io/courses/2019/spring/406/notes/book.pdf">Essentials
@@ -256,7 +179,7 @@
                 Python</a>, then optimized it until I was satisfied with its performance,
               and then
               <a href="https://github.com/mrandri19/notability2svg-rust">rewrote it in
-                Rust</a>. anyway.
+                Rust</a>
             </p>
           </li>
           <li>
