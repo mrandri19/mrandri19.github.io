@@ -13,6 +13,6 @@ fields:
   label: author
 pages:
 - _posts/2020-05-17-trying-something-new.md
+- _posts/2020-05-28-hello-mpu6050.md
 - _posts/buying-an-imu.md
-- _posts/hello-mpu6050.md
 - _posts/potentiometers-and-pwm.md
