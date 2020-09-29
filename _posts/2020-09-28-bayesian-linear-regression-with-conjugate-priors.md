@@ -91,7 +91,7 @@ $n$ is the number of observations and $d$ is the number of features.
 
 A single observation is called $x_i \in \mathbb{R}^{n \times 1}, i \in 1,..,n$, and a single response is $y_i \in \mathbb{R}$.
 
-Our model will be $Y = X\beta + \epsilon$ where $\epsilon \sim \mathcal{N}(1,\sigma^2 I)$ is the noise. This can be rewritten as $Y \sim \mathcal{N}(X\beta, \sigma^2 I)$ thus having an $n$-dimensional multivariate gaussian distribution.
+Our model will be $Y = X\beta + \epsilon$ where $\epsilon \sim \mathcal{N}(0,\sigma^2 I)$ is the noise. This can be rewritten as $Y \sim \mathcal{N}(X\beta, \sigma^2 I)$ thus having an $n$-dimensional multivariate Normal distribution.
 
 ### Likelihood
 
@@ -101,8 +101,7 @@ Let's write the likelihood for multivariate linear regresssion, i.e. how likely 
 \\[p(\mathcal{D}\mid \theta) = p((X,Y)\mid \beta) = p(Y=\mathcal{N}(X\beta,\sigma^2I)) = (2\pi\sigma^2)^{-k/2}exp\{-\frac{1}{2\sigma^2}(Y-X\beta)^T(Y-X\beta)\}\\]
 {% endraw %}
 
-The last expression was obtained by substituting the Gaussian PDF with mean $\mu=X\beta$ and covariance matrix $\Sigma=\frac{1}
-{\sigma^2}$.
+The last expression was obtained by substituting the Gaussian PDF with mean $\mu=X\beta$ and covariance matrix $\Sigma=\sigma^2 I$.
 
 Also, since all of the observations $X, Y$ are I.I.D. we can factorize the likelihood as:
 
@@ -112,7 +111,7 @@ Also, since all of the observations $X, Y$ are I.I.D. we can factorize the likel
 
 #### Visualization
 
-How can we visualize this distribution? For a single pair $(x_i, y_i)$ (with fixed $\beta$) the multivariate normal collapses to a probability. Plotting this for a bunch of values of x and y we can see how the points with highest probability are on the line $y=1+2x$, as expected since our parameters are $\beta = \{1,2\}$. The variance $\sigma^2=1$, which for now we will treat as a known constant, influences how "fuzzy" the resulting plot is.
+How can we visualize this distribution? For a single pair $(x_i, y_i)$ (with fixed $\beta$) the multivariate Normal collapses to a probability. Plotting this for a bunch of values of x and y we can see how the points with highest probability are on the line $y=1+2x$, as expected since our parameters are $\beta = \{1,2\}$. The variance $\sigma^2=1$, which for now we will treat as a known constant, influences how "fuzzy" the resulting plot is.
 
 <div class="codecell" markdown="1">
 <div class="input_area" markdown="1">
