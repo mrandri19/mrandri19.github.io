@@ -70,11 +70,32 @@ The $\propto$ symbol means **proportional to**, i.e. equal except for a normaliz
 
 ## Multivariate linear regression
 
+### Motivation
+
+Let's consider the problem of multivariate linear regression. This means that
+we want to find the best set of intercept and slopes to minimize the distance between
+our linear model's previsions and the actual data. But it doesn't end here, we may be interested
+in getting some estimates about the uncertainty of our model, e.g. a confidence interval
+for each parameter.
+
+Another feature we might be interest in is supporting **streaming** data. When deploying
+our algorithm, we may have only had the opportunity to train it on a small quantity
+of data compared to what our user create everyday, and we want our system to react
+to new emerging behaviours of the users without retraining.
+
+### Problem setting
+
+Our data $\mathcal{D}=\\{X,Y\\}$ contains the **predictors** (or design matrix) $X \in \mathbb{R}^{n \times d}$, and the **response** $Y \in \mathbb{R}^{n\times 1}$.
+
+$n$ is the number of observations and $d$ is the number of features.
+
+A single observation is called $x_i \in \mathbb{R}^{n \times 1}, i \in 1,..,n$, and a single response is $y_i \in \mathbb{R}$.
+
+Our model will be $Y = X\beta + \epsilon$ where $\epsilon \sim \mathcal{N}(1,\sigma^2 I)$ is the noise. This can be rewritten as $Y \sim \mathcal{N}(X\beta, \sigma^2 I)$ thus having an $n$-dimensional multivariate gaussian distribution.
+
 ### Likelihood
 
-Let's consider the problem of _multivariate_ linear regression. Our data $\mathcal{D}=\\{X,Y\\}$ contains the **predictors** (or design matrix) $X \in \mathbb{R}^{n \times d}$, and the **response** $Y \in \mathbb{R}^{n\times 1}$. $n$ is the number of observations and $d$ is the number of features. A single observation is called $x_i \in \mathbb{R}^{n \times 1}, i \in 1,..,n$, and a single response is $y_i \in \mathbb{R}$. Our model will be $Y = X\beta + \epsilon$ where $\epsilon \sim \mathcal{N}(0,\sigma^2 I)$ is the noise. This can be rewritten as $Y \sim \mathcal{N}(X\beta, \sigma^2 I)$ thus having an $n$-dimensional multivariate gaussian distribution.
-
-We can then write the likelihood for multivariate linear regresssion, i.e. how likely it it to observe the data $\mathcal{D}$, given a certain linear model specified by $\beta$.
+Let's write the likelihood for multivariate linear regresssion, i.e. how likely it it to observe the data $\mathcal{D}$, given a certain linear model specified by $\beta$.
 
 {% raw %}
 \\[p(\mathcal{D}\mid \theta) = p((X,Y)\mid \beta) = p(Y=\mathcal{N}(X\beta,\sigma^2I)) = (2\pi\sigma^2)^{-k/2}exp\{-\frac{1}{2\sigma^2}(Y-X\beta)^T(Y-X\beta)\}\\]
@@ -90,6 +111,8 @@ Also, since all of the observations $X, Y$ are I.I.D. we can factorize the likel
 {% endraw %}
 
 #### Visualization
+
+How can we visualize this distribution? For a single pair $(x_i, y_i)$ (with fixed $\beta$) the multivariate normal collapses to a probability. Plotting this for a bunch of values of x and y we can see how the points with highest probability are on the line $y=1+2x$, as expected since our parameters are $\beta = \{1,2\}$. The variance $\sigma^2=1$, which for now we will treat as a known constant, influences how "fuzzy" the resulting plot is.
 
 <div class="codecell" markdown="1">
 <div class="input_area" markdown="1">
@@ -119,8 +142,6 @@ using Plots, Distributions, LaTeXStrings, LinearAlgebra, Printf
 
 </div>
 
-How can we visualize this distribution? For a single pair $(x_i, y_i)$ the multivariate normal collapses to a univariate normal distribution. Plotting this for a bunch of values of x and y we can see how the points with highest probability are on the line $y=1+2x$, as expected since our parameters are $\beta = \{1,2\}$. The variance $\sigma^2=1$, which for now we will treat as a known constant, influences how "fuzzy" the resulting plot is.
-
 <div class="codecell" markdown="1">
 <div class="input_area" markdown="1">
 
@@ -146,7 +167,7 @@ heatmap(
 
 </div>
 
-In alternative, we can also plot how likely is each combination of weights given a certain point. Notice how, for a single point, many combinations of angular coefficient $\beta_1$ and intercept $\beta_0$ are possible. Also notice how these combinations are distributed on a line, if you increase the intercept, the angular coefficient has to go down.
+In alternative, we can also plot how likely is each combination of weights given a certain point $(x_i, y_i)$. Notice how, for a single point, many combinations of angular coefficient $\beta_1$ and intercept $\beta_0$ are possible. Also notice how these combinations are distributed on a line, if you increase the intercept, the angular coefficient has to go down.
 
 <div class="codecell" markdown="1">
 <div class="input_area" markdown="1">
@@ -180,11 +201,11 @@ We could just use an uniform prior as we have no idea of how our $\beta$ are dis
 
 Another option is to use what is called **conjugate prior**, that is, a specially chosen prior distribution such that, when multiplied with the likelihood, the resulting posterior distribution belongs to the same family of the prior. Why would we want to do so? The main reason here is _speed_. Since we know the analytic expression for our posterior, almost no calculations need to be performed, it's just a matter of calculating the new distribution's parameters. This is a breath of fresh air considering the high cost of Markov Chain Monte Carlo methods usually used to calculate these posteriors. This speed allows us to consider using bayesian methods in high-throughput streaming contexts.
 
-How do we find these pairs of likelihood and priors? The usual approach is to look at likelihood's algebraic equation and come up with a distribution PDF similar enough so that the posterior is in the same family. We don't need to do all of this work, we can just look on [Wikipedia](https://en.wikipedia.org/wiki/Conjugate_prior).
+How do we find these pairs of likelihood and priors? The usual approach is to look at likelihood's algebraic equation and come up with a distribution PDF similar enough so that the posterior is in the same family. We don't need to do all of this work, we can just look on [Wikipedia](https://en.wikipedia.org/wiki/Conjugate_prior) or [other](https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf) [sources](http://www.biostat.umn.edu/~ph7440/pubh7440/BayesianLinearModelGoryDetails.pdf).
 
 #### Multivariate Normal prior
 
-For a Normal likelihood with known variance, the conjugate prior is another Normal distribution with parameters $\mu_\beta$ and $\Sigma_\beta$. The parameter $\mu_\beta$ describes the initial values for $\beta$ and $\Sigma_\beta$ describes how uncertain are of these values.
+For a Normal likelihood with known variance, the conjugate prior is another Normal distribution with parameters $\mu_\beta$ and $\Sigma_\beta$. The parameter $\mu_\beta$ describes the initial values for $\beta$ and $\Sigma_\beta$ describes how uncertain we are of these values.
 
 {% raw %}
 \\[p(\theta) = p(\beta) = \mathcal{N}(\mu_\beta, \Sigma_\beta)\\]
@@ -247,7 +268,7 @@ Since matrix inversions and multiplications have cubic time complexity, each upd
 
 We can now proceed to the implementation. I chose the Julia language because of its excellent speed and scientific libraries. Also I like shiny things and Julia is much newer than Python/R/MATLAB.
 
-First, we generate the data which we will use to verify the implementation of the algorithm. Notice how we save the variance $\sigma^2$, which we will treat as a known cobstant and use while updating our prior. There are ways to estimate it from the data, i.e. using a Normal-Inverse-Chi-Squared prior, which we will examine in a future blog post.
+First, we generate the data which we will use to verify the implementation of the algorithm. Notice how we save the variance $\sigma^2$, which we will treat as a known constant and use when updating our prior. There are ways to estimate it from the data, i.e. using a Normal-Inverse-Chi-Squared prior, which we will examine in a future blog post.
 
 #### Training data
 
@@ -303,7 +324,7 @@ prior = MvNormal(μᵦ, Σᵦ)
 
 #### Update step definition
 
-Then, using the posterior hyperparameters formulas found on Wikipedia, let's implement the update function. The update function takes a prior and our data, and return the posterior distribution. Notice how by using Julia's unicode support, we can have our code closely resembling the math
+Then, using the posterior hyperparameter update formulas, let's implement the update function. The update function takes a prior and our data, and return the posterior distribution. Notice how by using Julia's unicode support, we can have our code closely resembling the math.
 
 {% raw %}
 \\[
@@ -363,16 +384,14 @@ posterior = update(prior, X, Y, σ²)
 
 </div>
 
-We can extract the estimates along with standard error from the posterior.
+Let's extract the estimates along with standard error from the posterior.
 
 <div class="codecell" markdown="1">
 <div class="input_area" markdown="1">
-
 ```julia
 @printf("β₀: %.3f ± %.3f (2σ)\n", mean(posterior)[1], 2*sqrt(cov(posterior)[1,1]))
 @printf("β₁: %.3f ± %.3f (2σ)\n", mean(posterior)[2], 2*sqrt(cov(posterior)[2,2]))
 ```
-
 </div>
 <div class="output_area" markdown="1">
 
@@ -380,8 +399,10 @@ We can extract the estimates along with standard error from the posterior.
     β₁: 40.717 ± 1.706 (2σ)
 
 </div>
-
 </div>
+
+We can see how the parameters we used to generate the data ($-13, 42$) are well within
+the $2\sigma$ confidence interval of our estimation.
 
 ### Posterior predictive
 
@@ -424,5 +445,4 @@ scatter!(1:n, Y, label="Training data")
 -   [https://maxhalford.github.io/blog/bayesian-linear-regression](https://maxhalford.github.io/blog/bayesian-linear-regression)
 -   [https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf](https://www.cs.ubc.ca/~murphyk/Papers/bayesGauss.pdf)
 -   [https://koaning.io/posts/bayesian-propto-streaming/](https://koaning.io/posts/bayesian-propto-streaming/)
--   [https://statswithr.github.io/book/introduction-to-bayesian-regression.html](https://statswithr.github.io/book/introduction-to-bayesian-regression.html)
 -   [http://www.biostat.umn.edu/~ph7440/pubh7440/BayesianLinearModelGoryDetails.pdf](http://www.biostat.umn.edu/~ph7440/pubh7440/BayesianLinearModelGoryDetails.pdf)
