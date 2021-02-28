@@ -14,10 +14,7 @@
   <link rel="stylesheet" href="/assets/main.css">
   <style>
     ul {
-      padding: 1em;
-      padding-top: 0;
-      padding-bottom: 0;
-      list-style-type: square;
+      padding: 0;
     }
 
     main {
@@ -30,10 +27,6 @@
     header {
       text-align: center;
       margin-top: 1em;
-    }
-
-    #projects>section {
-      margin-bottom: 1em;
     }
 
     nav>ul {
@@ -49,20 +42,6 @@
       padding: 0.5rem;
       padding-top: 0;
       display: inline-block;
-    }
-
-    .label {
-      background: #6c757d;
-      color: #fff;
-      display: inline-block;
-      padding: 0.5rem 0.4rem;
-      font-size: 80%;
-      font-weight: 700;
-      line-height: 1;
-      text-align: center;
-      white-space: nowrap;
-      vertical-align: baseline;
-      border-radius: 0.25rem;
     }
   </style>
 </head>
@@ -90,123 +69,119 @@
     <section>
       <h2>About me</h2>
       <p>
-        I am a student and developer interested in web development, machine
-        learning, functional programming, compilers and finance. I am studying
+        I am a student and developer interested in machine
+        learning, functional programming, compilers, and quantitative finance. I am
+        studying
         Data Science and Engineering at Politecnico di Torino.
       </p>
     </section>
     <section>
-      <a href="AndreaCognolatoResume.pdf">
-        <h2>Resume</h2>
-      </a>
+      <h2>
+        <a href="AndreaCognolatoResume.pdf">
+          Resume
+        </a>
+      </h2>
     </section>
     <section>
       <h2>Projects</h2>
       <section>
         <h3>2021</h3>
-        <ul style="overflow: auto; padding: 1rem;">
-          <li>
-            <a href="https://github.com/mrandri19/polito-numerical-optimization">
-              <img src="./unconstrained-optimization-report.jpg" alt=""
-                style="box-shadow: 2px 2px 8px 3px rgba(0,0,0,0.21); float: left; max-width: 30%; margin: 0 1rem 0 1rem;">
-            </a>
-
-            <a href="https://github.com/mrandri19/polito-numerical-optimization">
-              <img src="./stochastic-optimization-report.jpg" alt=""
-                style="box-shadow: 2px 2px 8px 3px rgba(0,0,0,0.21); float: left; max-width: 30%; margin: 0 1rem 0 1rem;">
-            </a>
-
-            <p>Implemented, for my course on Numerical Optimization, a number of
-              algorithms in Julia. These include steepest descent, newton method,
-              inexact newton method, projected gradient, and predictor-corrector
-              interior point methods.
-            </p>
-            <p>
-              For my two final assignments I have implemented a neural network
-              for approximating the results of a Monte Carlo simulation, as well as
-              comparing the performance of several nonlinear conjugate gradient
-              methods.
-            </p>
-          </li>
-        </ul>
-        <ul style="overflow: auto; padding: 1rem;">
-          <li>
-            <a
-              href="https://github.com/mrandri19/polito2020-data-science-lab/blob/main/Final%20Project/DSL_Project_Report.pdf">
-              <img src="./dsl-report.jpg" alt=""
-                style="box-shadow: 2px 2px 8px 3px rgba(0,0,0,0.21); float: left; max-width: 30%; margin-right: 1rem;">
-            </a>
-
-            <p>Built, for my Data Science Lab exam, a pipeline for
-              predicting the quality
-              of a wine from its reviews.</p>
-            <p>
-              By combining both categorical and textual data. Encoded using,
-              respectively
-              TFIDF and one-hot encodings. Our Ridge regression model shows great
-              performance (measured by R2 score) and inference speed.
-            </p>
-          </li>
-        </ul>
         <ul>
-          <li>Wrote a <a
-              href="https://gist.github.com/mrandri19/0c58e108bb3021132ad1487210d4b6ce#file-raytracer-jl">tiny
-              raytracer in Julia</a>, following Peter Shirley's Ray Tracing in One Weekend
+          <li>
+            <div style="overflow: auto; padding: 0.5rem;">
+              <img src="./stochastic-optimization-report.png" alt="" width="135" height="170"
+                style="float:left; box-shadow: 2px 2px 6px 0px #00000047; margin-right: 1rem;">
+
+              <img src="./unconstrained-optimization-report.png" alt="" width="135" height="170"
+                style="float:left; box-shadow: 2px 2px 6px 0px #00000047; margin-right: 1rem;">
+              <p>
+                Implemented several unconstrained and constrained optimization algorithms
+                in
+                Julia.
+                This was part of my homework for the Numerical optimization for large
+                scale
+                problems and Stochastic Optimization course.
+              </p>
+            </div>
           </li>
-        </ul>
-        <ul>
-          <li>Wrote a Tensorflow-like <a
-              href="https://github.com/mrandri19/cpp-autodiff-experiments/blob/main/CHandle/CHandle.cpp#L302">computation
-              graph framework in C++</a> with reverse-mode automatic-diferentiation
-            support.</li>
+          <li>
+            <div style="overflow: auto; padding: 0.5rem;">
+              <img src="./dsl-report.png" alt="" width="135" height="170"
+                style="float:left; box-shadow: 2px 2px 6px 0px #00000047; margin-right: 1rem;">
+
+              <p>Built, for my Data Science Lab exam, a pipeline for predicting the
+                quality
+                of a wine from its reviews.</p>
+            </div>
+          </li>
+          <li>
+            <p>
+              Wrote a <a
+                href="https://gist.github.com/mrandri19/0c58e108bb3021132ad1487210d4b6ce#file-raytracer-jl">tiny
+                raytracer in Julia</a>, following Peter Shirley's Ray Tracing in One
+              Weekend
+            </p>
+          </li>
+          <li>
+            <p>
+              Wrote a Tensorflow-like <a
+                href="https://github.com/mrandri19/cpp-autodiff-experiments/blob/main/CHandle/CHandle.cpp#L302">computation
+                graph framework in C++</a> with reverse-mode automatic-diferentiation
+              support.
+            </p>
+          </li>
         </ul>
       </section>
       <section>
         <h3>2020</h3>
         <ul>
           <li>
-            Joined my university's machine learning competition team: MALTO (MAchine
-            Learning at poliTO)
+            <p>
+              Joined my university's machine learning competition team: MALTO (MAchine
+              Learning at poliTO)
+            </p>
           </li>
-        </ul>
-        <ul>
           <li>
-            Started working on a Neural Network framework in Julia
+            <p>
+              Started working on a Neural Network framework in Julia
+            </p>
           </li>
-        </ul>
-        <ul>
           <li>
-            Graduated with 110/110 from Politecnico di Torino, earning a Bachelor's Degree
-            in Computer Engineering.
+            <p>
+              Graduated with 110/110 from Politecnico di Torino, earning a Bachelor's
+              Degree
+              in Computer Engineering.
+            </p>
           </li>
-        </ul>
-        <ul>
           <li>
-            Contributed to <a
-              href="https://github.com/SciML/Surrogates.jl">Surrogates.jl</a>, a Julia
-            package for surrogate modeling.
+            <p>
+              Contributed to <a
+                href="https://github.com/SciML/Surrogates.jl">Surrogates.jl</a>, a Julia
+              package for surrogate modeling.
+            </p>
           </li>
-        </ul>
-        <ul>
           <li>
-            Started building a quadcopter from scratch, writing the PID control system in
-            C using a ESP32-WROOM.
+            <p>
+              Started building a quadcopter from scratch, writing the PID control system
+              in
+              C using a ESP32-WROOM.
+            </p>
           </li>
-        </ul>
-        <ul>
           <li>
-            Competed in Citadel 2020 Data Open Datathon, where my team used the Synthetic
-            Control technique
-            to estimate the effect of the 2012 London Summer Olympics on the Growth
-            Boroughs.
+            <p>
+              Competed in Citadel 2020 Data Open Datathon, where my team used the
+              Synthetic
+              Control technique
+              to estimate the effect of the 2012 London Summer Olympics on the Growth
+              Boroughs.
+            </p>
           </li>
-        </ul>
-        <ul>
           <li>
-            Started working for Uffizio.ch as a Haskell and Purescript Software Engineer.
+            <p>
+              Started working for Uffizio.ch as a Haskell and Purescript Software
+              Engineer.
+            </p>
           </li>
-        </ul>
-        <ul>
           <li>
             <p>Helped to write <a
                 href="https://dl.acm.org/doi/abs/10.1145/3318464.3384710">X-PLAIN</a>,
@@ -249,8 +224,6 @@
             </p>
           </li>
         </ul>
-
-
       </section>
       <section>
         <h3>2019</h3>
