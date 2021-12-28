@@ -1,599 +1,757 @@
+<!-- TODO(Andrea): emojis or icons sprinkled everywhere -->
+<!-- TODO(Andrea): dark mode support -->
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Andrea Cognolato</title>
+        <meta name="theme-color" content="#322F7C" />
+        <link rel="manifest" href="/manifest.json" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Andrea Cognolato</title>
-  <meta name="theme-color" content="#322F7C" />
-  <link rel="manifest" href="/manifest.json" />
+        <meta
+            name="Description"
+            content="Andrea Cognolato's personal website and portfolio, contains his personal projects, resume and contact information."
+        />
+        <link rel="stylesheet" href="index-style.out.css" />
 
-  <meta name="Description"
-    content="Andrea Cognolato's personal website and portfolio, contains his personal projects, resume and contact information." />
-  <link rel="stylesheet" href="/assets/main.css">
-  <style>
-    ul {
-      padding: 0;
-    }
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBTQYT7Z06"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
 
-    main {
-      max-width: 70rem;
-      margin: auto;
-      padding: 4%;
-      padding-top: 0;
-    }
+            gtag('config', 'G-FBTQYT7Z06');
+        </script> -->
+    </head>
 
-    header {
-      text-align: center;
-      margin-top: 1em;
-    }
+    <body class="container mx-auto max-w-screen-lg px-4 font-sans text-base">
+        <header>
+            <h1 class="text-4xl font-bold text-center py-3">
+                Andrea Cognolato
+            </h1>
+            <nav class="mb-3">
+                <ul class="flex flex-row flex-wrap justify-center gap-x-4">
+                    <li class="inline">
+                        <a
+                            class="no-underline hover:underline text-blue-500"
+                            href="https://github.com/mrandri19/"
+                            >github.com/mrandri19</a
+                        >
+                    </li>
+                    <li class="inline">
+                        <a
+                            class="no-underline hover:underline text-blue-500"
+                            href="/assets/pdf/AndreaCognolatoResume.pdf"
+                            >Resume</a
+                        >
+                    </li>
+                    <li class="inline">
+                        <a
+                            class="no-underline hover:underline text-blue-500"
+                            href="https://www.linkedin.com/in/andrea-cognolato"
+                            >LinkedIn</a
+                        >
+                    </li>
+                    <li class="inline">
+                        <a
+                            class="no-underline hover:underline text-blue-500"
+                            href="mailto:andrecogno@hotmail.it"
+                            >andrecogno@hotmail.it</a
+                        >
+                    </li>
+                    <li class="inline">
+                        <a
+                            class="no-underline hover:underline text-blue-500"
+                            href="blog"
+                            >Blog</a
+                        >
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section id="about_me">
+                <h2 class="text-2xl font-bold mb-2">About me</h2>
+                <p>
+                    I am a student and developer interested in machine learning,
+                    functional programming, compilers, and quantitative finance.
+                    I study Data Science and Engineering at Politecnico di
+                    Torino, but currently I am an exchange student in Aalto
+                    University in sunny Helsinki.
+                </p>
+                <h2 class="text-2xl font-bold">
+                    <a
+                        class="no-underline hover:underline text-blue-500"
+                        href="/assets/pdf/AndreaCognolatoResume.pdf"
+                        >Resume</a
+                    >
+                </h2>
+            </section>
+            <section id="projects">
+                <h2 class="text-2xl font-bold mb-2">Projects</h2>
+                <section>
+                    <h3 class="text-xl font-bold mb-1">2021</h3>
+                    <ul>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <a
+                                    href="/assets/pdf/BDA_Project.pdf"
+                                    class="w-1/4 lg:w-1/6 pr-2"
+                                >
+                                    <img src="./index-images/BDA_report.jpg" />
+                                </a>
+                                <div class="w-3/4 lg:w-5/6">
+                                    <p>
+                                        Built, for Aalto university's
+                                        <a
+                                            href="https://avehtari.github.io/BDA_course_Aalto/Aalto2021.html"
+                                            >Bayesian Data Analysis course</a
+                                        >, an hierchical model for time series
+                                        forecasting.
+                                    </p>
+                                    <p>
+                                        My teammate (Constantin Merbecks) and I,
+                                        reimplemented and extended
+                                        <a
+                                            href="https://facebook.github.io/prophet/"
+                                            >Facebook's Prophet</a
+                                        >
+                                        framework in R and Stan. On top of Stan,
+                                        we added a hierarchical structure to
+                                        improve predictive performance on a
+                                        sales forecasting task.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <p>
+                                Participated to Hacktoberfest 2021, mainly
+                                working on
+                                <a href="https://github.com/mindsdb/lightwood"
+                                    >mindsdb/lightwood</a
+                                >.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                In the summer, I was a software engineer intern
+                                at
+                                <a href="https://www.optiver.com/"
+                                    >Optiver Amsterdam</a
+                                >.
+                            </p>
+                        </li>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <a
+                                    href="/assets/pdf/MAML Report.pdf"
+                                    class="w-1/4 lg:w-1/6 pr-2"
+                                >
+                                    <img src="./index-images/MAML-report.jpg" />
+                                </a>
+                                <div class="w-3/4 lg:w-5/6">
+                                    <p>
+                                        Chose Hierarchical Bayesian Modeling as
+                                        the topic of the final project for my
+                                        Mathematics in Machine Learning course.
+                                    </p>
+                                    <p>
+                                        I replicated the
+                                        <code>stackloss</code> and
+                                        <code>alligators</code>
+                                        WinBUGS examples using JAGS and the R
+                                        language.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <p>
+                                Participated in the
+                                <a
+                                    href="https://competitions.codalab.org/competitions/27054"
+                                >
+                                    Twitter RecSys Challenge 2021
+                                </a>
+                                competition with MALTO.
+                            </p>
+                            <p>
+                                We ran our distributed training on an Apache
+                                Spark cluster. The inference was done inside a
+                                Docker container, shipping and embedded Spark
+                                environment.
+                            </p>
+                            <p>
+                                <a href="https://github.com/MAL-TO/recsys-2021"
+                                    >Link</a
+                                >
+                                to the code. Blog post coming soon!
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Participated in the
+                                <a
+                                    href="https://competitions.codalab.org/competitions/27054"
+                                >
+                                    SemEval-2021 Word-in-Context Disambiguation
+                                </a>
+                                competition with MALTO.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Made a
+                                <a
+                                    href="https://www.youtube.com/watch?v=O7KXJfrs2FA"
+                                >
+                                    video presentation
+                                </a>
+                                of the computer vision paper &quot;Unsupervised
+                                Representation Learning with DCGANs&quot; for my
+                                <a
+                                    href="https://didattica.polito.it/pls/portal30/gap.pkg_guide.viewGap?p_cod_ins=01TXFSM&p_a_acc=2021&p_header=S&p_lang=IT"
+                                >
+                                    deep learning course.
+                                </a>
+                            </p>
+                        </li>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <a
+                                    href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Stochastic_Optimization.pdf"
+                                    class="w-1/4 lg:w-1/6 pr-2"
+                                >
+                                    <img
+                                        src="./index-images/stochastic-optimization-report.jpg"
+                                    />
+                                </a>
+                                <a
+                                    href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Unconstrained_Optimization.pdf"
+                                    class="w-1/4 lg:w-1/6 pr-2"
+                                >
+                                    <img
+                                        src="./index-images/unconstrained-optimization-report.jpg"
+                                    />
+                                </a>
+                                <div class="w-2/4 lg:w-4/6">
+                                    <p>
+                                        Implemented several unconstrained and
+                                        constrained optimization algorithms in
+                                        Julia.
+                                    </p>
+                                    <p>
+                                        This was part of my homework for the
+                                        Numerical optimization for large scale
+                                        problems and Stochastic Optimization
+                                        course.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <a
+                                    href="https://github.com/mrandri19/polito2020-data-science-lab/blob/main/Final%20Project/DSL_Project_Report.pdf"
+                                    class="w-1/4 lg:w-1/6 pr-2"
+                                >
+                                    <img src="./index-images/dsl-report.jpg" />
+                                </a>
+                                <div class="w-3/4 lg:w-5/6">
+                                    <p>
+                                        Built, for my Data Science Lab exam, a
+                                        pipeline for predicting the quality of a
+                                        wine from its reviews.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <div class="pr-2 w-1/4 lg:w-1/6">
+                                    <img src="./index-images/raytracer.jpg" />
+                                </div>
+                                <div class="w-3/4 lg:w-5/6">
+                                    <p>
+                                        Wrote a
+                                        <a
+                                            href="https://gist.github.com/mrandri19/0c58e108bb3021132ad1487210d4b6ce#file-raytracer-jl"
+                                            >tiny raytracer in Julia</a
+                                        >, following Peter Shirley's Ray Tracing
+                                        in One Weekend
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote a Tensorflow-like
+                                <a
+                                    href="https://github.com/mrandri19/cpp-autodiff-experiments/blob/main/CHandle/CHandle.cpp#L302"
+                                    >computation graph framework in C++</a
+                                >
+                                with reverse-mode automatic-diferentiation
+                                support.
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3 class="text-xl font-bold mb-1">2020</h3>
+                    <ul>
+                        <li>
+                            <p>
+                                Joined my university's machine learning
+                                competition team: MALTO (MAchine Learning at
+                                poliTO)
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Started working on a
+                                <a
+                                    href="https://github.com/mrandri19/neural-networks-from-scratch-in-julia"
+                                    >Neural Network framework in Julia</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Graduated with 110/110 from Politecnico di
+                                Torino, earning a Bachelor's Degree in Computer
+                                Engineering.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Contributed to
+                                <a href="https://github.com/SciML/Surrogates.jl"
+                                    >Surrogates.jl</a
+                                >, a Julia package for surrogate modeling.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Started building a quadcopter from scratch,
+                                writing the PID control system in C using a
+                                ESP32-WROOM.
+                            </p>
+                        </li>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <div class="pr-2 w-1/4 lg:w-1/6">
+                                    <img src="./index-images/datathon.jpg" />
+                                </div>
+                                <div class="w-3/4 lg:w-5/6">
+                                    <p>
+                                        Competed in Citadel 2020 Data Open
+                                        Datathon, where my team used the
+                                        Synthetic Control technique to estimate
+                                        the effect of the 2012 London Summer
+                                        Olympics on the Growth Boroughs.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <p>
+                                Started working for Uffizio.ch as a Haskell and
+                                Purescript Software Engineer.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Helped to write
+                                <a
+                                    href="https://dl.acm.org/doi/abs/10.1145/3318464.3384710"
+                                    >X-PLAIN</a
+                                >, an interactive tool for inspection and
+                                interpretation of classifer predictions. This
+                                work was accepted in the Proceedings of the 2020
+                                ACM SIGMOD International Conference on
+                                Management of Data.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote
+                                <a
+                                    href="https://github.com/mrandri19/i2c_accelerometer_MMA7455L"
+                                    >a gui </a
+                                >for an accelerometer usign the ESP32-WROOM,
+                                esp-idf, and python.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Taught myself various automatic differentiation
+                                techniques and
+                                <a
+                                    href="https://github.com/mrandri19/automatic-differentiantion"
+                                    >implemented</a
+                                >
+                                them in python
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                <a
+                                    href="https://github.com/mrandri19/opengl-compute-shaders"
+                                    >Implemented various algorithms</a
+                                >
+                                from coursera's CS344 in modern OpenGL using
+                                compute shaders
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Started working through
+                                <a
+                                    href="http://jeapostrophe.github.io/courses/2019/spring/406/notes/book.pdf"
+                                    >Essentials of Compilation: An Incremental
+                                    Approact</a
+                                >
+                                and implementing it in Haskell.
+                                <a
+                                    href="https://github.com/mrandri19/Essentials-of-Compilation"
+                                    >The code</a
+                                >
+                            </p>
+                        </li>
 
-    nav>ul {
-      list-style-type: none;
-      text-decoration: none;
-    }
+                        <li>
+                            <p>
+                                Implemented the Discrete Fourier Transform (DFT)
+                                and Cooley-Tukey FFT algorithms.
+                                <a
+                                    href="https://gist.github.com/mrandri19/d0f2716ea221ea277377f0a987a63a92"
+                                    >The code</a
+                                >
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3 class="text-xl font-bold mb-1">2019</h3>
+                    <ul>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <div class="w-1/4 lg:w-1/6 pr-2">
+                                    <img src="./index-images/voxels.jpg" />
+                                </div>
+                                <div class="w-3/4 lg:w-5/6">
+                                    <p>
+                                        Implemented a voxel engine in modern
+                                        OpenGL (4.5).
+                                        <a
+                                            href="https://github.com/mrandri19/voxel"
+                                            >The code</a
+                                        >
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="flex flex-row flex-wrap">
+                                <div class="w-1/4 lg:w-1/6 pr-2">
+                                    <img src="./index-images/druid.jpg" />
+                                </div>
+                                <div class="w-3/4 lg:w-5/6">
+                                    <p>
+                                        Contributed to the
+                                        <a
+                                            href="https://github.com/xi-editor/druid/pull/152"
+                                            >Linux</a
+                                        >
+                                        <a
+                                            href="https://github.com/xi-editor/druid/pull/211"
+                                            >port</a
+                                        >
+                                        of the druid ui toolkit.
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <p>
+                                Attended Campus Party Italy 2019 and
+                                partecipated to Eni and Illimity Hackatons
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote a series of blog posts on text rendering
+                                which routinely got on the front page of Hacker
+                                News and reddit programming. These posts were
+                                read by more than 10,000 unique visitors.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote a tool to convert Notability's .notability
+                                notes into SVG files.
+                            </p>
+                            <p>
+                                I initially
+                                <a
+                                    href="https://github.com/mrandri19/notability2svg-python"
+                                    >wrote it in Python</a
+                                >, then optimized it until I was satisfied with
+                                its performance, and then
+                                <a
+                                    href="https://github.com/mrandri19/notability2svg-rust"
+                                    >rewrote it in Rust</a
+                                >
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote
+                                <a
+                                    href="https://github.com/mrandri19/AlgoritmiEProgrammazionePolito20182019"
+                                    >several thousand lines of C</a
+                                >
+                                for my Data Structures and Algorithms course.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote
+                                <a
+                                    href="https://github.com/mrandri19/Wand87-A-Simple-Algorithm-and-Proof-for-Type-Inference"
+                                    >an OCaml implementation</a
+                                >
+                                of Mitchell Wand's 1987 paper: "A Simple
+                                Algorithm and Proof for Type Inference".
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3 class="text-xl font-bold mb-1">2018</h3>
+                    <ul>
+                        <li>
+                            <p>
+                                (Unfinished) Wrote
+                                <a
+                                    href="https://mrandri19.github.io/react-parser-viz/"
+                                    >react-parser-viz</a
+                                >: a react based web application to visualize
+                                how a recursive descent parser works.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Implemented
+                                <a href="https://github.com/mrandri19/test-lang"
+                                    >test-lang</a
+                                >: a programming language based on lambda
+                                calculus in both Ocaml and Haskell.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Worked as a freelancer on Upwork.com
+                                <a
+                                    href="https://www.upwork.com/o/profiles/users/_~018ea18d1e57db6ffa/"
+                                    >(my profile)</a
+                                >
+                            </p>
+                            <p>
+                                A large section of my work consisted in working
+                                with cryptocurrencies and porting software such
+                                as blockchain explorers and mining pools to new
+                                currencies, ensuring that the compatibility
+                                issues between implementations were fixed.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Contributed to
+                                <a href="https://github.com/facebook/reason">
+                                    facebook/reason</a
+                                >.
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3 class="text-xl font-bold mb-1">2017</h3>
+                    <ul>
+                        <li>
+                            <p>
+                                Wrote
+                                <a href="https://github.com/mrandri19/channed"
+                                    >channed</a
+                                >: an small 4chan client built with ReactJS.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote
+                                <a
+                                    href="https://github.com/mrandri19/rust-editorconfig"
+                                    >rust-editorconfig</a
+                                >: a Rust library which implemented the
+                                editorconfig file format for text editor
+                                plugins.
+                            </p>
+                        </li>
 
-    nav>ul>li:not(:last-child):after {
-      content: "\00a0 \00a0 /";
-    }
+                        <li>
+                            <p>
+                                Tinkered with the ESP8266 and wrote a
+                                <a
+                                    href="https://github.com/mrandri19/cWebsocketLed"
+                                    >custom web UI</a
+                                >
+                                to control my IKEA led strips.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Competed at regional level in flatwater
+                                kayaking.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Read
+                                <a
+                                    href="http://neuralnetworksanddeeplearning.com/index.html"
+                                    >neuralnetworksanddeeplearning.com</a
+                                >
+                                and implemented my neural network to learn on
+                                the MNIST digit dataset in numpy+pandas and
+                                Tensorflow.
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3 class="text-xl font-bold mb-1">2016</h3>
+                    <ul>
+                        <li>
+                            <p>Wrote an online shopping list for my family.</p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote a
+                                <a
+                                    href="https://github.com/mrandri19/crawler_latino"
+                                >
+                                    crawler
+                                </a>
+                                in F# for the latin dictionary
+                                www.dizionario-latino.com.
+                            </p>
+                        </li>
 
-    nav>ul>li {
-      padding: 0.5rem;
-      padding-top: 0;
-      display: inline-block;
-    }
-
-    img {
-      width: 9rem;
-      float: left;
-      box-shadow: 2px 2px 6px 0px #00000047;
-      margin-right: 1rem;
-    }
-
-    @media only screen and (max-width: 600px) {
-      img {
-        margin-bottom: 1rem;
-      }
-    }
-  </style>
-
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBTQYT7Z06"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-FBTQYT7Z06');
-  </script>
-</head>
-
-<body>
-  <header>
-    <h1>Andrea Cognolato</h1>
-    <nav>
-      <ul>
-        <li>
-          <a href="https://github.com/mrandri19/">github.com/mrandri19</a>
-        </li>
-        <li><a href="/assets/pdf/AndreaCognolatoResume.pdf">Resume</a></li>
-        <li>
-          <a href="https://www.linkedin.com/in/andrea-cognolato">LinkedIn</a>
-        </li>
-        <li>
-          <a href="mailto:andrecogno@hotmail.it">andrecogno@hotmail.it</a>
-        </li>
-        <li><a href="blog">Blog</a></li>
-      </ul>
-    </nav>
-  </header>
-  <main>
-    <section>
-      <h2>About me</h2>
-      <p>
-        I am a student and developer interested in machine
-        learning, functional programming, compilers, and quantitative finance. I am
-        studying
-        Data Science and Engineering at Politecnico di Torino, but currently I am
-        in Aalto University in sunny (lol) Helsinki.
-      </p>
-    </section>
-    <section>
-      <h2>
-        <a href="/assets/pdf/AndreaCognolatoResume.pdf">
-          Resume
-        </a>
-      </h2>
-    </section>
-    <section>
-      <h2>Projects</h2>
-      <section>
-        <h3>2021</h3>
-        <ul>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem">
-              <a
-                href="/assets/pdf/BDA_presentation.pdf">
-                <img src="./index-images/BDA-presentation.jpg" style="width: 19rem;">
-              </a>
-              <a
-                href="/assets/pdf/BDA_Project.pdf">
-                <img src="./index-images/BDA_report.jpg">
-              </a>
-              <p>
-                Build, for Aalto university's
-                <a href="https://avehtari.github.io/BDA_course_Aalto/Aalto2021.html">Bayesian Data Analysis course</a>,
-                an hierchical model for time series forecasting.
-              </p>
-              <p>
-                My teammate (Constantin Merbecks) and I, reimplemented and extended
-                <a href="https://facebook.github.io/prophet/">Facebook's Prophet</a>
-                framework in R and Stan. On top of Stan, we added a hierarchical
-                structure to improve predictive performance on a sales forecasting task.
-              </p>
-            </div>
-          </li>
-          <li>
-            <p>
-              Participated to Hacktoberfest 2021, mainly working on <a href="https://github.com/mindsdb/lightwood">mindsdb/lightwood</a>.
-            </p>
-          </li>
-          <li>
-            <p>
-              In the summer, I was a software engineer intern at <a href="https://www.optiver.com/">Optiver Amsterdam</a>.
-            </p>
-          </li>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem">
-              <a
-                href="/assets/pdf/MAML Tesina.pdf">
-                <img src="./index-images/MAML-tesina.jpg" style="width: 19rem;">
-              </a>
-              <a
-                href="/assets/pdf/MAML Report.pdf">
-                <img src="./index-images/MAML-report.jpg">
-              </a>
-              <p>
-                Chose Hierarchical Bayesian Modeling as the topic of the final project
-                for my Mathematics in Machine Learning course.
-              </p>
-              <p>
-                I replicated the <code>stackloss</code> and <code>alligators</code>
-                WinBUGS examples using JAGS and the R language.
-              </p>
-            </div>
-          </li>
-          <li>
-            <p>
-              Participated in the
-              <a href="https://competitions.codalab.org/competitions/27054">
-                 Twitter RecSys Challenge 2021
-              </a>
-              competition with MALTO.
-            </p>
-            <p>
-              We ran our distributed training on an Apache Spark cluster.
-              The inference was done inside a Docker container, shipping
-              and embedded Spark environment.
-            </p><p>
-              <a href="https://github.com/MAL-TO/recsys-2021">Link</a> to the code.
-              Blog post coming soon!
-            </p>
-          </li>
-          <li>
-            <p>
-              Participated in the
-              <a href="https://competitions.codalab.org/competitions/27054">
-                 SemEval-2021 Word-in-Context Disambiguation
-              </a>
-              competition with MALTO.
-            </p>
-          </li>
-          <li>
-            <p>
-              Made a
-              <a href="https://www.youtube.com/watch?v=O7KXJfrs2FA">
-                 video presentation
-              </a>
-              of the computer vision paper &quot;Unsupervised Representation Learning with DCGANs&quot; for my
-              <a href="https://didattica.polito.it/pls/portal30/gap.pkg_guide.viewGap?p_cod_ins=01TXFSM&p_a_acc=2021&p_header=S&p_lang=IT">
-                deep learning course.
-              </a>
-            </p>
-          </li>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem;">
-              <a
-                href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Stochastic_Optimization.pdf">
-                <img src="./index-images/stochastic-optimization-report.jpg">
-              </a>
-              <a
-                href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Unconstrained_Optimization.pdf">
-                <img src="./index-images/unconstrained-optimization-report.jpg">
-              </a>
-              <p>
-                Implemented several unconstrained and constrained optimization algorithms
-                in
-                Julia.
-              </p>
-              <p>
-                This was part of my homework for the Numerical optimization for large
-                scale
-                problems and Stochastic Optimization course.
-              </p>
-            </div>
-          </li>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem;">
-              <a
-                href="https://github.com/mrandri19/polito2020-data-science-lab/blob/main/Final%20Project/DSL_Project_Report.pdf">
-                <img src="./index-images/dsl-report.jpg">
-              </a>
-              <p>Built, for my Data Science Lab exam, a pipeline for predicting the
-                quality
-                of a wine from its reviews.</p>
-            </div>
-          </li>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem;">
-              <img src="./index-images/raytracer.jpg">
-              <p>
-                Wrote a <a
-                  href="https://gist.github.com/mrandri19/0c58e108bb3021132ad1487210d4b6ce#file-raytracer-jl">tiny
-                  raytracer in Julia</a>, following Peter Shirley's Ray Tracing in One
-                Weekend
-              </p>
-            </div>
-          </li>
-          <li>
-            <p>
-              Wrote a Tensorflow-like <a
-                href="https://github.com/mrandri19/cpp-autodiff-experiments/blob/main/CHandle/CHandle.cpp#L302">computation
-                graph framework in C++</a> with reverse-mode automatic-diferentiation
-              support.
-            </p>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>2020</h3>
-        <ul>
-          <li>
-            <p>
-              Joined my university's machine learning competition team: MALTO (MAchine
-              Learning at poliTO)
-            </p>
-          </li>
-          <li>
-            <p>
-              Started working on a <a href="https://github.com/mrandri19/neural-networks-from-scratch-in-julia">Neural Network framework in Julia</a>
-            </p>
-          </li>
-          <li>
-            <p>
-              Graduated with 110/110 from Politecnico di Torino, earning a Bachelor's
-              Degree
-              in Computer Engineering.
-            </p>
-          </li>
-          <li>
-            <p>
-              Contributed to <a
-                href="https://github.com/SciML/Surrogates.jl">Surrogates.jl</a>, a Julia
-              package for surrogate modeling.
-            </p>
-          </li>
-          <li>
-            <p>
-              Started building a quadcopter from scratch, writing the PID control system
-              in
-              C using a ESP32-WROOM.
-            </p>
-          </li>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem;">
-              <img src="./index-images/datathon.jpg" alt="">
-              <p>
-                Competed in Citadel 2020 Data Open Datathon, where my team used the
-                Synthetic
-                Control technique
-                to estimate the effect of the 2012 London Summer Olympics on the Growth
-                Boroughs.
-              </p>
-            </div>
-          </li>
-          <li>
-            <p>
-              Started working for Uffizio.ch as a Haskell and Purescript Software
-              Engineer.
-            </p>
-          </li>
-          <li>
-            <p>Helped to write <a
-                href="https://dl.acm.org/doi/abs/10.1145/3318464.3384710">X-PLAIN</a>,
-              an interactive tool for inspection and interpretation of classifer
-              predictions. This work
-              was accepted in the Proceedings of the 2020 ACM SIGMOD International
-              Conference on Management
-              of Data.
-            </p>
-          </li>
-          <li>
-            <p>Wrote <a href="https://github.com/mrandri19/i2c_accelerometer_MMA7455L">a
-                gui </a>for an accelerometer usign the ESP32-WROOM, esp-idf, and python.
-            </p>
-          </li>
-          <li>
-            <p>Taught myself various automatic differentiation techniques and <a
-                href="https://github.com/mrandri19/automatic-differentiantion">implemented</a>
-              them in python</p>
-          </li>
-          <li>
-            <p><a href="https://github.com/mrandri19/opengl-compute-shaders">Implemented
-                various algorithms</a> from coursera's CS344 in modern OpenGL using
-              compute shaders</p>
-          </li>
-          <li>
-            <p>Started working through <a
-                href="http://jeapostrophe.github.io/courses/2019/spring/406/notes/book.pdf">Essentials
-                of Compilation: An Incremental Approact</a> and implementing it in
-              Haskell.
-              <a href="https://github.com/mrandri19/Essentials-of-Compilation">The
-                code</a>
-            </p>
-          <li>
-            <p>Implemented the Discrete Fourier Transform (DFT) and Cooley-Tukey FFT
-              algorithms.
-              <a
-                href="https://gist.github.com/mrandri19/d0f2716ea221ea277377f0a987a63a92">The
-                code</a>
-            </p>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>2019</h3>
-        <ul>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem;">
-              <img src="./index-images/voxels.jpg" alt="">
-              <p>Implemented a voxel engine in modern OpenGL (4.5). <a
-                  href="https://github.com/mrandri19/voxel">The code</a></p>
-            </div>
-          </li>
-          <li>
-            <div style="overflow: auto; padding: 0.5rem;">
-              <img src="./index-images/druid.jpg" alt="">
-              <p>Contributed to the <a
-                  href="https://github.com/xi-editor/druid/pull/152">Linux</a> <a
-                  href="https://github.com/xi-editor/druid/pull/211">port</a> of the
-                druid ui toolkit.</p>
-            </div>
-          </li>
-          <li>
-            <p>Attended Campus Party Italy 2019 and partecipated to Eni and Illimity
-              Hackatons</p>
-          </li>
-          <li>
-            <p>Wrote a series of blog posts on text rendering which routinely got on the
-              front page of Hacker News and reddit programming. These posts were read by
-              more
-              than 10,000 unique visitors.</p>
-          </li>
-          <li>
-            <p>
-              Wrote a tool to convert Notability's .notability notes into SVG
-              files.
-            </p>
-            <p>
-              I initially
-              <a href="https://github.com/mrandri19/notability2svg-python">wrote it in
-                Python</a>, then optimized it until I was satisfied with its performance,
-              and then
-              <a href="https://github.com/mrandri19/notability2svg-rust">rewrote it in
-                Rust</a>
-            </p>
-          </li>
-          <li>
-            <p>
-              Wrote
-              <a
-                href="https://github.com/mrandri19/AlgoritmiEProgrammazionePolito20182019">several
-                thousand lines of C</a>
-              for my Data Structures and Algorithms course.
-            </p>
-          </li>
-          <li>
-            <p>
-              Wrote
-              <a
-                href="https://github.com/mrandri19/Wand87-A-Simple-Algorithm-and-Proof-for-Type-Inference">an
-                OCaml implementation</a>
-              of Mitchell Wand's 1987 paper: "A Simple Algorithm and Proof for
-              Type Inference".
-            </p>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>2018</h3>
-        <ul>
-          <li>
-            <p>
-              (Unfinished) Wrote
-              <a
-                href="https://mrandri19.github.io/react-parser-viz/">react-parser-viz</a>:
-              a react based web application to visualize how a recursive
-              descent parser works.
-            </p>
-          </li>
-          <li>
-            <p>
-              Implemented
-              <a href="https://github.com/mrandri19/test-lang">test-lang</a>:
-              a programming language based on lambda calculus in both Ocaml
-              and Haskell.
-            </p>
-          </li>
-          <li>
-            <p>
-              Worked as a freelancer on Upwork.com
-              <a href="https://www.upwork.com/o/profiles/users/_~018ea18d1e57db6ffa/">(my
-                profile)</a>
-            </p>
-            <p>
-              A large section of my work consisted in working with
-              cryptocurrencies and porting software such as blockchain
-              explorers and mining pools to new currencies, ensuring that the
-              compatibility issues between implementations were fixed.
-            </p>
-          </li>
-          <li>
-            <p>
-              Contributed to
-              <a href="https://github.com/facebook/reason"> facebook/reason</a>.
-            </p>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>2017</h3>
-        <ul>
-          <li>
-            <p>
-              Wrote
-              <a href="https://github.com/mrandri19/channed">channed</a>: an
-              small 4chan client built with ReactJS.
-            </p>
-          </li>
-          <li>
-            <p>
-              Wrote
-              <a
-                href="https://github.com/mrandri19/rust-editorconfig">rust-editorconfig</a>:
-              a Rust library which implemented the editorconfig file format
-              for text editor plugins.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              Tinkered with the ESP8266 and wrote a
-              <a href="https://github.com/mrandri19/cWebsocketLed">custom web UI</a>
-              to control my IKEA led strips.
-            </p>
-          </li>
-          <li>
-            <p>Competed at regional level in flatwater kayaking.</p>
-          </li>
-          <li>
-            <p>
-              Read
-              <a
-                href="http://neuralnetworksanddeeplearning.com/index.html">neuralnetworksanddeeplearning.com</a>
-              and implemented my neural network to learn on the MNIST digit
-              dataset in numpy+pandas and Tensorflow.
-            </p>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>2016</h3>
-        <ul>
-          <li>
-            <p>Wrote an online shopping list for my family.</p>
-          </li>
-          <li>
-            <p>
-              Wrote a
-              <a href="https://github.com/mrandri19/crawler_latino">
-                crawler
-              </a>
-              in F# for the latin dictionary www.dizionario-latino.com.
-            </p>
-          </li>
-
-          <li>
-            <p>
-              Wrote for a friend
-              <a href="https://github.com/mrandri19/magicBot">magicBot</a>: a
-              python crawler with a web UI which parsed an online market of
-              Magic: The Gathering cards to show the average price of a card
-              between various editions.
-            </p>
-          </li>
-          <li>
-            <p>
-              Tinkered with elm and wrote a
-              <a href="https://github.com/mrandri19/elm-remote-api-data">simple web
-                app</a>
-              to show data from a local api.
-            </p>
-          </li>
-          <li>
-            <p>
-              Competed at regional level in flatwater
-              <a href="https://www.youtube.com/watch?v=8U0U-GijrOU"
-                onclick="alert('You provably dont wanna see this, I wonder if you will be my next employer.')">kayaking</a>.
-            </p>
-          </li>
-          <li>
-            <p>
-              Read
-              <a href="http://book.realworldhaskell.org/">Real World Haskell</a>
-              and
-              <a href="https://realworldocaml.org/">Real World OCaml</a> which
-              sparked my interest in functional programming and compilers.
-            </p>
-          </li>
-        </ul>
-      </section>
-      <section>
-        <h3>2015</h3>
-        <ul>
-          <li>
-            <p>
-              Wrote
-              <a
-                href="https://github.com/mrandri19/xresthemechanger">xresthemechanger</a>:
-              a python script to change the <code>.Xresources</code> color
-              theme.
-            </p>
-          </li>
-          <li>
-            <p>
-              Wrote a
-              <a href="https://github.com/mrandri19/tinyCserver">tiny TPC server</a>
-              in C using the unix system calls.
-            </p>
-          </li>
-          <li>
-            <p>
-              Wrote
-              <a href="https://github.com/mrandri19/Drinkcraft">Drinkcraft</a>: a simple
-              Minecraft mod in Java.
-            </p>
-          </li>
-          <li>
-            <p>Switched to Archlinux and installed and configured it.</p>
-          </li>
-          <li>
-            <p>
-              Won my school's Informatics Olympiad and competed in the
-              regional selections.
-            </p>
-          </li>
-          <li>
-            <p>
-              Won, along with two other students, the science fair with a
-              project on the effects of exposure to non ionizing radiations.
-            </p>
-          </li>
-        </ul>
-      </section>
-    </section>
-  </main>
-</body>
-
+                        <li>
+                            <p>
+                                Wrote for a friend
+                                <a href="https://github.com/mrandri19/magicBot"
+                                    >magicBot</a
+                                >: a python crawler with a web UI which parsed
+                                an online market of Magic: The Gathering cards
+                                to show the average price of a card between
+                                various editions.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Tinkered with elm and wrote a
+                                <a
+                                    href="https://github.com/mrandri19/elm-remote-api-data"
+                                    >simple web app</a
+                                >
+                                to show data from a local api.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Competed at regional level in flatwater
+                                <a
+                                    href="https://www.youtube.com/watch?v=8U0U-GijrOU"
+                                    onclick="alert('You provably dont wanna see this, I wonder if you will be my next employer.')"
+                                    >kayaking</a
+                                >.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Read
+                                <a href="http://book.realworldhaskell.org/"
+                                    >Real World Haskell</a
+                                >
+                                and
+                                <a href="https://realworldocaml.org/"
+                                    >Real World OCaml</a
+                                >
+                                which sparked my interest in functional
+                                programming and compilers.
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+                <section>
+                    <h3 class="text-xl font-bold mb-1">2015</h3>
+                    <ul>
+                        <li>
+                            <p>
+                                Wrote
+                                <a
+                                    href="https://github.com/mrandri19/xresthemechanger"
+                                    >xresthemechanger</a
+                                >: a python script to change the
+                                <code>.Xresources</code> color theme.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote a
+                                <a
+                                    href="https://github.com/mrandri19/tinyCserver"
+                                    >tiny TPC server</a
+                                >
+                                in C using the unix system calls.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Wrote
+                                <a
+                                    href="https://github.com/mrandri19/Drinkcraft"
+                                    >Drinkcraft</a
+                                >: a simple Minecraft mod in Java.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Switched to Archlinux and installed and
+                                configured it.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Won my school's Informatics Olympiad and
+                                competed in the regional selections.
+                            </p>
+                        </li>
+                        <li>
+                            <p>
+                                Won, along with two other students, the science
+                                fair with a project on the effects of exposure
+                                to non ionizing radiations.
+                            </p>
+                        </li>
+                    </ul>
+                </section>
+            </section>
+        </main>
+    </body>
 </html>

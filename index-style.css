@@ -1,0 +1,29 @@
+@font-face {
+    font-family: "Source Sans Pro";
+    src: url("./Source_Sans_Pro/SourceSansPro-Regular.ttf");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Source Sans Pro";
+    src: url("./Source_Sans_Pro/SourceSansPro-Bold.ttf");
+    font-weight: bold;
+    font-style: normal;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+main ul li {
+    @apply mb-5;
+}
+
+main ul a {
+    @apply no-underline hover:underline text-blue-500;
+}
+
+main ul img {
+    @apply shadow-md;
+}
