@@ -513,6 +513,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   display: flex;
 }
 
+.h-4 {
+  height: 1rem;
+}
+
 .w-1\/4 {
   width: 25%;
 }
@@ -523,6 +527,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .w-2\/4 {
   width: 50%;
+}
+
+.w-4 {
+  width: 1rem;
 }
 
 .max-w-screen-lg {
@@ -549,6 +557,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.fill-blue-500 {
+  fill: #3b82f6;
 }
 
 .px-4 {
@@ -643,6 +655,10 @@ main ul img {
   .dark\:bg-gray-900 {
     --tw-bg-opacity: 1;
     background-color: rgb(17 24 39 / var(--tw-bg-opacity));
+  }
+
+  .dark\:fill-blue-500 {
+    fill: #3b82f6;
   }
 
   .dark\:text-white {
