@@ -1,7 +1,5 @@
 title: Home
 email: andrecogno@hotmail.it
-description: >- # this means to ignore newlines until "baseurl:"
-  My technical ramblings, come have a look.
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://mrandri19.github.io"
 github_username: mrandri19
