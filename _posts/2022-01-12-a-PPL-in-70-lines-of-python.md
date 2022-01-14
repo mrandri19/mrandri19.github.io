@@ -52,7 +52,7 @@ Python.
 
 The book
 ["The Design and Implementation of Probabilistic Programming Languages"](http://dippl.org/)
-is focused on programming language theory, requiring familiary with
+is focused on programming language theory, requiring familiarity with
 continuation-passing style and coroutines, as well as using JavaScript as their
 implementation language.
 The blog post
@@ -143,7 +143,7 @@ class Normal(Distribution):
 ### Variables and DAGs
 
 Let us now focus our attention on variables.
-Three aspects characterise them: they have an associated distribution,
+Three aspects characterize them: they have an associated distribution,
 they can be latent or observed, and they are linked to one another (i.e they
 can have children).
 
@@ -223,7 +223,7 @@ print(y_bar.dist_args)
 
 ### Evaluating the log density
 
-We are almost done, the missing piece is way to evaluate the joing log-density
+We are almost done, the missing piece is way to evaluate the joint log-density
 using our DAG.
 To do it we need to traverse the DAG, and add together the log-densities of each
 variable.
@@ -274,7 +274,7 @@ Notice how `ObservedVariable`s cannot be arguments, they can only be roots.
 
 Finally, with the distribution's parameters extracted from the arguments, we
 can update the total log density.
-`LatentVariable`s need to evaluate the log density at the point specfied in
+`LatentVariable`s need to evaluate the log density at the point specified in
 `latent_values` while `ObservedValues` evaluate the log density at the point
 specified in `observed`.
 
