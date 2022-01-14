@@ -89,9 +89,9 @@ graphical models and directed factor graphs.
 <figure>
 <div style="display: flex;flex-direction: row;flex-wrap: nowrap;align-content: flex-start;justify-content: space-evenly;align-items: center;">
   <img src="/assets/images/a-PPL-in-70-lines-of-python/probabilistic-graphical-model.png"
-  style="width: 3.9rem"/>
+  style="width: 3.9rem; min-width: 0;"/>
   <img src="/assets/images/a-PPL-in-70-lines-of-python/directed-factor-graph.png"
-  style="width: 10rem"/>
+  style="width: 10rem; min-width: 0;"/>
 </div>
 <figcaption style="text-align: center; margin-top: 1rem;">
 Left: model drawn as a probabilistic graphical model (PGM).
@@ -195,9 +195,9 @@ representation for computing the joint log density.
 <figure>
 <div style="display: flex;flex-direction: row;flex-wrap: nowrap;align-content: flex-start;justify-content: space-evenly;align-items: center;">
   <img src="/assets/images/a-PPL-in-70-lines-of-python/directed-factor-graph.png"
-  style="width: 10rem"/>
+  style="width: 10rem; min-width: 0;"/>
   <img src="/assets/images/a-PPL-in-70-lines-of-python/DAG.svg"
-  style="width: 16rem"/>
+  style="width: 16rem; min-width: 0;"/>
 </div>
 <figcaption style="text-align: center; margin-top: 1rem;">
 Left: model drawn as a directed factor graph.
@@ -358,7 +358,7 @@ display: flex;
 
 <script>
 (function(vegaEmbed) {
-          var spec = {"config": {"view": {"continuousWidth": 400, "continuousHeight": 300}, "axis": {"labelFontSize": 16, "titleFontSize": 16}}, "data": {"name": "data-2a00cc4b505d4c82994537b3cc056b7e"}, "mark": {"type": "line", "point": true}, "encoding": {"x": {"axis": {"title": "mu"}, "field": "grid", "type": "quantitative"}, "y": {"axis": {"title": "log density"}, "field": "evaluations", "type": "quantitative"}}, "selection": {"selector005": {"type": "interval", "bind": "scales", "encodings": ["x", "y"]}}, "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json", "datasets": {"data-2a00cc4b505d4c82994537b3cc056b7e": [{"grid": -4.0, "evaluations": -18.892314978843448}, {"grid": -3.5789473684210527, "evaluations": -16.601345449757574}, {"grid": -3.1578947368421053, "evaluations": -14.494752651973638}, {"grid": -2.736842105263158, "evaluations": -12.572536585491644}, {"grid": -2.3157894736842106, "evaluations": -10.834697250311589}, {"grid": -1.8947368421052633, "evaluations": -9.281234646433475}, {"grid": -1.473684210526316, "evaluations": -7.912148773857297}, {"grid": -1.0526315789473686, "evaluations": -6.727439632583058}, {"grid": -0.6315789473684212, "evaluations": -5.727107222610759}, {"grid": -0.2105263157894739, "evaluations": -4.911151543940399}, {"grid": 0.21052631578947345, "evaluations": -4.2795725965719775}, {"grid": 0.6315789473684212, "evaluations": -3.8323703805054956}, {"grid": 1.0526315789473681, "evaluations": -3.5695448957409526}, {"grid": 1.473684210526315, "evaluations": -3.491096142278349}, {"grid": 1.8947368421052628, "evaluations": -3.5970241201176836}, {"grid": 2.3157894736842106, "evaluations": -3.887328829258958}, {"grid": 2.7368421052631575, "evaluations": -4.362010269702171}, {"grid": 3.1578947368421044, "evaluations": -5.021068441447322}, {"grid": 3.578947368421052, "evaluations": -5.864503344494414}, {"grid": 4.0, "evaluations": -6.892314978843445}]}};var embedOpt = {"mode": "vega-lite"};
+          var spec = {"config": {"view": {"continuousWidth": 240, "continuousHeight": 180}, "axis": {"labelFontSize": 16, "titleFontSize": 16}}, "data": {"name": "data-2a00cc4b505d4c82994537b3cc056b7e"}, "mark": {"type": "line", "point": true}, "encoding": {"x": {"axis": {"title": "mu"}, "field": "grid", "type": "quantitative"}, "y": {"axis": {"title": "log density"}, "field": "evaluations", "type": "quantitative"}}, "selection": {"selector005": {"type": "interval", "bind": "scales", "encodings": ["x", "y"]}}, "$schema": "https://vega.github.io/schema/vega-lite/v4.17.0.json", "datasets": {"data-2a00cc4b505d4c82994537b3cc056b7e": [{"grid": -4.0, "evaluations": -18.892314978843448}, {"grid": -3.5789473684210527, "evaluations": -16.601345449757574}, {"grid": -3.1578947368421053, "evaluations": -14.494752651973638}, {"grid": -2.736842105263158, "evaluations": -12.572536585491644}, {"grid": -2.3157894736842106, "evaluations": -10.834697250311589}, {"grid": -1.8947368421052633, "evaluations": -9.281234646433475}, {"grid": -1.473684210526316, "evaluations": -7.912148773857297}, {"grid": -1.0526315789473686, "evaluations": -6.727439632583058}, {"grid": -0.6315789473684212, "evaluations": -5.727107222610759}, {"grid": -0.2105263157894739, "evaluations": -4.911151543940399}, {"grid": 0.21052631578947345, "evaluations": -4.2795725965719775}, {"grid": 0.6315789473684212, "evaluations": -3.8323703805054956}, {"grid": 1.0526315789473681, "evaluations": -3.5695448957409526}, {"grid": 1.473684210526315, "evaluations": -3.491096142278349}, {"grid": 1.8947368421052628, "evaluations": -3.5970241201176836}, {"grid": 2.3157894736842106, "evaluations": -3.887328829258958}, {"grid": 2.7368421052631575, "evaluations": -4.362010269702171}, {"grid": 3.1578947368421044, "evaluations": -5.021068441447322}, {"grid": 3.578947368421052, "evaluations": -5.864503344494414}, {"grid": 4.0, "evaluations": -6.892314978843445}]}};var embedOpt = {"mode": "vega-lite"};
 
     function showError(el, error){
         el.innerHTML = ('<div class="error" style="color:red;">'
