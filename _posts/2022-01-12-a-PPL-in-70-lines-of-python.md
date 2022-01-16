@@ -155,14 +155,14 @@ We differentiate latent from observed variables using the classes
 `LatentVariable` and `ObservedVariable`.
 Observed variables have an `observed` field with the observed value.
 Since latent variables do not have a value at model-specification time, we will
-have to give them a value at runtime, while sampling from the posterior.
-To specify the runtime value of latent variables we use a unique identifier
-`name`.
+have to give them a value at runtime, while evaluating the full log density.
+To specify the runtime value of latent variables we use need to identify them
+with a unique string `name`.
 
 Finally, we can make the parameters of a variable's distribution be variables or
 constants.
 In our example, the mean of $$ \bar y $$ is $$ \mu $$ a Normal random variable,
-while its standard deviation it just the constant $$ 1 $$.
+while its standard deviation is the constant $$ 1 $$.
 To represent this we use the `dist_args` property.
 The [mypy](https://mypy.readthedocs.io/) signature of `dist_args` is
 `dist_args: Union[float, LatentVariable, ObservedVariable]`.
@@ -223,7 +223,7 @@ print(y_bar.dist_args)
 
 ### Evaluating the log density
 
-We are almost done, the missing piece is way to evaluate the joint log-density
+We are almost done, the missing piece is a way to evaluate the joint log-density
 using our DAG.
 To do it we need to traverse the DAG, and add together the log-densities of each
 variable.
@@ -335,8 +335,8 @@ for advanced samplers like Hamiltonian Monte Carlo.
 ## Bonus: posterior grid approximation
 
 We have not talked about what the log density is useful for.
-One example would be to find the mode of the posterior distribution, the most
-likely value being the mode.
+One example would be to find the mode of the posterior distribution, i.e.
+finding the most likely value for our parameters.
 
 In this case the observed sample mean is $$1.5$$, which will be moved a little
 towards $$0$$ by the Normal zero-mean prior. This means that the Maximum A
