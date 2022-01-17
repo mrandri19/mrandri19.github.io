@@ -12,6 +12,8 @@ title: "A probabilistic programming language in 70 lines of Python"
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
     onload="renderMathInElement(document.body);"></script>
 
+> Full code available at [github.com/mrandri19/smolppl](https://github.com/mrandri19/smolppl)
+
 ## Introduction
 
 In this post I will explain how Probabilistic Programming Languages
@@ -65,6 +67,9 @@ and
 [PyMC3's Developer guide](https://docs.pymc.io/en/v3/developer_guide.html)
 describe in detail the implementation details of PyMC, but it is not
 straightforward to implement a PPL just based on those.
+
+Update: another great overview is [chapter 10 of Bayesian Modeling and
+Computation in Python](https://bayesiancomputationbook.com/markdown/chp_10.html).
 
 ## Implementation
 
