@@ -16,10 +16,9 @@ title: "Predictive sampling and graph traversals"
 > ["A probabilistic programming language in 70 lines of Python"](https://mrandri19.github.io/2022/01/12/a-PPL-in-70-lines-of-python.html),
 > the implementation depends on the features we implemented in the previous post.
 
-## Introduction
+> Full code available at [github.com/mrandri19/smolppl/tree/sampling](https://github.com/mrandri19/smolppl/tree/sampling)
 
-> TODO(Andrea): EDIT!⚒, I feel like the introduction/related works is too long,
-> and in general there is repetition everywhere.
+## Introduction
 
 _Sampling_ is the act of drawing random values from a probability
 distribution.
@@ -188,26 +187,13 @@ The blue, bold numbers represent the order in which the nodes where visited.
 </figcaption>
 </figure>
 
-### Implementation
+## Implementation
 
 After all this theory, let's now get to the fun part, the implementation.
 
 > ### TODO(Andrea): finish
 
-- Extending `Distribution`
-
-- `prior_sample`
-
-  - `DFS`
-
-- `posterior_sample`
-
-- Conclusion
-  - TODO(Andrea): write
-
----
-
-<br>
+### Distributions
 
 ```python
 class Distribution:
@@ -225,6 +211,10 @@ class Normal(Distribution):
     def sample(params):
         return float(norm.rvs(loc=params[0], scale=params[1]))
 ```
+
+### Sampling from the prior
+
+#### Post-order traversal
 
 ```python
 def prior_sample(root):
@@ -261,6 +251,8 @@ def prior_sample(root):
 
     return sampled_values[root.name]
 ```
+
+### Sampling from the posterior
 
 ```python
 def posterior_sample(root, latent_values):
@@ -300,6 +292,8 @@ def posterior_sample(root, latent_values):
 
     return sampled_values[root.name]
 ```
+
+## Conclusion
 
 ---
 
