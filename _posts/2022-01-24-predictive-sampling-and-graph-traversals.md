@@ -286,7 +286,18 @@ Finally, we return the sampled value of our root variable.
     return sampled_values[root.name]
 ```
 
-> TODO(Andrea): add example
+Let's see an example:
+
+```python
+x = LatentVariable("x", Normal, [5.0, 0.1])
+y = ObservedVariable("y", Normal, [x, 1.0], observed=1.5)
+
+prior_sample(x)
+# => 5.09
+
+prior_sample(y)
+# => 6.40
+```
 
 ### Sampling from the posterior
 
@@ -349,7 +360,17 @@ they did in `evaluate_log_density`.
     return sampled_values[root.name]
 ```
 
-> TOOD(Andrea): add example
+Let's see an example:
+
+```python
+x = LatentVariable("x", Normal, [5.0, 0.1])
+y = ObservedVariable("y", Normal, [x, 1.0], observed=1.5)
+
+posterior_sample(y, {"x": -2})
+# => 3.19
+posterior_sample(x, {"x": -2})
+# => -2.00
+```
 
 ## Conclusion
 
