@@ -18,6 +18,10 @@ title: "Predictive sampling and graph traversals"
 
 > Full code available at [github.com/mrandri19/smolppl/tree/sampling](https://github.com/mrandri19/smolppl/tree/sampling)
 
+<span style="color: red; font-size: 2rem;">
+    TODO(Andrea): make the traversal part clearer, method and implementation feel separate
+</span>
+
 ## Introduction
 
 _Sampling_ is the act of drawing random values from a probability
@@ -162,8 +166,7 @@ Because of the structure of our DAG, what we need is called
 Post-order traversal has the property that a node will only get visited _after_
 all of its children have.
 
-For those who are already familiar with DAG traversals, this is equivalent to
-performing a
+For people familiar with DAG traversals, this is equivalent to performing a
 [_topological sorting_](https://en.wikipedia.org/wiki/Topological_sorting)
 of the transposed DAG.
 A topological ordering is the reversed post-ordering of a DAG, while in our
@@ -191,9 +194,11 @@ The blue, bold numbers represent the order in which the nodes where visited.
 
 After all this theory, let's now get to the fun part, the implementation.
 
-> ### TODO(Andrea): finish
-
 ### Distributions
+
+First of all, we need to add a `sample` method to our `Distribution` abstract
+class, and implement it for all of our distributions.
+Just like we did for the log-density, we use SciPy.
 
 ```python
 class Distribution:
@@ -214,7 +219,13 @@ class Normal(Distribution):
 
 ### Sampling from the prior
 
-#### Post-order traversal
+We begin by implementing prior sampling as it is the simpler of the two.
+We implement post-order depth-first search in the `collect_variables` inner
+function.
+It's very similar to pre-order DFS but, instead of appending `variable` to
+to `variables` _before_ recursion, we do it _after_.
+This results in a variable being "visited", only after we have reached a leaf
+of the DAG.
 
 ```python
 def prior_sample(root):
@@ -235,7 +246,17 @@ def prior_sample(root):
         variables.append(variable)
 
     collect_variables(root)
+```
 
+Then, for every variable, we need to obtain the numeric value of every argument.
+`float` arguments are already numeric so we take them as they are.
+On the other hand, we will keep numeric values of variable in a dictionary
+called `sampled_values`.
+We are sure that we will never get a `KeyError` because of the post-order
+traversal.
+All children of a variable will be evaluated befoure evaluating the variable.
+
+```python
     sampled_values = {}
     for variable in variables:
         dist_params = []
@@ -244,15 +265,37 @@ def prior_sample(root):
                 dist_params.append(dist_arg)
             else:
                 dist_params.append(sampled_values[dist_arg.name])
+```
 
+After having all arguments, we call the variable's distribution `sample` method
+with its arguments, to finally perform the sampling.
+For prior sampling, we `sample` all types of variable, both `ObservedVariable`s
+and `LatentVariable`s.
+The result its stored in the `sampled_values` dict, to be used by one of the
+variable's parents (this is a DAG, we can have multiple parents).
+
+```python
         sampled_values[variable.name] = variable.dist_class.sample(
             dist_params
         )
+```
 
+Finally, we return the sampled value of our root variable.
+
+```python
     return sampled_values[root.name]
 ```
 
+> TODO(Andrea): add example
+
 ### Sampling from the posterior
+
+Luckily, posterior sampling is not too different.
+Again, we traverse the DAG in post-order, starting at the root, accumulating
+variables inside `variables`.
+The only difference being `latent_values`, which has the same role as it had in
+`evaluate_log_density`: being a dictionary from latent variable names to their
+numeric values.
 
 ```python
 def posterior_sample(root, latent_values):
@@ -275,6 +318,12 @@ def posterior_sample(root, latent_values):
     collect_variables(root)
 
     sampled_values = {}
+```
+
+Again, we either use `float`s as they are, or fetch sampled children from the
+`sampled_values` dictionary by their name.
+
+```python
     for variable in variables:
         dist_params = []
         for dist_arg in variable.dist_args:
@@ -282,7 +331,14 @@ def posterior_sample(root, latent_values):
                 dist_params.append(dist_arg)
             else:
                 dist_params.append(sampled_values[dist_arg.name])
+```
 
+And finally the new bit: instead of sampling both latent and observed variables,
+we only sample observed values.
+Latent variables instead come from the `latent_values` dictionary, just like
+they did in `evaluate_log_density`.
+
+```python
         if isinstance(variable, LatentVariable):
             sampled_values[variable.name] = latent_values[variable.name]
         if isinstance(variable, ObservedVariable):
@@ -293,7 +349,11 @@ def posterior_sample(root, latent_values):
     return sampled_values[root.name]
 ```
 
+> TOOD(Andrea): add example
+
 ## Conclusion
+
+> TOOD(Andrea): write
 
 ---
 
