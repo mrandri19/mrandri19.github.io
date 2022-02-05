@@ -95,28 +95,11 @@ In practice, this means calling `pm.sample_prior_predictive()` to get prior
 samples
 and `pm.sample_posterior_predictive(posterior_trace)` to get posterior samples.
 
-## Method
+## Implementation
 
-<span style="color: red; font-size: 2rem;">
-    TODO(Andrea): make the traversal part clearer, method and implementation feel separate
-</span>
+### DAG traversals
 
-The API we will implement is heavily inspired by PyMC.
-The function `prior_sample` is used to take one sample from the prior
-distribution.
-The function `posterior_sample` is used to take on sample from the
-posterior distribution, given a dictionary of latent values from the posterior.
-
-Inside these functions we traverse the probabilistic DAG and do what a Stan user
-would do.
-In `prior_sample` replace all variables with a new random value from their
-respective distribution.
-In `posterior_sample` replace all `ObservedVariables` with a new random value
-from its distribution, and replace all `LatentVariables` with values from the
-posterior chain.
-But how do we traverse our DAG? Is there a particular _order_ we need to use?
-
-To understand how to traverse the DAG let us use an example.
+To understand the main challenge in sampling from a DAG let's see an example.
 Consider this probabilistic model:
 
 $$ x \sim \text{Normal}(0, 3) $$
@@ -143,37 +126,24 @@ In-memory representation of the model
 </figure>
 
 Looking at the DAG we see that, to sample the `x` variable, we need the
-floats 0 and 3 respectively for the mean and standard deviation.
-To sample the `y` variable we need the value of `x` and the float value 4.
-This means that we need the values of a variable's children before being able
+floats `0` and `3` respectively for the mean and standard deviation.
+To sample the `y` variable we need the value of `x` and the float value `4`.
+This means that we need the values of a variable's children _before_ being able
 to sample its value.
 As a consequence, simple depth-first search (DFS) is not be enough.
+Otherwise, it could happen that we try sampling the value of `y` without knowing
+its mean `x`.
 
-For those who read the
-[previous post](https://mrandri19.github.io/2022/01/12/a-PPL-in-70-lines-of-python.html),
-I want to point out that likelihood evaluation does not have this dependency
-structure.
-The likelihood of each variable can be computed independently
-([even in parallel!](https://www.multibugs.org/))
-because we know all the children's values, either from `latent_values` or from
-`variable.observed`.
-Since the order does not matter, I decided to use DFS because of its simplicity.
-
-We need to find an ordering that makes sure that our children have been
-processed before we are processed.
-Because of the structure of our DAG, what we need is called
+The solution is called
 [_post-order DFS_](https://en.wikipedia.org/wiki/Depth-first_search#Vertex_orderings).
 Post-order traversal has the property that a node will only get visited _after_
 all of its children have.
-
-For people familiar with DAG traversals, this is equivalent to performing a
-[_topological sorting_](https://en.wikipedia.org/wiki/Topological_sorting)
-of the transposed DAG.
-A topological ordering is the reversed post-ordering of a DAG, while in our
-implementation we are doing a post-ordering on the transposed DAG, without
-reversing at the end.
-Perhaps surprisingly these two actions are equivalent:<br>
-`reverse-list ∘ post-order-traversal ≡ post-order-traversal ∘ transpose-DAG`.
+Simple DFS, on the other hand, does not have this property and does a
+_pre-order_ traversal.
+To better understand the differences, check out the figure below.
+With pre-order traversal the root node $$ a $$ is always evaluated before the
+children $$ b, c $$, and in one case $$ b $$ is evaluated before its child
+$$ c $$ is.
 
 <figure>
 <div style="display: flex;flex-direction: row;flex-wrap: nowrap;align-content: flex-start;justify-content: space-evenly;align-items: center;">
@@ -190,9 +160,13 @@ The blue, bold numbers represent the order in which the nodes where visited.
 </figcaption>
 </figure>
 
-## Implementation
+The API we implement is heavily inspired by PyMC.
+The function `prior_sample` samples one value from the prior distribution.
+The function `posterior_sample` samples one value from the posterior, given a
+dictionary of latent values from the posterior.
+Let's see how to do it.
 
-After all this theory, let's now get to the fun part, the implementation.
+> TODO(Andrea): See if from now on it makes sense
 
 ### Distributions
 
@@ -307,6 +281,8 @@ variables inside `variables`.
 The only difference being `latent_values`, which has the same role as it had in
 `evaluate_log_density`: being a dictionary from latent variable names to their
 numeric values.
+When doing, for example, posterior predictive simulation we will use samples of
+the posterior chain for the `latent_values` dictionary.
 
 ```python
 def posterior_sample(root, latent_values):
@@ -374,16 +350,45 @@ posterior_sample(x, {"x": -2})
 
 ## Conclusion
 
-> TOOD(Andrea): write
+> TODO(Andrea): write
 
----
+<!-- ## Bonus: more on DAG traversals
 
-- Aside
-  - On a Directed Acyclic Graph this "dependency order" called "toposort", which is
-    `reverse_list(post_order(dag))`. Why are we just using post-order?
-    - [more on topological sorting applications](https://eli.thegreenplace.net/2015/directed-graph-traversal-orderings-and-applications-to-data-flow-analysis/)
-    - Because our arrows are reversed and this is true:
-      `post_order(reverse_arrows(dag)) == reverse_list(post_order(dag))`
-    - Why is this true? I don't know, StackOverflow links
-      [1](https://cs.stackexchange.com/questions/124725/is-topological-sort-of-an-original-graph-same-as-post-ordering-dfs-of-its-transp),
-      [2](https://stackoverflow.com/questions/61419786/is-topological-sort-of-an-original-graph-same-as-dfs-of-the-transpose-graph)
+<!-- Inside these functions we traverse the probabilistic DAG and do what a Stan user
+would do.
+In `prior_sample` replace all variables with a new random value from their
+respective distribution.
+In `posterior_sample` replace all `ObservedVariables` with a new random value
+from its distribution, and replace all `LatentVariables` with values from the
+posterior chain.
+But how do we traverse our DAG? Is there a particular _order_ we need to use? -->
+
+> TODO(Andrea): make this make sense
+
+For those who read the
+[previous post](https://mrandri19.github.io/2022/01/12/a-PPL-in-70-lines-of-python.html),
+I want to point out that likelihood evaluation does not have this dependency
+structure.
+The likelihood of each variable can be computed independently
+([even in parallel!](https://www.multibugs.org/))
+because we know all the children's values, either from `latent_values` or from
+`variable.observed`.
+Since the order does not matter, I decided to use DFS because of its simplicity.
+
+For people familiar with DAG traversals, this is equivalent to performing a
+[_topological sorting_](https://en.wikipedia.org/wiki/Topological_sorting)
+of the transposed DAG.
+A topological ordering is the reversed post-ordering of a DAG, while in our
+implementation we are doing a post-ordering on the transposed DAG, without
+reversing at the end.
+Perhaps surprisingly these two actions are equivalent:<br>
+`reverse-list ∘ post-order-traversal ≡ post-order-traversal ∘ transpose-DAG`.
+
+- On a Directed Acyclic Graph this "dependency order" called "toposort", which is
+  `reverse_list(post_order(dag))`. Why are we just using post-order?
+  - [more on topological sorting applications](https://eli.thegreenplace.net/2015/directed-graph-traversal-orderings-and-applications-to-data-flow-analysis/)
+  - Because our arrows are reversed and this is true:
+    `post_order(reverse_arrows(dag)) == reverse_list(post_order(dag))`
+  - Why is this true? I don't know, StackOverflow links
+    [1](https://cs.stackexchange.com/questions/124725/is-topological-sort-of-an-original-graph-same-as-post-ordering-dfs-of-its-transp),
+    [2](https://stackoverflow.com/questions/61419786/is-topological-sort-of-an-original-graph-same-as-dfs-of-the-transpose-graph) -->
