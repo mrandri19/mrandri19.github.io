@@ -12,32 +12,14 @@ title: "Predictive sampling and graph traversals"
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
     onload="renderMathInElement(document.body);"></script>
 
-> This post is the continuation of
-> ["A probabilistic programming language in 70 lines of Python"](https://mrandri19.github.io/2022/01/12/a-PPL-in-70-lines-of-python.html),
-> the implementation depends on the features we implemented in the previous post.
-
 > Full code available at [github.com/mrandri19/smolppl/tree/sampling](https://github.com/mrandri19/smolppl/tree/sampling)
-
-<span style="color: red; font-size: 2rem;">
-    TODO(Andrea): make the traversal part clearer, method and implementation feel separate
-</span>
 
 ## Introduction
 
-_Sampling_ is the act of drawing random values from a probability
-distribution.
-More exactly, sampling is the act of generating values from the sample space
-of a distribution such that, as the number of samples increases, their frequency
-will eventually match the distribution's probability density function (PDF)
-(or mass function, for discrete distributions).
-
-As users of a Probabilistic Programming Language (PPL) are interested in
-sampling the prior distribution and the posterior distribution.
-More precisely, we need samples from a distribution to compute Monte Carlo
-integrals over it.
-Why do we need to compute integrals?
-Because expectations are integrals, which we use to compute mean, variance,
-etc...
+This post is the continuation of
+["A probabilistic programming language in 70 lines of Python"](https://mrandri19.github.io/2022/01/12/a-PPL-in-70-lines-of-python.html).
+Today, we extend the library built in the last post by creating an API for
+sampling values from the prior and posterior distributions.
 
 At the end we will have build an API like this one:
 
@@ -45,6 +27,18 @@ At the end we will have build an API like this one:
 x = LatentVariable("x", Normal, [0.0, 3.0])
 y = ObservedVariable("y", Normal, [x, 4.0], observed=1.5)
 
+prior_sample(y)
+posterior_sample(y, {"x": -2.0})
+```
+
+As users of a Probabilistic Programming Language (PPL), we are interested in
+sampling the distributions defined by our model.
+We do it, for example, to estimate means and variances via Monte Carlo
+integration.
+This is how we would estimate the mean and standard deviation of
+the random variables in our model using the new API:
+
+```python
 prior_samples = [prior_sample(y) for _ in range(10_000)]
 np.mean(prior_samples), np.std(prior_samples)
 # => (0.0, 5.0)
@@ -54,13 +48,13 @@ np.mean(posterior_samples), np.std(posterior_samples)
 # => (-2.0, 4.0)
 ```
 
-Which is equivalent to this probability model:
+Mathematically speaking, the two snippets above define this probability model:
 
 $$ x \sim \text{Normal}(0, 3) $$
 
 $$ y \sim \text{Normal}(x, 4) $$
 
-and these evaluating these expectations on it:
+and compute the following expectations on it:
 
 $$ E(y) = 0 $$
 
@@ -72,9 +66,11 @@ $$ \text{std}(y|x=-2) = 4 $$
 
 ## Related work
 
-Most probabilistic programming languages implement sampling , since it is so
-useful.
-We will briefly see how Stan and PyMC, two of the most popular PPLs, allow
+Most probabilistic programming languages implement sampling APIs.
+We will briefly see how
+[Stan](https://mc-stan.org/)
+and
+[PyMC](https://docs.pymc.io/en/v3/), two of the most popular PPLs, allow
 sampling.
 Just skip this section if you only care about the implementation.
 
@@ -84,22 +80,26 @@ the user.
 To perform [prior predictive](https://mc-stan.org/docs/2_28/stan-users-guide/prior-predictive-checks.html) sampling
 the user must copy code from the `model` section into the `generated_quantities`
 sections and replace all distribution calls (like `normal`, `binomial`) with
-their `rng` equivalent.
+their `_rng` versions.
 For [posterior predictive](https://mc-stan.org/docs/2_28/stan-users-guide/simulating-from-the-posterior-predictive-distribution.html)
 sampling, the procedure is similar, but model parameters are sampled from the
-posterior chain rather than from a RNG.
+posterior chain rather than from a Random Number Generator (RNG).
 In practice, this means that it is enough to keep using the same parameters as
 in the `model` section.
 
 In PyMC the process is much simpler from a user's perspective.
 PyMC uses its knowledge of the probabilistic DAG to automatically generate
-implementations for the likelihood evaluation, prior sampling, and posterior
+implementations for the evaluating the likelihood, prior sampling, and posterior
 sampling.
-In practice this means calling `pm.sample_prior_predictive()` to get prior
+In practice, this means calling `pm.sample_prior_predictive()` to get prior
 samples
 and `pm.sample_posterior_predictive(posterior_trace)` to get posterior samples.
 
 ## Method
+
+<span style="color: red; font-size: 2rem;">
+    TODO(Andrea): make the traversal part clearer, method and implementation feel separate
+</span>
 
 The API we will implement is heavily inspired by PyMC.
 The function `prior_sample` is used to take one sample from the prior
