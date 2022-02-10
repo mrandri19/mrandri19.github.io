@@ -77,7 +77,7 @@ Just skip this section if you only care about the implementation.
 Stan's sampling interface is lower-level compared to other PPLs.
 Sampling from both the prior and the posterior must be implemented manually by
 the user.
-To perform [prior predictive](https://mc-stan.org/docs/2_28/stan-users-guide/prior-predictive-checks.html) sampling
+To perform [prior predictive](https://mc-stan.org/docs/2_28/stan-users-guide/prior-predictive-checks.html) sampling,
 the user must copy code from the `model` section into the `generated_quantities`
 sections and replace all distribution calls (like `normal`, `binomial`) with
 their `_rng` versions.
@@ -89,8 +89,7 @@ in the `model` section.
 
 In PyMC the process is much simpler from a user's perspective.
 PyMC uses its knowledge of the probabilistic DAG to automatically generate
-implementations for the evaluating the likelihood, prior sampling, and posterior
-sampling.
+implementations for the the likelihood, prior sampling, and posterior sampling.
 In practice, this means calling `pm.sample_prior_predictive()` to get prior
 samples
 and `pm.sample_posterior_predictive(posterior_trace)` to get posterior samples.
@@ -164,9 +163,14 @@ The API we implement is heavily inspired by PyMC.
 The function `prior_sample` samples one value from the prior distribution.
 The function `posterior_sample` samples one value from the posterior, given a
 dictionary of latent values from the posterior.
+Inside these functions we traverse the probabilistic DAG and do what a Stan user
+would do.
+In `prior_sample` replace all variables with a new random value from their
+respective distribution.
+In `posterior_sample` replace all `ObservedVariables` with a new random value
+from its distribution, and replace all `LatentVariables` with values from the
+posterior chain.
 Let's see how to do it.
-
-> TODO(Andrea): See if from now on it makes sense
 
 ### Distributions
 
@@ -241,8 +245,8 @@ All children of a variable will be evaluated befoure evaluating the variable.
                 dist_params.append(sampled_values[dist_arg.name])
 ```
 
-After having all arguments, we call the variable's distribution `sample` method
-with its arguments, to finally perform the sampling.
+With all the required arguments, we call the `sample` method of the variable's
+distribution.
 For prior sampling, we `sample` all types of variable, both `ObservedVariable`s
 and `LatentVariable`s.
 The result its stored in the `sampled_values` dict, to be used by one of the
@@ -275,9 +279,8 @@ prior_sample(y)
 
 ### Sampling from the posterior
 
-Luckily, posterior sampling is not too different.
-Again, we traverse the DAG in post-order, starting at the root, accumulating
-variables inside `variables`.
+For posterior sampling we repeat the same procedure: traverse the DAG in
+post-order, starting at the root, accumulating variables inside `variables`.
 The only difference being `latent_values`, which has the same role as it had in
 `evaluate_log_density`: being a dictionary from latent variable names to their
 numeric values.
@@ -350,20 +353,14 @@ posterior_sample(x, {"x": -2})
 
 ## Conclusion
 
-> TODO(Andrea): write
+We continue our work on a small Probabilistic Programming Language, introducing
+and motivating the need for sampling.
+After analyzing pre-order and post-order DAG traversals, we discover that we
+need the latter to respect the DAG's evaluation order.
+Finally, we to implement an API for prior and posterior sampling, comparing its
+implementation with the one for log density evaluation.
 
-<!-- ## Bonus: more on DAG traversals
-
-<!-- Inside these functions we traverse the probabilistic DAG and do what a Stan user
-would do.
-In `prior_sample` replace all variables with a new random value from their
-respective distribution.
-In `posterior_sample` replace all `ObservedVariables` with a new random value
-from its distribution, and replace all `LatentVariables` with values from the
-posterior chain.
-But how do we traverse our DAG? Is there a particular _order_ we need to use? -->
-
-> TODO(Andrea): make this make sense
+### Bonus: more on DAG traversals
 
 For those who read the
 [previous post](https://mrandri19.github.io/2022/01/12/a-PPL-in-70-lines-of-python.html),
@@ -375,7 +372,8 @@ because we know all the children's values, either from `latent_values` or from
 `variable.observed`.
 Since the order does not matter, I decided to use DFS because of its simplicity.
 
-For people familiar with DAG traversals, this is equivalent to performing a
+For people familiar with DAG traversals, post-order traversal on our DAG is
+equivalent to performing a
 [_topological sorting_](https://en.wikipedia.org/wiki/Topological_sorting)
 of the transposed DAG.
 A topological ordering is the reversed post-ordering of a DAG, while in our
@@ -383,12 +381,11 @@ implementation we are doing a post-ordering on the transposed DAG, without
 reversing at the end.
 Perhaps surprisingly these two actions are equivalent:<br>
 `reverse-list ∘ post-order-traversal ≡ post-order-traversal ∘ transpose-DAG`.
+Unsurprisingly, I was not the first to discover this. Check out these
+stackoverflow questions:
 
-- On a Directed Acyclic Graph this "dependency order" called "toposort", which is
-  `reverse_list(post_order(dag))`. Why are we just using post-order?
-  - [more on topological sorting applications](https://eli.thegreenplace.net/2015/directed-graph-traversal-orderings-and-applications-to-data-flow-analysis/)
-  - Because our arrows are reversed and this is true:
-    `post_order(reverse_arrows(dag)) == reverse_list(post_order(dag))`
-  - Why is this true? I don't know, StackOverflow links
-    [1](https://cs.stackexchange.com/questions/124725/is-topological-sort-of-an-original-graph-same-as-post-ordering-dfs-of-its-transp),
-    [2](https://stackoverflow.com/questions/61419786/is-topological-sort-of-an-original-graph-same-as-dfs-of-the-transpose-graph) -->
+1. [Is topological sort of an original graph same as post-ordering dfs of its transpose graph](https://cs.stackexchange.com/questions/124725/is-topological-sort-of-an-original-graph-same-as-post-ordering-dfs-of-its-transp),
+1. [Is topological sort of an original graph same as dfs of the transpose graph](https://stackoverflow.com/questions/61419786/is-topological-sort-of-an-original-graph-same-as-dfs-of-the-transpose-graph)
+
+Also, for applications of DAG traversals, check out
+[Eli's blog](https://eli.thegreenplace.net/2015/directed-graph-traversal-orderings-and-applications-to-data-flow-analysis/).
