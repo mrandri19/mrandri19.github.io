@@ -35,8 +35,8 @@ As users of a Probabilistic Programming Language (PPL), we are interested in
 sampling the distributions defined by our model.
 We do it, for example, to estimate means and variances via Monte Carlo
 integration.
-This is how we would estimate the mean and standard deviation of
-the random variables in our model using the new API:
+This is how we would estimate the prior and posteriror mean and standard
+deviation of the `y` variable using the new API:
 
 ```python
 prior_samples = [prior_sample(y) for _ in range(10_000)]
