@@ -14,6 +14,10 @@ title: "A probabilistic programming language in 70 lines of Python"
 
 > Full code available at [github.com/mrandri19/smolppl](https://github.com/mrandri19/smolppl)
 
+> The continuation to this post, called
+> ["Predictive sampling and graph traversals"](https://mrandri19.github.io/2022/01/24/predictive-sampling-and-graph-traversals.html)
+> is now available!
+
 ## Introduction
 
 In this post I will explain how Probabilistic Programming Languages
