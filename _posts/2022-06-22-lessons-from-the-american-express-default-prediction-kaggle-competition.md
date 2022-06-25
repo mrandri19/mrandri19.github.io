@@ -4,10 +4,33 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 ---
 
 -   What I did
-    -   22/06/2022
-        -   Read all discussions in chronological order starting from oldest
+    -   25/06/2022
+        -   Worked on a submission with polars + xgboost, following cdotte's
+            baseline submission.
+            Next steps are to implement KFold CV and understand why performance
+            is so low, am I messing something up when merging the IDs and
+            effectively making a random submission?
+            -   Both zeros and randoms results in 0.020
+            -   Ok I was doing something wrong with the merging of IDs, let's
+                see if it looks correct now
+            -   It works now, 0.762 by keeping both customer_ID and its hash in
+                a column called ID. Then I groupby ID. Why do I even bother with
+                doing this though?
+            -   Next is cross validation. 5-fold CV on full dataset takes 30m.
+            -   I tried predicting the test set using the output of the last
+                fold. In theory this should scorea about 0.788.
+                Indeed it performs 0.786
+            -   What can I do next? I would like to reach that 0.793
+                -   Feature engineering just like in the notebook
+                -   FillNa with -127
+                -   Mean ensemble the models from every fold
+                -   Because now mine kfold estimate is 0.788 while his is 0.791
+                    And my LB is 0.786 while his is 0.793
+                -   See what else I have missed
     -   23/06/2022
         -   Read all notebooks in votes order starting from most voted
+    -   22/06/2022
+        -   Read all discussions in chronological order starting from oldest
 
 TODO(Andrea): re-read all discussions by grandmasters (such as AmbrosM, CDeotte, Raddar)
 TODO(Andrea): re-read read all notebooks by grandmasters
