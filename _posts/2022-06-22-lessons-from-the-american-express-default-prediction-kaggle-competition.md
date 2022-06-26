@@ -4,6 +4,17 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 ---
 
 -   What I did
+    -   26/06/2022
+        -   What are the differences that should get me 791 CV?
+            -   Baseline
+                -   w/o: 0.788 ± 0.002
+            -   Ablation: fill_null with -127
+                -   w/ : 0.788 ± 0.002
+            -   Ablation: feature engineering with groupby on num. and cat.
+                -   w/ : TODO(Andrea): this is the next step
+            -   gpu_hist
+            -   devicequantiledmatrix
+        -   Let's try fillna and feature engineering
     -   25/06/2022
         -   Worked on a submission with polars + xgboost, following cdotte's
             baseline submission.
@@ -23,9 +34,9 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   What can I do next? I would like to reach that 0.793
                 -   Feature engineering just like in the notebook
                 -   FillNa with -127
-                -   Mean ensemble the models from every fold
                 -   Because now mine kfold estimate is 0.788 while his is 0.791
                     And my LB is 0.786 while his is 0.793
+                -   Mean ensemble the models from every fold
                 -   See what else I have missed
     -   23/06/2022
         -   Read all notebooks in votes order starting from most voted
