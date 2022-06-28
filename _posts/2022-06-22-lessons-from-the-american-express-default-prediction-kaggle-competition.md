@@ -4,17 +4,28 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 ---
 
 -   What I did
+    -   28/06/2022
+        -   Ablation: feature engineering with groupby on num. and cat.
+            -   Loading the data and performing the feature engineering takes
+                about 2min 4s with polars
+            -   w/ : 0.792 ± 0.002 CV, 10min 23s CV time
+            -   TODO(Andrea): actually save the models so I can do prediction
+                in a separate notebook and ensemble the folds preds
+            -   TODO(Andrea): try training on full dataset in one go and then
+                making a submission
+        -   devicequantiledmatrix, do I need it?
+    -   27/06/2022
+        -   Experiment: does gpu_hist reduce training time below 30 minutes?
+            -   w/ : 0.788 ± 0.002 CV, 3min 33s 5-fold CV time
+            -   w/o: 0.788 ± 0.002 CV, 31min 40s 5-fold CV time
+            -   Conclusion: use the GPU (Kaggle gave me a P100)
     -   26/06/2022
         -   What are the differences that should get me 791 CV?
             -   Baseline
-                -   w/o: 0.788 ± 0.002
+                -   w/o: 0.788 ± 0.002 CV
             -   Ablation: fill_null with -127
-                -   w/ : 0.788 ± 0.002
-            -   Ablation: feature engineering with groupby on num. and cat.
-                -   w/ : TODO(Andrea): this is the next step
-            -   gpu_hist
-            -   devicequantiledmatrix
-        -   Let's try fillna and feature engineering
+                -   w/ : 0.788 ± 0.002 CV
+                -   Conclusion: don't fill_null
     -   25/06/2022
         -   Worked on a submission with polars + xgboost, following cdotte's
             baseline submission.
@@ -104,7 +115,7 @@ TODO(Andrea): read all comments by grandmasters
             -   Takes 40m
         -   LGBM + DART (Dropout meets multiple Additive Regression Trees)
             See notebook: https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-cv-0-7963
-            -   Same feature engineering as XGBoos
+            -   Same feature engineering as XGBoost
             -   Nice structure
             -   To use DART with Early Stopping see comments and also the
                 discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/332575
