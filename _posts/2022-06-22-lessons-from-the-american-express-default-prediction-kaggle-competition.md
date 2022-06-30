@@ -4,16 +4,42 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 ---
 
 -   What I did
+    -   TODO(Andrea): Next steps
+        1.  Find a way to ensemble public models on a local CV
+            and figure out if you can really reach 0.798 just by ensembling them
+            What should I ensemble?
+        2.  Should I ensemble public models or try reproducing them?
+            -   Do I want to do CV or just LB fitting?
+        3.  Try DART
+        4.  Try XGB + LGBM + CatBoost ensemble
+        5.  Try some neural models
+        6.  Try trees + neural ensembles
+        7.  take the mean of the log odds when ensembling
+        8.  After-pay features
+            https://www.kaggle.com/code/jiweiliu/rapids-cudf-feature-engineering-xgb
+            -   Perhaps try replicating this notebook
+    -   30/06/2022
+        -   Ablation: should I use the mean of per-fold metrics or just compute
+            the metric on the full dataset? It should be exactly the same in
+            theory, right?
+            -   metric on full dataset: 0.792 CV, 10m 25s CV time
+            -   mean of per-fold metric: 0.792 ± 0.002 CV, 10min 23s CV time
+            -   Conclusion: use the full dataset, seems more solid.
+                The CI interval does not really makes sense since imho.
+        -   Ablation: Is submitting the mean ensemble of the CV models better
+            than submitting the full-dataset model?
+            To make it work I must implement prediction in chunks as the
+            polars dataframe + dmatrix are too big for memory.
+            I am moving to cudf since it seems faster
+            -   TODO(Andrea): Bunch of stuff are float64, why?
+            -   TODO(Andrea): understand and clean code
+            -   w/ mean ensemble: 0.793 LB (02-xgb V10)
+        -   devicequantiledmatrix, do I need it? (Doesn't look like it)
     -   28/06/2022
         -   Ablation: feature engineering with groupby on num. and cat.
             -   Loading the data and performing the feature engineering takes
-                about 2min 4s with polars
+                about 2min 4s train, 4min 31s test with polars
             -   w/ : 0.792 ± 0.002 CV, 10min 23s CV time
-            -   TODO(Andrea): actually save the models so I can do prediction
-                in a separate notebook and ensemble the folds preds
-            -   TODO(Andrea): try training on full dataset in one go and then
-                making a submission
-        -   devicequantiledmatrix, do I need it?
     -   27/06/2022
         -   Experiment: does gpu_hist reduce training time below 30 minutes?
             -   w/ : 0.788 ± 0.002 CV, 3min 33s 5-fold CV time
@@ -54,10 +80,6 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
     -   22/06/2022
         -   Read all discussions in chronological order starting from oldest
 
-TODO(Andrea): re-read all discussions by grandmasters (such as AmbrosM, CDeotte, Raddar)
-TODO(Andrea): re-read read all notebooks by grandmasters
-TODO(Andrea): read all comments by grandmasters
-
 ## Main topics
 
 -   Reducing memory usage
@@ -89,11 +111,22 @@ TODO(Andrea): read all comments by grandmasters
 -   Understanding the metric
     -   TODO(Andrea): finish
 -   Fast metric implementations
-    -   TODO(Andrea): finish
+    -   I am just using the one from CDeotte's starter notebook
 
 -   Cross-Validation
     -   5-fold StratifiedKFold because the target classes are imbalanced (26% true, 74% false)
-    -   TODO(Andrea): what's StratifiedGroupKFold?
+        -   But CDeotte says the dataset is big enough to skip it.
+            Train is 370k, valid is 90k.
+    -   StratifiedGroupKFold
+        -   If the dataset is divided into groups, e.g. multiple individuals,
+            multiple samples from every individidual
+        -   GroupKFold makes sure that the same group never is in both the train
+            and validation sets.
+        -   StratifiedKFold makes sure that the distribution of folds is the
+            same as the full dataset.
+        -   How can we apply GroupKFold to this competition?
+            Perhaps to avoid shakeup somehow? The distribution of B_29 is quite
+            different between train, public, private
 
 -   Baselines (all use 5 folds)
     -   GBDT
@@ -144,6 +177,19 @@ TODO(Andrea): read all comments by grandmasters
 
 -   How to move beyond 0.795? See the comments by Raddar
     See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/331454
+    -   Model ensembling work very well
+        -   Different models use different features
+        -   0.798 is achievable by ensembling fine-tuned public kernels
+    -   Feature selection not too useful
+    -   Feature engineering not impossible
+    -   To reach 0.799 you need to blend NNs in the ensemble
+
+-   What to do to improve model performance?
+    See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/333953
+    -   Hyperparameter Tuning (including random seeds)
+    -   Feature Engineering with differences, multiplications, divisions
+    -   Gets a 0.797 by ensembling just two models
+    -   LGBM/XGB with DART, although adds 10x computation time
 
 -   Public LB vs Private LB
     -   Public LB: customers whose statement is in 2019-04
@@ -179,7 +225,7 @@ TODO(Andrea): read all comments by grandmasters
 
 -   Feature P_2 is an internal credit rating, Feature D_39 is days_overdue
     See notebook: https://www.kaggle.com/code/raddar/deanonymized-days-overdue-feat-amex
-    TODO(Andre): read more into this
+    TODO(Andrea): read more into this
 
 -   Learning to rank to (try to) recover time features
     See notebook: https://www.kaggle.com/code/raddar/learning-to-rank-time-related-features
