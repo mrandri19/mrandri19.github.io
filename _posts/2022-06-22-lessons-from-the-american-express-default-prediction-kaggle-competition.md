@@ -5,19 +5,53 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
 -   What I did
     -   TODO(Andrea): Next steps
-        1.  Find a way to ensemble public models on a local CV
+        -   After-pay features
+            https://www.kaggle.com/code/jiweiliu/rapids-cudf-feature-engineering-xgb
+            -   Ablation: Better features (from RAPIDS XGB notebook)
+                -   This notebook gets 0.795 CV, 0.795 LB while mine gets 0.793 CV,
+                    0.794 LB. Why the difference?
+                -   Let's replicate it
+
+        -   Recursive feature elimination? Or, in general, can I drop some features to speed up training?
+
+        -   Find a way to ensemble public models on a local CV
             and figure out if you can really reach 0.798 just by ensembling them
             What should I ensemble?
-        2.  Should I ensemble public models or try reproducing them?
+
+        -   Should I ensemble public models or try reproducing them?
             -   Do I want to do CV or just LB fitting?
-        3.  Try DART
-        4.  Try XGB + LGBM + CatBoost ensemble
-        5.  Try some neural models
-        6.  Try trees + neural ensembles
-        7.  take the mean of the log odds when ensembling
-        8.  After-pay features
-            https://www.kaggle.com/code/jiweiliu/rapids-cudf-feature-engineering-xgb
-            -   Perhaps try replicating this notebook
+
+        -   Try XGB + LGBM + CatBoost ensemble
+        -   Try some neural models
+        -   (needs 4, 5) Try trees + neural ensembles
+
+        -   Take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
+    -   05/07/2022
+        -   Bunch of stuff are float64, why?
+            -   cudf .groupby.agg converts everything (ints, floats) to float64.
+                Reconvert every float64 to float32 to use less memory.
+                -   Does this improve training speed?
+                    -   w/o: 10min 23s CV time
+                    -   w/ : 10min 42s CV time
+                    -   Conclusion: No
+        -   Commented and cleaned up some code. Left to-dos but they are not
+            critical for submission purposes.
+        -   Let's try seeing if submitting the notebook directly works
+            -   https://www.kaggle.com/code/mrandri19/02-xgb/notebook?scriptVersionId=100079606
+            -   It works!
+        -   Ablation: Dropout Additive Regression Trees (DART)
+            -   w/o: 0.792 CV, 10m 23s CV time
+            -   w/ : Cancelled, too slow
+        -   Ablation: Better XGB hyperparameters (from RAPIDS XGB notebook)
+            -   w/o: 0.792 CV, 10min 23s CV time
+            -   w/ : 0.793 CV, 16min 17s CV time, 0.794 LB
+            -   Conclusions
+                -   increasing the max_depth results in a more complex model
+                    which seems to achieve better performance but the CV
+                    variance is also higher, how will it perform on the LB?
+                -   +60% time seems worth doing for a performance boost
+                -   Still, this does not perform as well as the notebook.
+                    Is this because of the feature engineering?
     -   30/06/2022
         -   Ablation: should I use the mean of per-fold metrics or just compute
             the metric on the full dataset? It should be exactly the same in
@@ -31,8 +65,6 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             To make it work I must implement prediction in chunks as the
             polars dataframe + dmatrix are too big for memory.
             I am moving to cudf since it seems faster
-            -   TODO(Andrea): Bunch of stuff are float64, why?
-            -   TODO(Andrea): understand and clean code
             -   w/ mean ensemble: 0.793 LB (02-xgb V10)
         -   devicequantiledmatrix, do I need it? (Doesn't look like it)
     -   28/06/2022
@@ -109,7 +141,6 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         See notebook: https://www.kaggle.com/code/pavelvod/amex-eda-revealing-time-patterns-of-features/notebook
 
 -   Understanding the metric
-    -   TODO(Andrea): finish
 -   Fast metric implementations
     -   I am just using the one from CDeotte's starter notebook
 
@@ -225,10 +256,12 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
 -   Feature P_2 is an internal credit rating, Feature D_39 is days_overdue
     See notebook: https://www.kaggle.com/code/raddar/deanonymized-days-overdue-feat-amex
-    TODO(Andrea): read more into this
 
 -   Learning to rank to (try to) recover time features
     See notebook: https://www.kaggle.com/code/raddar/learning-to-rank-time-related-features
 
 -   A faster self-attention? cool...
     See notebook: https://www.kaggle.com/code/mayukh18/amex-cossquareformer-starter/notebook
+
+-   https://github.com/pfnet-research/xfeat
+-   https://github.com/nyanp/nyaggle
