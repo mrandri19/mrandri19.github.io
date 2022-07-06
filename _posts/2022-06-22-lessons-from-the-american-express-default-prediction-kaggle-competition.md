@@ -4,28 +4,77 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 ---
 
 -   What I did
-    -   TODO(Andrea): Next steps
-        -   After-pay features
-            https://www.kaggle.com/code/jiweiliu/rapids-cudf-feature-engineering-xgb
-            -   Ablation: Better features (from RAPIDS XGB notebook)
-                -   This notebook gets 0.795 CV, 0.795 LB while mine gets 0.793 CV,
-                    0.794 LB. Why the difference?
-                -   Let's replicate it
+    -   Next steps
+        -   I can choose between:
+            -   CatBoost
+            -   Transformer
+        -   After that start ensembling
+            -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
 
-        -   Recursive feature elimination? Or, in general, can I drop some features to speed up training?
+        -   I have
+            -   XGB model with RAPIDS features
+                -   TODO(Andrea): understand RAPIDS' feature engineering
+                -   TODO(Andrea): incorporate lag features (or should I run an ablation with rapids vs lag?)
+                -   TODO(Andrea): retry DART
+        -   I want to replicate
+            -   LGBM + lag features + DART + RAPIDS features
+                -   TODO(Andrea): run lag notebook and submit it, in order to
+                    have a flexible private version
+                    Should I run it without DART first, in order to have a
+                    resonable runtime? maybe LGBM + DART is not too bad
+                -   TODO(Andrea): incorporate RAPIDS feature engineering
+
+        -   Read more about how the integer dataset I have used handles nulls
 
         -   Find a way to ensemble public models on a local CV
             and figure out if you can really reach 0.798 just by ensembling them
             What should I ensemble?
 
+        -   Ablation: if I use the same KFolds as with the last notebook, how
+            does the performance change? The row order is quite likely different
+
         -   Should I ensemble public models or try reproducing them?
             -   Do I want to do CV or just LB fitting?
 
-        -   Try XGB + LGBM + CatBoost ensemble
-        -   Try some neural models
-        -   (needs 4, 5) Try trees + neural ensembles
+    -   06/07/2022
+        -   RAPIDS XGB notebook
+            -   But the results will not be fully comparable with the other as
+                the CV folds are different...
+        -   Ablation: try running this notebook with 5 CV folds
+            -   See if using more folds, which results in more models in the
+                average blend ensemble, improves the CV
+                (it might not, with 4 folds it's 0.7950. It probably will be
+                lower actually, since each model in the fold will have been
+                trained on less data)
+                and the LB (currently 0.795X, it might not? same argument as
+                with CV, we will see).
+            -   w/o: caveat: 4 folds   0.7950 CV (avg), 20min 29s CV time, 0.795 LB
+            -   w/ : 0.7948 CV (full), 0.7952 CV (avg), 23min  6s CV time,
+            -   how stable is it? re-run it
+                -   this time some boosters have few trees: <1000
+            -   w/ : 0.7942 CV (full), 0.7947 CV (avg), 22min 50s CV time, 0.795 LB (03-xgb-new)
+                -   Current leaderboard
+                    Last 0.796 score is 665th
+                    Last 0.795 score is 868th
+                    If we assume that the last scores have zeros behind the 3rd decimal, we can
+                    compute that there are 223 people in [0.7950000, 0.7960000].
 
-        -   Take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
+                    I am 838th which is 173th out of 223 people in [0.7950000, 0.7960000].
+                    Thus 173 / 223 = 77.58% = 1 - 22.42%.
+
+                    If we assume that the submissions are uniformly distributed in the interval,
+                    then my actual score is 0.7952242.
+        -   Ablation: don't round to two digits
+            -   w/o: 0.7948 CV (full), 0.7952 CV (avg), 23min  6s CV time
+                w/o: 0.7942 CV (full), 0.7947 CV (avg), 22min 50s CV time, 0.795 LB
+            -   w/ : 0.7945 CV (full), 0.7945 CV (avg), 21min 13s CV time
+            -   Conclusion: does not make a difference
+        -   Is it useful to do a mean ensemble?
+            -   Experiment:
+                -   03-xgb-new: 0.794 CV, 0.795 LB
+                -   amex-lgbm-quickstart: 0.795 LB (Unverified by me, we have to trust the notebook)
+                -   mean ensemble:        0.796 LB (this thing with the sigmoid transform confuses me)
+                -   Conclusion: ensembling models work. Let's make our own LGBM model now and ensemble that
     -   05/07/2022
         -   Bunch of stuff are float64, why?
             -   cudf .groupby.agg converts everything (ints, floats) to float64.
@@ -52,6 +101,8 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                 -   +60% time seems worth doing for a performance boost
                 -   Still, this does not perform as well as the notebook.
                     Is this because of the feature engineering?
+        -   Quick experiment: PCA for feature selection does not seem worth
+            doing
     -   30/06/2022
         -   Ablation: should I use the mean of per-fold metrics or just compute
             the metric on the full dataset? It should be exactly the same in
@@ -178,7 +229,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                 -   mean, min, max, last of numerical features.
             -   Takes 40m
         -   LGBM + DART (Dropout meets multiple Additive Regression Trees)
-            See notebook: https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-cv-0-7963
+            See notebook: https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-CV-0-7963
             -   Same feature engineering as XGBoost
             -   Nice structure
             -   To use DART with Early Stopping see comments and also the
@@ -205,6 +256,17 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   Very interesting comments: https://www.kaggle.com/code/ambrosm/amex-keras-quickstart-1-training/comments
         -   TabNet
             See notebook: https://www.kaggle.com/code/hinepo/amex-tabnet-training/comments
+
+-   Best performing models
+    See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/333000
+    See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/334391
+    -   NN
+        -   Transformer: 0.794 LB
+        -   Dense 0.791 LB
+    -   GBT
+        -   XGB: 0.798 LB
+        -   LGBM: 0.798 LB
+
 
 -   How to move beyond 0.795? See the comments by Raddar
     See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/331454
