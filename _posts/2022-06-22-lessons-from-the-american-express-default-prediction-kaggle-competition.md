@@ -13,9 +13,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
         -   I have
             -   XGB model with RAPIDS features
-                -   TODO(Andrea): understand RAPIDS' feature engineering
                 -   TODO(Andrea): incorporate lag features (or should I run an ablation with rapids vs lag?)
-                -   TODO(Andrea): retry DART
         -   I want to replicate
             -   LGBM + lag features + DART + RAPIDS features
                 -   TODO(Andrea): run lag notebook and submit it, in order to
@@ -23,8 +21,12 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                     Should I run it without DART first, in order to have a
                     resonable runtime? maybe LGBM + DART is not too bad
                 -   TODO(Andrea): incorporate RAPIDS feature engineering
+        -   By analyzing the revision history of thedevastator's notebook I see that
+            they are doing a XGB + LBGM DART + CatBoost DART ensemble
 
         -   Read more about how the integer dataset I have used handles nulls
+
+        -   Backward na filling for groupby last and other timeseries features
 
         -   Find a way to ensemble public models on a local CV
             and figure out if you can really reach 0.798 just by ensembling them
@@ -35,6 +37,67 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
         -   Should I ensemble public models or try reproducing them?
             -   Do I want to do CV or just LB fitting?
+
+    -   07/07/2022
+        -   RAPIDS' feature engineering: 588 columns
+            -   categorical
+                -   11
+            -   numerical * {last, mean, std}
+                -   177 * 3 = 531
+            -    difference * {last, mean, std}
+                -   14 * 3 = 42
+            -   customer_ID, S_2, cid, target
+                -   4
+        -   XGB starter feature engineering: 918 columns
+            -   categorical * {last, count, nunique}
+                -   11 * 3 = 33
+            -   numerical * {last, mean, std, max, min}
+                -   177 * 5 = 885
+        -   the other differences between the two are
+            -   hyperparameters
+            -   early_stopping_rounds
+            -   feval
+        -   How do I know which features are important between these two models?
+            -   Should I bring categorical groupings into RAPIDS?
+            -   Should I bring max, min into RAPIDS?
+            -   Should I bring difference into XGB starter?
+                -   How do I know that the difference features are actually bringing
+                    the better performance?
+            -   Should I add first?
+                -   Should I add last - first and last / first?
+        -   Ablation: do the difference features really help or is it better
+            training?
+            -   w/ : 0.7945 CV (full), 0.7945 CV (avg), 21min 13s CV time
+                (I don't know but I know that a 7942 is 795 LB)
+            -   w/o: 0.7940 CV (full), 0.7940 CV (avg), 22min 55s CV time,
+                0.794 LB (I expect this to be 795 but lower then prev)
+            -   I guess this is also a test whether the CV can identify such
+                small differences.
+                I am not too confident since two runs with same params can go
+                from 7942 to 7948.
+                How can I make my CV better? Stratification? More folds?
+            -   Conclusion: without difference features we have slightly lower
+                CV 7940 vs 7945 and lower LB 795 vs 794.
+                So keep them, especially since they are just 42
+        -   I have rewritten 03-xgb-new in 04-framework, now:
+            -   feature engineering is clearer
+            -   using StratifiedKFold for CV which seems more stable
+                -   1st run: 0.7940 CV, 24min 49s CV time, 0.794 LB
+                    But it's the highest one of the 794s, just under the 795
+                    from 03-xgb-new
+                -   2nd run: TODO(Andrea): run
+            -   WHY 32% GPU utilization?
+                    Without custom_metric the GPU utilization is 84%. Does the
+                    training time drop also to 10minutes?
+                -   WTF is happening with the number of trees?
+                    I am using early_stopping_rounds=500:
+                    For fold 0, the lowest valid-logloss is 0.21721 at 2000 trees
+                    Why is it showing 2674 trees then? How many trees does the model
+                    returned by fold 0 really have? TODO(Andrea): understand this
+                    -   0.7935 CV, 12min 25s CV time
+                    -   Asssuming CV can detect differences of 0.0005,
+                        optimizing the valid-amex is better than optimizing
+                        valid-logloss, giving a 0.0005 CV improvement.
 
     -   06/07/2022
         -   RAPIDS XGB notebook
