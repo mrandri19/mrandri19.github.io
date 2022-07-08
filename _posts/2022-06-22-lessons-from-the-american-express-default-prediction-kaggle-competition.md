@@ -5,26 +5,26 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
 -   What I did
     -   Next steps
-        -   I can choose between:
+        -   Models
+            -   Why is my XGB performing worse than RAPIDS?
+            -   LGBM + lag features + RAPIDS features
+                    -   Then DART
             -   CatBoost
             -   Transformer
         -   After that start ensembling
             -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
 
-        -   I have
-            -   XGB model with RAPIDS features
-                -   TODO(Andrea): incorporate lag features (or should I run an ablation with rapids vs lag?)
-        -   I want to replicate
-            -   LGBM + lag features + DART + RAPIDS features
-                -   TODO(Andrea): run lag notebook and submit it, in order to
-                    have a flexible private version
-                    Should I run it without DART first, in order to have a
-                    resonable runtime? maybe LGBM + DART is not too bad
-                -   TODO(Andrea): incorporate RAPIDS feature engineering
+        -   More feature engineering (last - lag1, last - mean => 1386 features):
+            -   https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-cv-0-7977/notebook
+
         -   By analyzing the revision history of thedevastator's notebook I see that
             they are doing a XGB + LBGM DART + CatBoost DART ensemble
 
         -   Read more about how the integer dataset I have used handles nulls
+        -   the integer dataset encodes low-cardinality features as int8, why
+            not treat them as actual categories in the feature engineering phase?
+
+        -   XGB/LGBM + SHAP
 
         -   Backward na filling for groupby last and other timeseries features
 
@@ -32,12 +32,51 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             and figure out if you can really reach 0.798 just by ensembling them
             What should I ensemble?
 
-        -   Ablation: if I use the same KFolds as with the last notebook, how
-            does the performance change? The row order is quite likely different
-
         -   Should I ensemble public models or try reproducing them?
             -   Do I want to do CV or just LB fitting?
-
+    -   08/07/2022
+        -   CV consistency
+            -   Adding sort_index after cudf.merge should fix it?
+                -   It is, we can replicate the same number of num_boosted_rounds across
+                    CV runs for every fold 🎉
+            -   In any case it seems that the CV performance is always 0.7940 even if
+                the number of trees varies quite a lot between folds/CV runs
+        -   The performance between 03-xgb-new and 04-framework is slightly different, why?
+            -   Read more about early stopping
+                -   **If early stopping occurs, the model will have two additional**
+                    **fields: bst.best_score, bst.best_iteration. Note that**
+                    **xgboost.train() will return a model from the last iteration,**
+                    **not the best one.**
+                -   If early stopping is enabled during training, you can get predictions
+                    from the best iteration with bst.best_iteration:
+                    ypred = bst.predict(dtest, iteration_range=(0, bst.best_iteration + 1))
+                -   It gives CV boost: 0.7935 CV to 0.7940 CV, but LB for latter
+                    is 0.794, lower than 04-framework V2 which did not use early
+                    stopping prediction or sort_index. Why?
+        -   Now training is 15.5min thanks to GPU amex metric, results are
+            consistent across runs
+        -   Ablation: adding first features to numeric and difference
+            -   w/o: 0.7943 CV, 15.5min CV time, 0.794 LB (rank 2)
+            -   w/ : 0.7945 CV, 17.3min CV time, 0.794 LB (rank 1) p
+            -   Conclusion so there seems to be some correlation between CV and LB
+        -   Ablation: lag features
+            -   w/o: 0.7945 CV, 17.3min CV time, 0.794 LB (rank 1)
+            -   w/ : 0.7943 CV, 22.3min CV time, 0.794 LB (rank 3)
+            -   This is interesting, why didn't it work? Too many features?
+                Keep analyzing thedevastator's notebook
+        -   Weighting
+            -   using weight= in xgb.DMatrix it looks like the first tree can
+                get to 0.84 valid-amex? But then I get 0.4798 CV?????
+                cupy metric is wrong
+            -   With the cupy metric it works but the performance is really bad
+                the prediction mean is 0.444 and the CV is 0.7892 LB is 0.789
+            -   At least there is great CV/LB correlation, this was a good datapoint
+        -   Ablation: new vs old amex_metric_cupy
+            -   Conclusion:
+                -   New metric makes the training 26min rather than 17.3min, and the
+                num_boost_rounds is the same as with the old, wrong metric.
+                -   Could be worth keeping the old one, as it speeds up training.
+                    Just restart working from v6 I guess
     -   07/07/2022
         -   RAPIDS' feature engineering: 588 columns
             -   categorical
@@ -85,7 +124,6 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                 -   1st run: 0.7940 CV, 24min 49s CV time, 0.794 LB
                     But it's the highest one of the 794s, just under the 795
                     from 03-xgb-new
-                -   2nd run: TODO(Andrea): run
             -   WHY 32% GPU utilization?
                     Without custom_metric the GPU utilization is 84%. Does the
                     training time drop also to 10minutes?
@@ -93,7 +131,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                     I am using early_stopping_rounds=500:
                     For fold 0, the lowest valid-logloss is 0.21721 at 2000 trees
                     Why is it showing 2674 trees then? How many trees does the model
-                    returned by fold 0 really have? TODO(Andrea): understand this
+                    returned by fold 0 really have?
                     -   0.7935 CV, 12min 25s CV time
                     -   Asssuming CV can detect differences of 0.0005,
                         optimizing the valid-amex is better than optimizing
@@ -257,6 +295,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 -   Understanding the metric
 -   Fast metric implementations
     -   I am just using the one from CDeotte's starter notebook
+    -   https://www.kaggle.com/code/rohanrao/amex-competition-metric-implementations/comments
 
 -   Cross-Validation
     -   5-fold StratifiedKFold because the target classes are imbalanced (26% true, 74% false)
@@ -363,6 +402,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
 -   META: summary of the learnings (posted on 2 Jun)
     See discussion here: https://www.kaggle.com/competitions/amex-default-prediction/discussion/328565
+    See discussion here: https://www.kaggle.com/competitions/amex-default-prediction/discussion/335892
 
 ---
 
