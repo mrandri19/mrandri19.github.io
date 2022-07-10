@@ -6,7 +6,6 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 -   What I did
     -   Next steps
         -   Models
-            -   Why is my XGB performing worse than RAPIDS?
             -   LGBM + lag features + RAPIDS features
                     -   Then DART
             -   CatBoost
@@ -23,6 +22,9 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   Read more about how the integer dataset I have used handles nulls
         -   the integer dataset encodes low-cardinality features as int8, why
             not treat them as actual categories in the feature engineering phase?
+            -   https://www.kaggle.com/code/raddar/amex-data-int-types-train
+
+        -   scale_pos_weight?
 
         -   XGB/LGBM + SHAP
 
@@ -34,6 +36,22 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
         -   Should I ensemble public models or try reproducing them?
             -   Do I want to do CV or just LB fitting?
+
+    -   09/07/2022
+        -   Today's plans:
+            -   Ablation round2 on first, last
+                -   w/ : 0.7952 CV, 0.795 LB 🎉
+                -   and it is higher on LB than RAPIDS
+            -   Ablation: XGBoost Categorical Handling
+                -   just `enable_categorical` for now
+                -   seems really slow
+                -   w/ : 0.7955 on CV, 0.794 LB 🤔
+                    Am I already underfitting the LB, or my CV wrong?
+                    Try something else because 37min of training is boring
+            -   Ablation: round2 on first, last. round3 on mean, std
+                -   should I apply it before groupby?
+                -   w/ : TODO(Andrea)
+            -   LGBM
     -   08/07/2022
         -   CV consistency
             -   Adding sort_index after cudf.merge should fix it?
