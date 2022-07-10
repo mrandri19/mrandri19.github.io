@@ -4,17 +4,13 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 ---
 
 -   What I did
-    -   Next steps
-        -   Models
-            -   LGBM + lag features + RAPIDS features
-                    -   Then DART
-            -   CatBoost
-            -   Transformer
-        -   After that start ensembling
-            -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
-
+    -   Models
+        -   DART
+        -   CatBoost
+        -   Transformer
         -   More feature engineering (last - lag1, last - mean => 1386 features):
             -   https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-cv-0-7977/notebook
+        -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
 
         -   By analyzing the revision history of thedevastator's notebook I see that
             they are doing a XGB + LBGM DART + CatBoost DART ensemble
@@ -37,6 +33,34 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   Should I ensemble public models or try reproducing them?
             -   Do I want to do CV or just LB fitting?
 
+    -   10/07/2022
+        -   LGBM
+            -   AmbrosM's LGBM quickstart uses last, mean, min, max for numerical features
+            -   My 04-framework v11 (currently a draft) uses same features as v9, v10
+                (the current LB and CV leaders)
+                and hyperparameters from ragnar's 799 notebook, but without dart
+                only 500 early stopping rounds, instead of 1500 and only 9999 max
+                boost rounds instead of 10500
+                It's been running for 3.5 HOURS though, so almost 1h / fold.
+                Training time must be improved to run more experiments.
+                Can this get to >=0.7960 cv? and how does this translate to
+                -   0.7953 CV, 3h7min Training time, 0.795 LB (rank 1)
+                -   Prediction is also fucking slow goddamn 30m
+            -   How can I speed this up?
+                -   GPU metric
+                -   LGBM GPU
+                -   Kaggle CPU instances have 4 threads rather than 2
+            -   Right now I am not specifying which features are categorical
+            -   Interesting that XGB and LGBM show such different behaviours
+                with the same amounts of early stopping
+            -   Compared to AmbrosM's LGBM, v13 is:
+                -   Better in CV 0.7952 (my CV) vs 0.7938 (their CV)
+                -   Better in LB (RAPIDS is higher than AmbrosM if you sort notebooks by score)
+                    And this one in better than RAPIDS
+            -   Interestgly, a mean ensemble performs in the middle of v9, v13
+                rather than better than the two. I guess it means that v13 is
+                very correlated with v9, more than v9 is with AmbrosM's
+            -   Ensembling v13 with ragnar's 799 makes a
     -   09/07/2022
         -   Today's plans:
             -   Ablation round2 on first, last
@@ -50,8 +74,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                     Try something else because 37min of training is boring
             -   Ablation: round2 on first, last. round3 on mean, std
                 -   should I apply it before groupby?
-                -   w/ : TODO(Andrea)
-            -   LGBM
+                -   w/ : 7950 CV
     -   08/07/2022
         -   CV consistency
             -   Adding sort_index after cudf.merge should fix it?
