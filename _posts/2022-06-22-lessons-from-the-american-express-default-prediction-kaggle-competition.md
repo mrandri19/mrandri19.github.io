@@ -4,35 +4,108 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 ---
 
 -   What I did
-    -   Models
-        -   DART
-        -   CatBoost
-        -   Transformer
-        -   More feature engineering (last - lag1, last - mean => 1386 features):
-            -   https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-cv-0-7977/notebook
-        -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
+    -   Next
+        -   Feature Engineering
+            -   Read more about how the integer dataset I have used handles nulls
+            -   the integer dataset encodes low-cardinality features as int8, why
+                not treat them as actual categories in the feature engineering phase?
+                -   https://www.kaggle.com/code/raddar/amex-data-int-types-train
+            -   Backward na filling for groupby last and other timeseries features
+            -   I should spend a full day just engineering features.
+                Maybe train a simple model on features subsets I create to see
+                if we have alpha
+        -   Feature Selection
+            -   Permutation importance
+            -   Null importance
+            -   XGB + SHAP
+        -   Models
+            -   DART
+            -   CatBoost
+            -   Transformer
+        -   Hyperparameter tuning
+        -   Ensembling
+            -   Find a way to ensemble public models on a local CV
+                and figure out if you can really reach 0.798 just by ensembling them
+                What should I ensemble?
+            -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
 
-        -   By analyzing the revision history of thedevastator's notebook I see that
-            they are doing a XGB + LBGM DART + CatBoost DART ensemble
+    -   11/07/2022
+        -   v13 takes 187m to train (on 2 CPU cores)
+            -   Should I try making it work on a GPU?
+            -   I am not using categorical features
+            -   I am not using DART
 
-        -   Read more about how the integer dataset I have used handles nulls
-        -   the integer dataset encodes low-cardinality features as int8, why
-            not treat them as actual categories in the feature engineering phase?
-            -   https://www.kaggle.com/code/raddar/amex-data-int-types-train
+        -   I would like to focus on one model, can I break the 0.795 CV ceiling?
 
-        -   scale_pos_weight?
+        -   Today's plan is to:
+            -   Train v9 using a 0.01 learning_rate: `05-xgb`
+                -   w/ : 0.7946 CV, 51min 4s CV time, 0.XXXX LB
+                -   Re-use the fast GPU metric, so that training takes 15m
+                    v9 with the fastest amex GPU metric implementation
+                    -   0.7952 CV, 19.0min CV time
+                    -   GPU usage 76%
 
-        -   XGB/LGBM + SHAP
+            -   Should I keep using GPU XGB or try GPU/CPU LGBM GBDT/DART?
+                -   Some people say 0.798 is reachable with a XGB model so let's
+                    keep using XGB
 
-        -   Backward na filling for groupby last and other timeseries features
+            -   Reduce the number of features to make space for smarter feature
+                engineering
+                -   I feel like I have a decent model, let's feed it better features now
+                -   Let's run ablations, from my past experiments:
+                    -   +groupby first, last, mean, std, min, max CONFIRMED +0.0041
+                    -   +difference CONFIRMED +0.0004
+                    -   -missing-stats CONFIRMED -0.0003
+                    -   -lag CONFIRMED -0.0016
 
-        -   Find a way to ensemble public models on a local CV
-            and figure out if you can really reach 0.798 just by ensembling them
-            What should I ensemble?
+                    -   +round2 first,last MAYBE +0.0007
 
-        -   Should I ensemble public models or try reproducing them?
-            -   Do I want to do CV or just LB fitting?
-
+                    -   ?last-lag1,last-mean
+                -   Ablations:
+                    -   {numerical, categorical} * {last}
+                        round2 on {numerical} * {last}
+                        -   188 features
+                        -   0.7908 CV, 9.5min CV time
+                    -   {numerical, categorical} * {last}
+                        round2 on {numerical} * {last}
+                        drop >0.95 correlated numerical
+                        -   178 features
+                        -   0.7905 CV, 10.5min CV time
+                    -   {numerical} * {first, last, mean, std, min, max}
+                        {categorical} * {last}
+                        round2 on {numerical} * {first, last, min, max}
+                        -   1073 features
+                        -   0.7949 CV, 21.5min CV time
+                    -   {numerical} * {first, last, mean, std, min, max}
+                        {categorical} * {last}
+                        round2 on {numerical} * {first, last, min, max}
+                        drop >0.95 correlated numerical
+                        -   875 features
+                        -   0.7950 CV, 22.2min CV time
+                    -   {numerical} * {first, last, mean, std, min, max}
+                        {categorical} * {last}
+                        {missing_stats}
+                        round2 on {numerical} * {first, last, min, max}
+                        -   1261 features
+                        -   0.7946 CV, 24.5min CV time
+                    -   {numerical, difference} * {first, last, mean, std, min, max}
+                        {categorical} * {last}
+                        round2 on {numerical} * {first, last, min, max}
+                        -   1157 features
+                        -   0.7953 CV, 20.9min CV time
+                    -   {numerical, difference} * {first, last, mean, std, min, max}
+                        {categorical} * {last}
+                        {lag}
+                        round2 on {numerical} * {first, last, min, max}
+                        -   1511 features
+                        -   0.7937 CV, 24.2min CV time
+                    -   https://www.kaggle.com/competitions/amex-default-prediction/discussion/336557
+                        -   0.7950 CV, 41.2min CV time
+                -   IDEAS:
+                    -   what does .groubpy.last do if there are missing values?
+                        does it take the last existing one or the missing last?
+                    -   are there correlated features in the original dataset?
+                        How do I discover them? Permutation? Adversarial? Shap?
     -   10/07/2022
         -   LGBM
             -   AmbrosM's LGBM quickstart uses last, mean, min, max for numerical features
@@ -53,6 +126,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   Right now I am not specifying which features are categorical
             -   Interesting that XGB and LGBM show such different behaviours
                 with the same amounts of early stopping
+                -   Yeah but the learning rate for XGB is 0.03, for LGBM is 0.01
             -   Compared to AmbrosM's LGBM, v13 is:
                 -   Better in CV 0.7952 (my CV) vs 0.7938 (their CV)
                 -   Better in LB (RAPIDS is higher than AmbrosM if you sort notebooks by score)
@@ -60,7 +134,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   Interestgly, a mean ensemble performs in the middle of v9, v13
                 rather than better than the two. I guess it means that v13 is
                 very correlated with v9, more than v9 is with AmbrosM's
-            -   Ensembling v13 with ragnar's 799 makes a
+            -   Ensembling v13 with ragnar's 799 makes it drop in performance
     -   09/07/2022
         -   Today's plans:
             -   Ablation round2 on first, last
@@ -417,6 +491,8 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   Different models use different features
         -   0.798 is achievable by ensembling fine-tuned public kernels
     -   Feature selection not too useful
+        -   See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/336145
+            And CDeotte's comment about 0.0012 sigma for different seeds
     -   Feature engineering not impossible
     -   To reach 0.799 you need to blend NNs in the ensemble
 
