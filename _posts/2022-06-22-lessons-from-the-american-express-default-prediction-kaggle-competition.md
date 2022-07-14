@@ -5,7 +5,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
 -   What I did
     -   Next
-        -   Feature Engineering
+        -   EDA/Feature Engineering
             -   Read more about how the integer dataset I have used handles nulls
             -   the integer dataset encodes low-cardinality features as int8, why
                 not treat them as actual categories in the feature engineering phase?
@@ -28,7 +28,39 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                 and figure out if you can really reach 0.798 just by ensembling them
                 What should I ensemble?
             -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
+            -   As always, amazing insights by cdeotte https://www.kaggle.com/competitions/amex-default-prediction/discussion/336229#1851638
 
+
+    -   13/07/2022
+        -   Let's make my v13 features into a dataset✅
+            -   {numerical, difference} * {first, last, mean, std}
+                categorical * {last}
+                round(decimals=2) on {first, last}
+            -   Created 08-feature-engineering
+                See notebook: https://www.kaggle.com/mrandri19/08-feature-engineering
+                See dataset: https://www.kaggle.com/datasets/mrandri19/08-feature-engineering-dataset
+
+        -   Make a notebook for LGBM DART CPU✅
+            -   Created 09-LGBM-CPU DART
+                See notebook: https://www.kaggle.com/mrandri19/09-lgbm-cpu
+            -   Since early stopping does not work with DART I use
+                num_boost_round=4000, metric=binary_logloss
+            -   Training started at 18:21, let's see how long one fold takes
+                about 2min/100rounds => 80min / fold => 400min / CV => 6h 40min
+                1st fold got 0.7900 after 4000 rounds
+
+        -   Try to squeeze more performance out of XGB
+            -   TODO(Andrea): from here
+            -   See comment: https://www.kaggle.com/competitions/amex-default-prediction/discussion/336557#1853320
+                -   for >90% null columns don't do groupbby aggregations
+                -   for >30% null columns add number of nulls count
+                -   Feature selection
+            -   See comment: https://www.kaggle.com/competitions/amex-default-prediction/discussion/336546#1853695
+                -   Feature engineering + hyperparameter optimization can make
+                    DART-less XGB get 0.7958 CV and 0.796 LB
+
+    -   12/07/2022
+        -   EDA/Feature Engineering
     -   11/07/2022
         -   v13 takes 187m to train (on 2 CPU cores)
             -   Should I try making it work on a GPU?
