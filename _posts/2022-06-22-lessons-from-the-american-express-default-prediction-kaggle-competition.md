@@ -31,6 +31,10 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   As always, amazing insights by cdeotte https://www.kaggle.com/competitions/amex-default-prediction/discussion/336229#1851638
 
 
+    -   18/07/2022
+        -   Rigorous ablations, trying to understand each factor that gives a
+            7953 LGBM
+
     -   13/07/2022
         -   Let's make my v13 features into a dataset✅
             -   {numerical, difference} * {first, last, mean, std}
@@ -439,6 +443,11 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
     -   Good timeseries EDA
         See notebook: https://www.kaggle.com/code/pavelvod/amex-eda-revealing-time-patterns-of-features/notebook
 
+-   Training methods
+    -   First train.cv on AUC to identify the best num_boost_round, then use it
+        as fixed number to train with DART
+        See comment: https://www.kaggle.com/competitions/amex-default-prediction/discussion/336957#1854575
+
 -   Understanding the metric
 -   Fast metric implementations
     -   I am just using the one from CDeotte's starter notebook
@@ -546,6 +555,11 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         See notebook: https://www.kaggle.com/code/zakopur0/adversarial-validation-private-vs-public
         B_29 is a perfect predictor of public vs private
         Let's keep going...
+
+-   Some Kaggle-specific tips:
+    -   What to submit: best CV, 0.5 * best CV + 0.5 * best LB
+        See comment: https://www.kaggle.com/competitions/amex-default-prediction/discussion/337609#1858410
+
 
 ---
 
