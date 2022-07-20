@@ -30,6 +30,22 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
             -   As always, amazing insights by cdeotte https://www.kaggle.com/competitions/amex-default-prediction/discussion/336229#1851638
 
+    -   19/07/2022
+        -   More rigorous ablations or try permutation importance
+            -   To do permutation importance I need to use sklearn interface,
+                working on that DONE
+            -   Conclusion: using groupy_last (188 features), all three feature
+                selection methods (SHAP, permutation, gain) have almost
+                identical results and they all result in similar performance drop
+                proportional to the number of features dropped.
+            -   Using groupy_cat_num_first_last_mean_std and
+                top200_gain_features I get almost no drop in score and a 307s
+                training time instead of 811
+            -   Still, I am not using any bagging or col_subsample and I think
+                the model is overfitting a bit too much. Perhaps I should do this
+                feature selection on my best xgb or lgbm model instead
+            -   Even with almost all of the same hyperparameters, except for the
+                learning rate and number of trees I can only get to 7917
 
     -   18/07/2022
         -   Rigorous ablations, trying to understand each factor that gives a
