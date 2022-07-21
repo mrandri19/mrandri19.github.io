@@ -22,6 +22,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   DART
             -   CatBoost
             -   Transformer
+        -   Custom loss function???
         -   Hyperparameter tuning
         -   Ensembling
             -   Find a way to ensemble public models on a local CV
@@ -29,6 +30,29 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                 What should I ensemble?
             -   Try to take the mean of the log odds when ensembling (but I can only see its effect on the leaderboard, not in CV)
             -   As always, amazing insights by cdeotte https://www.kaggle.com/competitions/amex-default-prediction/discussion/336229#1851638
+        -   More general tips:
+            -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
+
+    -   20/07/2022
+        -   Keep working on feature importance. It takes me 200s to train one
+            fold so I can introduce feature importance as one step of the
+            pipeline.
+            How long does permutation importance take?
+            -   Right now I am training the 1st fold on all features, then using
+                top200 gain importance features to train the full 5 folds.
+                The 1st step takes 200s, the second step takes 492s.
+            -   Let's try permutation importance on the 1st fold and see how
+                long it takes. Takes 41min 35s
+                It didn't work but I did permutation invariance on 200 features
+                rerun permutation_invariance on 719 features and then use those.
+                Check at 23:40
+                Why am I not using the AMEX metric though?
+        -   Understand why I can only get to 791X.
+            There are 3 differences still:
+            -   amex metric for early stopping
+            -   difference features
+            -   10000 rounds, 0.01 learning rate, and 500 early stopping rounds
+        -   Once I figure out how to reliably get to 795 I will start with NNs
 
     -   19/07/2022
         -   More rigorous ablations or try permutation importance
@@ -45,7 +69,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                 the model is overfitting a bit too much. Perhaps I should do this
                 feature selection on my best xgb or lgbm model instead
             -   Even with almost all of the same hyperparameters, except for the
-                learning rate and number of trees I can only get to 7917
+                learning rate and number of trees I can only get to 7917, why
 
     -   18/07/2022
         -   Rigorous ablations, trying to understand each factor that gives a
@@ -81,6 +105,7 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
     -   12/07/2022
         -   EDA/Feature Engineering
+
     -   11/07/2022
         -   v13 takes 187m to train (on 2 CPU cores)
             -   Should I try making it work on a GPU?
