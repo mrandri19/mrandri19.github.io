@@ -33,6 +33,14 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   More general tips:
             -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
 
+    -   21/07/2022
+        -   Understand why I can only get to 791X.
+            There are 3 differences still:
+            -   difference features: +10 when not using selection. TODO(Andrea): investigate
+            -   10000 rounds, 0.01 learning rate, and 500 early stopping rounds: +0023, takes 1.5h
+            -   amex metric for early stopping
+        -   Once I figure out how to reliably get to 795 I will start with NNs
+
     -   20/07/2022
         -   Keep working on feature importance. It takes me 200s to train one
             fold so I can introduce feature importance as one step of the
@@ -47,12 +55,6 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
                 rerun permutation_invariance on 719 features and then use those.
                 Check at 23:40
                 Why am I not using the AMEX metric though?
-        -   Understand why I can only get to 791X.
-            There are 3 differences still:
-            -   amex metric for early stopping
-            -   difference features
-            -   10000 rounds, 0.01 learning rate, and 500 early stopping rounds
-        -   Once I figure out how to reliably get to 795 I will start with NNs
 
     -   19/07/2022
         -   More rigorous ablations or try permutation importance
