@@ -14,15 +14,11 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   I should spend a full day just engineering features.
                 Maybe train a simple model on features subsets I create to see
                 if we have alpha
-        -   Feature Selection
-            -   Permutation importance
-            -   Null importance
-            -   XGB + SHAP
         -   Models
             -   DART
             -   CatBoost
             -   Transformer
-        -   Custom loss function???
+        -   Custom loss function?
         -   Hyperparameter tuning
         -   Ensembling
             -   Find a way to ensemble public models on a local CV
@@ -33,13 +29,40 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   More general tips:
             -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
 
+    -   22/07/2022
+        -   In progress
+            -   Retry DART with 10_000 trees since looking at metric evaluations shows
+                that they are still going down. All are going down at 0002 per it
+                TODO(Andrea): check in 4 hours the performance of the 1st fold
+                I think that this will timeout
+                https://www.kaggle.com/code/mrandri19/09-lgbm-cpu/log?scriptVersionId=101478253
+        -   Next steps
+            -   Read Robert Hatch's posts and comments
+                -   Show what the G, D scores of a good model are
+                    See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/338283
+                -   "Pyramid" training schedule for XGB. Imitates DART in much less time
+                    https://www.kaggle.com/competitions/amex-default-prediction/discussion/338752
+                -   https://www.kaggle.com/roberthatch/discussion?sortBy=latestPost&group=commentsAndTopics&page=1&pageSize=20&tab=active
+            -   Try amex metric or auc for early stopping instead of binary_logloss
+            -   Once I figure out how to reliably get to 795 I will start with NNs
+                -   I would't mind replicating all of these ablations in 10-XGB-GPU
+            -   Experiments
+                -   What happens if I run the 0.01 & 10_000 model without difference features?
+                -   Retry illidan7's features with the 0.01 & 10_000 model
+        -   Done
+            -   Understand difference features + feature selection interaction
+                The difference metrics ARE included in the most important ones
+                Maybe including them removes others? But why the performance drop then
+                Maybe the are just veeery correlated with P_2? I don't understand
+                With top250: 7904 CV I really don't understand.
+                Let's abandon this idea
+
     -   21/07/2022
         -   Understand why I can only get to 791X.
             There are 3 differences still:
-            -   difference features: +10 when not using selection. TODO(Andrea): investigate
+            -   difference features: +10 when not using selection
             -   10000 rounds, 0.01 learning rate, and 500 early stopping rounds: +0023, takes 1.5h
             -   amex metric for early stopping
-        -   Once I figure out how to reliably get to 795 I will start with NNs
 
     -   20/07/2022
         -   Keep working on feature importance. It takes me 200s to train one
