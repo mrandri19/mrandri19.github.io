@@ -29,6 +29,42 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   More general tips:
             -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
 
+    -   23/07/2022
+        -   Ideas/Questions
+            -   DART timed out at 12h. But I have the first 3 folds
+                (Each fold takes about 4h)
+                Let's try making a submission with these 3 folds?
+                    -   What should I do? I think this is a 795X
+            -   What cdeotte does is to look at every public notebook and try to
+                include every feature. Only keep the ones that work
+            -   AmbrosM's CatBoost can reach 7966 CV 0.798 LB in 9.5 hours
+            -   Base-blowup-base Feature Selection technique: https://www.kaggle.com/competitions/amex-default-prediction/discussion/339071
+            -   Why so much variation within the CV folds?
+            -   Why can't I go above 0.794X with LGBM? (Apart from v13)
+                -   Differences between 04-framework v13 and 09-LGBM-CPU v7?
+                    -   round2
+                    -   amex metric
+            -
+            Lower learning rate and column sampling per tree + higher early stopping rounds all seem to help. I'm very sold on the former, but somewhat skeptical of the latter -- are tiny improvements over a large number of rounds just noise? The way people are using DART seems to run the same risk to me, though things seem to stabilize out in aggregate.
+
+
+        -   TODO
+            -   Basically, try submitting the LGBM I am training and then continue
+                trying public feature engineering using my v9
+
+            -   Also try making XGB better with Rober Hatch's suggestions
+
+        -   DONE
+            -   Replicated 0.01 & 10_000 & difference 7945
+            -   Retry 0.01 & 10_000 without difference features 7938
+            -   Retry illidan7's features with the 0.01 & 10_000 model
+                (now running with float16 conversion) 7951
+            -   Do changes on small models reflect exactly on big ones?
+                Let's rerun ilidan7 with 0.03 & 3_000
+                does it perform around -23 just like
+                "groupby_cat_last_num_first_last_mean_std_difference" did?
+                7920
+
     -   22/07/2022
         -   In progress
             -   Retry DART with 10_000 trees since looking at metric evaluations shows
