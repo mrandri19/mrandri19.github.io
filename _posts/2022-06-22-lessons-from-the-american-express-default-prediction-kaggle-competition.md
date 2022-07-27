@@ -29,6 +29,33 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   More general tips:
             -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
 
+    -   26/07/2022
+        -   Created 11-XGB, trying a more script-oriented approach
+            -   Feature ideas
+                -   https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-cv-0-7977
+                    -   categorical: count last nunique => f3
+                    -   numerical: min max => f4
+                    -   diff between last value and lag1: f8 TODO
+                    -   diff between last value and mean: f7
+                -   https://www.kaggle.com/code/thedevastator/lag-features-are-all-you-need
+                    -   last - first, last / first => f5
+                        -   Try one of them at a time TODO
+                    -   round2 as additional column => f6
+                -   https://www.kaggle.com/code/roberthatch/pyramid-on-statement-dates-notebook
+                -   https://www.kaggle.com/code/roberthatch/amex-feature-engg-gpu-or-cpu-process-in-chunks
+            -   Retrying amex metric seems to be working
+
+            -   Retry permutation invariance TODO
+            -   Try stratifiying on P_2 and target TODO
+
+    -   25/07/2022
+        -   https://www.kaggle.com/code/mrandri19/09-lgbm-cpu?scriptVersionId=101702350 7945 no need for crazy low etas
+        -   https://www.kaggle.com/code/bogorodvo/bayesianoptimization-p-2-lst-stratification
+        -   https://www.kaggle.com/code/roberthatch/pyramid-on-statement-dates-notebook
+
+    -   24/07/2022
+        -   ...
+
     -   23/07/2022
         -   Ideas/Questions
             -   DART timed out at 12h. But I have the first 3 folds
