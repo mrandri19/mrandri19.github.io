@@ -29,25 +29,79 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   More general tips:
             -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
 
+    -   27/07/2022
+        -   How do I make 11-XGB reproducible?
+            -   I am comparing the hash of `train.pq` with a known hash so I am
+                pretty confident about that
+            (every run I factory reset the machine)
+            -   Run 1
+                -   Folds 0.7948, 0.7957, 0.7955, 0.7961, 0.7983
+                -   Folds std 0.0012
+                -   Total 0.7956
+                -   55min 17s `predictor='cpu_predictor'`
+                    -   GPU accelerated prediction is enabled by default for the
+                        above mentioned tree_method parameters but can be
+                        switched to CPU prediction by setting predictor to
+                        cpu_predictor
+            -   Run 2
+                -   Folds 0.7948, 0.7954, 0.7952, 0.7959, 0.7965
+                -   Folds std 0.0006
+                -   Total 0.7953
+                -   24min 37s `predictor='gpu_predictor'`
+            -   Run 3
+                -   Folds 0.7948, 0.7957, 0.7958, 0.7952, 0.7980
+                -   Folds std 0.0011
+                -   Total 0.7950
+                -   `predictor='gpu_predictor'`
+            -   Run 4
+                -   0.7948, 0.7947, 0.7958, 0.7953, 0.7976
+                -   Folds std
+                -   Total 0.7951
+                -   `predictor='gpu_predictor'`
+
+            -   I can run twice and then compare the hashes of `xgb_fold...`s
+                I guess
+
+        -   last - lag1: f8
+
+        -   Try stratifiying on P_2 and target TODO
+            -   https://www.kaggle.com/code/bogorodvo/bayesianoptimization-p-2-lst-stratification/notebook
+        -   https://www.kaggle.com/code/roberthatch/pyramid-on-statement-dates-notebook
+            -   drop B_29, S_9 (unstable)
+            -   statement distances in days last, avg, min, max
+            -   last statement date, new customer category
+            -   extended ragnar123 feature set
+        -   https://www.kaggle.com/code/roberthatch/amex-feature-engg-gpu-or-cpu-process-in-chunks
+            -   Convert date-time to simple 0-12 value based on year and month. Ignore day. Add S_2_min and S_2_count to the feature set. Normalize S_2_min.
+            -   Don't fill NaN until after creating aggregation features. NaN will be ignored when calculating std, mean, etc.
+            -   Add delta columns, and match columns, comparing last row vs prior row.
+            -   Removed 6 engineered columns that, in batches, often only has single value for all rows.
+            -   Fill any nans in D_50 and S_23-based columns with -32783, to ensure lowest possible number.
+            -   Get total count of data per customer, and total count in last row.
+            -   Drop B_29
+            -   Calculate a simplified hull moving average over the 13 monthly statements for each customer and column.
+        -   https://www.kaggle.com/code/icecreamtea/amex-changing-user-by-step/notebook
+            -   For each step, or rather, for each distribution through the steps, we will find such a trashhold that will best separate classes 1 and 0 in this step.
+                Then, for example, we can aggregate statistics like "how far is our observed random variable from this trashhold".
+                And we can find this trashhold very easily - based on precision and recall.
+        -   Try pyramid
+            -   https://www.kaggle.com/code/roberthatch/pyramid-api-for-easy-deployment
+            -   Idk what to do with the parameters tho
+        -   Retry feature selection
+            -   https://www.kaggle.com/competitions/amex-default-prediction/discussion/339071
+
     -   26/07/2022
         -   Created 11-XGB, trying a more script-oriented approach
             -   Feature ideas
                 -   https://www.kaggle.com/code/ragnar123/amex-lgbm-dart-cv-0-7977
                     -   categorical: count last nunique => f3
                     -   numerical: min max => f4
-                    -   diff between last value and lag1: f8 TODO
+                    -   diff between last value and lag1: f8
                     -   diff between last value and mean: f7
                 -   https://www.kaggle.com/code/thedevastator/lag-features-are-all-you-need
                     -   last - first, last / first => f5
-                        -   Try one of them at a time TODO
                     -   round2 as additional column => f6
-                -   https://www.kaggle.com/code/roberthatch/pyramid-on-statement-dates-notebook
-                -   https://www.kaggle.com/code/roberthatch/amex-feature-engg-gpu-or-cpu-process-in-chunks
             -   Retrying amex metric seems to be working
-
-            -   Retry permutation invariance TODO
-            -   Try stratifiying on P_2 and target TODO
-
     -   25/07/2022
         -   https://www.kaggle.com/code/mrandri19/09-lgbm-cpu?scriptVersionId=101702350 7945 no need for crazy low etas
         -   https://www.kaggle.com/code/bogorodvo/bayesianoptimization-p-2-lst-stratification
