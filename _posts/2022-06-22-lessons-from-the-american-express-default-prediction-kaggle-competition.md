@@ -29,6 +29,31 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
         -   More general tips:
             -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
 
+    -   13/08/2022
+        -   Trying paperspace gradient and their 30GB RAM machines
+            -   https://console.paperspace.com/mrandri19/notebook/r27g4921ibfw3o4?file=%2Fquick_start_pytorch.ipynb
+            -   5GB di hard disk sono un po' pochini
+
+    -   12/08/2022
+        -   Let's run this notebook: https://www.kaggle.com/code/thedevastator/amex-bruteforce-feature-engineering/notebook
+            -   Feature engineering on training dataset takes 18min
+                Does feature engineering on testing dataset work or oom?
+                Training OOMs but I have commented the float16 conversion, which
+                should take approximately 20min. Let's try using it.
+
+    -   11/08/2022
+        -   work on NN
+
+    -   10/08/2022
+        -   work on NN
+
+    -   08/08/2022
+        -   work on 10-NN
+
+    -   28/07/2022
+        -   work on 10-NN
+        -   Use this pattern `.loc[binary_mask, tuple_of_column_names]`
+
     -   27/07/2022
         -   How do I make 11-XGB reproducible?
             -   I am comparing the hash of `train.pq` with a known hash so I am
