@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Lessons from the American Express Default Prediction Kaggle competition"
+title: "[DRAFT] Kaggle AMEX notes"
 ---
 
 -   What I did
@@ -28,6 +28,43 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
             -   As always, amazing insights by cdeotte https://www.kaggle.com/competitions/amex-default-prediction/discussion/336229#1851638
         -   More general tips:
             -   https://neptune.ai/blog/binary-classification-tips-and-tricks-from-kaggle
+
+    -   21/08/2022
+        -   More work on NNs
+        -   Should I add a good XGBoost and CatBoost to my ensemble?
+        -   What's a transformer with GRU head?
+
+    -   20/08/2022
+        -   Ran `15-TabNet`
+            -   OOF score across folds: 0.7892
+            -   Public Score: 0.791
+        -   The notebook `kaggle-amex/DART-oof-inference` performs out-of-fold
+            predictions for the DART model.
+            -   Full OOF AMEX score: 0.7973
+            -   Public Score: 0.798
+        -   Exponential ensemble:
+            -   0.798 but higher than `submission.csv`
+        -   And then let's try this kind of meta-model (is it blending?)
+            -   But how do I do oof preds with TabNet?
+            -   Also the exponential ensemble is not behaving great, so spending
+                more time does not seem worth doing
+
+
+    -   18-19/08/2022
+        -   Train DART
+
+    -   17/08/2022
+        -   Bought Paperspace Pro for 10EUR/month
+        -   Got 30GB machine
+        -   Started training AMEX Bruteforce
+        -   Use the jupyterlab view with view > show log console to see the logs
+            even after reopening a tab
+        -   I am using train_v3_loaded.pkl, test_v3_loaded.pkl from:
+            https://www.kaggle.com/datasets/thedevastator/amex-bruteforce-features
+        -   Each fold should take around 3.5 hours although jesus christ, at
+            epoch 3470 0.8585 train, 0.7990 vallid
+
+        -   Another interesting option is to ssh to the machines
 
     -   13/08/2022
         -   Trying paperspace gradient and their 30GB RAM machines
@@ -786,6 +823,8 @@ title: "Lessons from the American Express Default Prediction Kaggle competition"
 
 -   Ensembling probabilites via log-odds.
     See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/329103
+
+-   Rank ensembling
 
 -   Permutation feature importance:
     See discussion: https://www.kaggle.com/competitions/amex-default-prediction/discussion/331131
