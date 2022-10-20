@@ -115,39 +115,33 @@
                 <ul>
                     <li>
                         <h4 class="font-bold mb-1">Ma chi voto? (Who to vote?)</h4>
-                        <div class="flex flex-row flex-wrap">
-                            <div class="w-1/4 lg:w-1/6 pr-2">
-                                <img class="bg-white" src="./index-images/machivoto.jpeg" />
-                            </div>
-                            <div class="w-3/4 lg:w-5/6">
-                                <p>
-                                    In September 2022, Italy had its 19th
-                                    national political election.
-                                    I have built, along with Augusto Colongo, and Pietro
-                                    Valfrè, "Ma chi voto?" a website that allows users
-                                    to discover how much their opinions align with each
-                                    politicaly party.
-                                </p>
-                                <p>
-                                    We launched the website in collaboration with
-                                    Will, an instagram-based newspaper highly popular
-                                    among the Italian youth.
-                                    Despite the record-low voter turnout, the
-                                    websited launch has been wildly successfull
-                                    with almost half a million users interacting
-                                    with the website and completing the poll
-                                    over 10 days.
-                                </p>
-                                <p>
-                                    The website was powered with a cloud-native
-                                    architecture, leveraging the scalability of
-                                    GCP's Cloud Functions and PostgreSQL via
-                                    GCP Cloud SQL.
-                                    At its peak, it handled over 200 requests
-                                    per second.
-                                </p>
-                            </div>
-                        </div>
+                        <img class="bg-white w-1/4 lg:w-1/6 float-left mr-2" src="./index-images/machivoto.jpeg" />
+                        <p>
+                            In September 2022, Italy had its 19th
+                            national political election.
+                            I have built, along with Augusto Colongo, and Pietro
+                            Valfrè, "Ma chi voto?" a website that allows users
+                            to discover how much their opinions align with each
+                            politicaly party.
+                        </p>
+                        <p>
+                            We launched the website in collaboration with
+                            Will, an instagram-based newspaper highly popular
+                            among the Italian youth.
+                            Despite the record-low voter turnout, the
+                            websited launch has been wildly successfull
+                            with almost half a million users interacting
+                            with the website and completing the poll
+                            over 10 days.
+                        </p>
+                        <p>
+                            The website was powered with a cloud-native
+                            architecture, leveraging the scalability of
+                            GCP's Cloud Functions and PostgreSQL via
+                            GCP Cloud SQL.
+                            At its peak, it handled over 200 requests
+                            per second.
+                        </p>
                     </li>
                     <li>
                         <h4 class="font-bold mb-1">Kaggle competitions</h4>
@@ -206,75 +200,71 @@
             <section>
                 <h3 class="text-xl font-bold mb-1">2021</h3>
                 <ul>
-                    <li>
-                        <div class="flex flex-row flex-wrap">
-                            <div class="w-1/4 lg:w-1/6 pr-2">
-                                <img class="bg-white" src="./index-images/cyclone-high-level-architecture.png" />
-                            </div>
-                            <div class="w-3/4 lg:w-5/6">
-                                <p>
-                                    <a href="https://github.com/mrandri19/cyclone">
-                                        Cyclone
-                                    </a>
-                                    is a software system that performs
-                                    serving, monitoring, and automatic
-                                    retraining of ML models. This is a
-                                    proof-of-concept implementation of it,
-                                    created as the final project for Aalto
-                                    University's CS-E4660:
-                                    <a href="https://avehtari.github.io/BDA_course_Aalto/Aalto2021.html">Advanced Topics
-                                        in Software
-                                        Systems</a>.
-                                </p>
-                                <p>
-                                    It was built on Google Cloud Platform,
-                                    using several technologies such as:
-                                    scikit-learn, mlflow, GCP Cloud Run, GCP
-                                    Cloud SQL &amp; PostgreSQL, GCP Artifact
-                                    Registry, Grafana, Docker.
-                                </p>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="flex flex-row flex-wrap">
-                            <a href="/assets/pdf/BDA_Project.pdf" class="w-1/4 lg:w-1/6 pr-2">
-                                <img src="./index-images/BDA_report.jpg" />
+                    <li class="clear-both cf">
+                        <h4 class="font-bold mb-1">Cyclone: self-retraining ML model platform</h4>
+                        <img class="bg-white w-1/4 lg:w-1/6 float-left mr-2"
+                            src="./index-images/cyclone-high-level-architecture.png" />
+                        <p>
+                            <a href="https://github.com/mrandri19/cyclone">
+                                Cyclone
                             </a>
-                            <div class="w-3/4 lg:w-5/6">
-                                <p>
-                                    Built, for Aalto university's
-                                    <a href="https://avehtari.github.io/BDA_course_Aalto/Aalto2021.html">Bayesian Data
-                                        Analysis course</a>, an hierchical model for time series
-                                    forecasting.
-                                </p>
-                                <p>
-                                    My teammate (Constantin Merbecks) and I,
-                                    reimplemented and extended
-                                    <a href="https://facebook.github.io/prophet/">Facebook's Prophet</a>
-                                    framework in R and Stan. On top of
-                                    Prophet, we added a hierarchical
-                                    structure to improve predictive
-                                    performance on a sales forecasting task.
-                                </p>
-                            </div>
-                        </div>
+                            is a software system that performs
+                            serving, monitoring, and automatic
+                            retraining of ML models. This is a
+                            proof-of-concept implementation of it,
+                            created as the final project for Aalto
+                            University's CS-E4660:
+                            <a href="https://avehtari.github.io/BDA_course_Aalto/Aalto2021.html">Advanced Topics
+                                in Software
+                                Systems</a>.
+                        </p>
+                        <p>
+                            It was built on Google Cloud Platform,
+                            using several technologies such as:
+                            scikit-learn, mlflow, GCP Cloud Run, GCP
+                            Cloud SQL &amp; PostgreSQL, GCP Artifact
+                            Registry, Grafana, Docker.
+                        </p>
                     </li>
-                    <li>
+                    <li class="clear-both cf">
+                        <h4 class="font-bold mb-1">Multi-level Bayesian time-series forecasting</h4>
+                        <a class="bg-white w-1/4 lg:w-1/6 float-left mr-2" href="/assets/pdf/BDA_Project.pdf">
+                            <img src="./index-images/BDA_report.jpg" />
+                        </a>
+                        <p>
+                            Built, for Aalto university's
+                            <a href="https://avehtari.github.io/BDA_course_Aalto/Aalto2021.html">Bayesian Data
+                                Analysis course</a>, an hierchical model for time series
+                            forecasting.
+                        </p>
+                        <p>
+                            My teammate (Constantin Merbecks) and I,
+                            reimplemented and extended
+                            <a href="https://facebook.github.io/prophet/">Facebook's Prophet</a>
+                            framework in R and Stan. On top of
+                            Prophet, we added a hierarchical
+                            structure to improve predictive
+                            performance on a sales forecasting task.
+                        </p>
+                    </li>
+                    <li class="clear-both" class="clear-both">
+                        <h4 class="font-bold mb-1">Open Source</h4>
                         <p>
                             Participated to Hacktoberfest 2021, mainly
                             working on
                             <a href="https://github.com/mindsdb/lightwood">mindsdb/lightwood</a>.
                         </p>
                     </li>
-                    <li>
+                    <li class="clear-both cf">
+                        <h4 class="font-bold mb-1">Internship</h4>
                         <p>
                             In the summer, I was a software engineer intern
                             at
                             <a href="https://www.optiver.com/">Optiver Amsterdam</a>.
                         </p>
                     </li>
-                    <li>
+                    <li class="clear-both cf">
+                        <h4 class="font-bold mb-1">Bayesian hierarchical models</h4>
                         <div class="flex flex-row flex-wrap">
                             <a href="/assets/pdf/MAML Report.pdf" class="w-1/4 lg:w-1/6 pr-2">
                                 <img src="./index-images/MAML-report.jpg" />
@@ -295,7 +285,8 @@
                             </div>
                         </div>
                     </li>
-                    <li>
+                    <li class="clear-both cf">
+                        <h4 class="font-bold mb-1">ML Challenges: RecSys21, SemEval21 WiC</h4>
                         <p>
                             Participated in the
                             <a href="https://competitions.codalab.org/competitions/27054">
@@ -313,8 +304,7 @@
                             <a href="https://github.com/MAL-TO/recsys-2021">Link</a>
                             to the code.
                         </p>
-                    </li>
-                    <li>
+
                         <p>
                             Participated in the
                             <a href="https://competitions.codalab.org/competitions/27054">
@@ -323,7 +313,7 @@
                             competition with MALTO.
                         </p>
                     </li>
-                    <li>
+                    <li class="clear-both cf">
                         <p>
                             Made a
                             <a href="https://www.youtube.com/watch?v=O7KXJfrs2FA">
@@ -337,47 +327,42 @@
                             </a>
                         </p>
                     </li>
-                    <li>
-                        <div class="flex flex-row flex-wrap">
-                            <a href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Stochastic_Optimization.pdf"
-                                class="w-1/4 lg:w-1/6 pr-2">
-                                <img src="./index-images/stochastic-optimization-report.jpg" />
-                            </a>
-                            <a href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Unconstrained_Optimization.pdf"
-                                class="w-1/4 lg:w-1/6 pr-2">
-                                <img src="./index-images/unconstrained-optimization-report.jpg" />
-                            </a>
-                            <div class="w-2/4 lg:w-4/6">
-                                <p>
-                                    Implemented several unconstrained and
-                                    constrained optimization algorithms in
-                                    Julia.
-                                </p>
-                                <p>
-                                    This was part of my homework for the
-                                    Numerical optimization for large scale
-                                    problems and Stochastic Optimization
-                                    course.
-                                </p>
-                            </div>
-                        </div>
+                    <li class="clear-both cf">
+                        <a
+                            href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Stochastic_Optimization.pdf">
+                            <img class="bg-white w-1/4 lg:w-1/6 float-left mr-2"
+                                src="./index-images/stochastic-optimization-report.jpg" />
+                        </a>
+                        <a
+                            href="https://github.com/mrandri19/polito-numerical-optimization/blob/main/Relazione_Unconstrained_Optimization.pdf">
+                            <img class="bg-white w-1/4 lg:w-1/6 float-left mr-2"
+                                src="./index-images/unconstrained-optimization-report.jpg" />
+                        </a>
+                        <p>
+                            Implemented several unconstrained and
+                            constrained optimization algorithms in
+                            Julia.
+                        </p>
+                        <p>
+                            This was part of my homework for the
+                            Numerical optimization for large scale
+                            problems and Stochastic Optimization
+                            course.
+                        </p>
                     </li>
-                    <li>
-                        <div class="flex flex-row flex-wrap">
-                            <a href="https://github.com/mrandri19/polito2020-data-science-lab/blob/main/Final%20Project/DSL_Project_Report.pdf"
-                                class="w-1/4 lg:w-1/6 pr-2">
-                                <img src="./index-images/dsl-report.jpg" />
-                            </a>
-                            <div class="w-3/4 lg:w-5/6">
-                                <p>
-                                    Built, for my Data Science Lab exam, a
-                                    pipeline for predicting the quality of a
-                                    wine from its reviews.
-                                </p>
-                            </div>
-                        </div>
+                    <li class="clear-both cf">
+                        <a
+                            href="https://github.com/mrandri19/polito2020-data-science-lab/blob/main/Final%20Project/DSL_Project_Report.pdf">
+                            <img class="bg-white w-1/4 lg:w-1/6 float-left mr-2" s
+                                src="./index-images/dsl-report.jpg" />
+                        </a>
+                        <p>
+                            Built, for my Data Science Lab exam, a
+                            pipeline for predicting the quality of a
+                            wine from its reviews.
+                        </p>
                     </li>
-                    <li>
+                    <li class="clear-both cf">
                         <div class="flex flex-row flex-wrap">
                             <div class="pr-2 w-1/4 lg:w-1/6">
                                 <img src="./index-images/raytracer.jpg" />
@@ -393,7 +378,7 @@
                             </div>
                         </div>
                     </li>
-                    <li>
+                    <li class="clear-both cf">
                         <p>
                             Wrote a Tensorflow-like
                             <a

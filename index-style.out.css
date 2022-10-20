@@ -593,6 +593,10 @@ video {
   float: left;
 }
 
+.clear-both {
+  clear: both;
+}
+
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -622,6 +626,10 @@ video {
   display: flex;
 }
 
+.table {
+  display: table;
+}
+
 .h-4 {
   height: 1rem;
 }
@@ -636,10 +644,6 @@ video {
 
 .w-3\/4 {
   width: 75%;
-}
-
-.w-2\/4 {
-  width: 50%;
 }
 
 .max-w-screen-lg {
@@ -690,19 +694,19 @@ video {
 }
 
 .text-base {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
 }
 
 .text-4xl {
-  font-size: 3.0512499999999996rem;
+  font-size: 2.9292rem;
 }
 
 .text-2xl {
-  font-size: 1.9537499999999999rem;
+  font-size: 1.8756rem;
 }
 
 .text-xl {
-  font-size: 1.5625rem;
+  font-size: 1.5rem;
 }
 
 .font-bold {
@@ -768,6 +772,27 @@ main ul img {
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
 }
 
+.cf:before,
+.cf:after {
+  content: " ";
+  /* 1 */
+  display: table;
+  /* 2 */
+}
+
+.cf:after {
+  clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+
+.cf {
+  zoom: 1;
+}
+
 .hover\:underline:hover {
   -webkit-text-decoration-line: underline;
           text-decoration-line: underline;
@@ -792,9 +817,5 @@ main ul img {
 
   .lg\:w-5\/6 {
     width: 83.333333%;
-  }
-
-  .lg\:w-4\/6 {
-    width: 66.666667%;
   }
 }
