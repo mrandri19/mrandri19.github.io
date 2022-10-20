@@ -24,5 +24,8 @@ bundle exec jekyll serve --livereload
 > TODO(Andrea): explain tailwind setup
 
 ```shell
-
+# install tailwindcss (needed only once)
+npm i tailwindcss
+# rebuild the css on changes
+npx tailwindcss -i index-style.css -o index-style.out.css --watch
 ```

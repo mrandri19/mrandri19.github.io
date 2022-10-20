@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="index-style.out.css" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBTQYT7Z06"></script>
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-FBTQYT7Z06"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
         function gtag() {
@@ -23,7 +23,7 @@
         gtag("js", new Date());
 
         gtag("config", "G-FBTQYT7Z06");
-    </script>
+    </script> -->
 </head>
 
 <body class="
@@ -38,7 +38,7 @@
             dark:bg-gray-900 dark:text-white
         ">
     <header>
-        <h1 class="text-4xl font-bold text-center py-3">
+        <h1 class="text-4xl font-bold text-center">
             Andrea Cognolato
         </h1>
         <nav class="mb-3">
@@ -90,7 +90,7 @@
                             <path
                                 d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001zm-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708l-1.585-1.585z" />
                         </svg>
-                        <span> Blog</span>
+                        <span>Blog</span>
                     </a>
                 </li>
             </ul>
@@ -166,47 +166,40 @@
                     </li>
                     <li>
                         <h4 class="font-bold mb-1">M.Sc. Thesis</h4>
-                        <div class="flex flex-row flex-wrap">
-                            <div class="w-1/4 lg:w-1/6 pr-2">
-                                <a href="/assets/pdf/AndreaCognolatoMscThesis.pdf">
-                                    <img class="bg-white" src="./index-images/msc-thesis-cover.jpg" />
-                                </a>
-                            </div>
-                            <div class="w-1/4 lg:w-1/6 pr-2">
-                                <a href="/assets/pdf/AndreaCognolatoMscThesis.pdf">
-                                    <img class="bg-white" src="./index-images/msc-thesis.jpg" />
-                                </a>
-                            </div>
-                            <div class="w-2/4 lg:w-4/6">
-                                <p>
-                                    I spend the first six months of 2022 researching
-                                    Gaussian Processes and their applications to
-                                    pharmacodynamics as part of my master's thesis.
-                                </p>
-                                <p>
-                                    Together with Pekka Marttinen and Chaglar Hizli,
-                                    my supervisors from Aalto University and Mauro
-                                    Gasparini, my supervisor from Politecnico di
-                                    Torino, we analyzed and developed state-of-the-art
-                                    techniques for estimating treatment response curves
-                                    for blood glucose levels.
-                                </p>
-                                <p>
-                                    Honestly, we did so much work and the thesis
-                                    contains 40% of it, most of it is unwritten knowledge.
-                                    I will just leave some keywords:
-                                    Gaussian Processes (GPs), custom GP kernels, gpflow,
-                                    conjugate priors,
-                                    Tensorflow, Pytorch, Julia, JAX,
-                                    Multi-Output Gaussian Processes (MOGPs),
-                                    matrix-valued kernels, time-limited signals,
-                                    Ordinary Differential Equations (ODEs),
-                                    Latent Force Models (LFMs), Nonparametric Bayesian Statistics,
-                                    Variational Inference (VI), Markov Chain Monte Carlo (MCMC),
-                                    Probabilisti Propgrammign (PP), Surrogate Models, ...
-                                </p>
-                            </div>
-                        </div>
+                        <a href="/assets/pdf/AndreaCognolatoMscThesis.pdf">
+                            <img class="bg-white w-1/4 lg:w-1/6 float-left mr-2"
+                                src="./index-images/msc-thesis-cover.jpg" />
+                        </a>
+                        <a href="/assets/pdf/AndreaCognolatoMscThesis.pdf">
+                            <img class="bg-white w-1/4 lg:w-1/6 float-left mr-2" src="./index-images/msc-thesis.jpg" />
+                        </a>
+                        <p>
+                            I spent the first six months of 2022 researching
+                            Gaussian Processes and their applications to
+                            pharmacodynamics as part of my master's thesis.
+                        </p>
+                        <p>
+                            Together with Pekka Marttinen and Chaglar Hizli,
+                            my supervisors from Aalto University and Mauro
+                            Gasparini, my supervisor from Politecnico di
+                            Torino, we analyzed and developed state-of-the-art
+                            techniques for estimating treatment response curves
+                            for blood glucose levels.
+                        </p>
+                        <p>
+                            Honestly, we did so much work and the thesis
+                            contains 40% of it, most of it is unwritten knowledge.
+                            I will just leave some keywords:
+                            Gaussian Processes (GPs), custom GP kernels, gpflow,
+                            conjugate priors,
+                            Tensorflow, Pytorch, Julia, JAX,
+                            Multi-Output Gaussian Processes (MOGPs),
+                            matrix-valued kernels, time-limited signals,
+                            Ordinary Differential Equations (ODEs),
+                            Latent Force Models (LFMs), Nonparametric Bayesian Statistics,
+                            Variational Inference (VI), Markov Chain Monte Carlo (MCMC),
+                            Probabilisti Propgrammign (PP), Surrogate Models, ...
+                        </p>
                     </li>
                 </ul>
             </section>
