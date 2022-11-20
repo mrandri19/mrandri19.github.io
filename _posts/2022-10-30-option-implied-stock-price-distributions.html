@@ -1,5 +1,4 @@
 ---
-title: "Option implied price distribution"
 ---
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
@@ -14,7 +13,7 @@ title: "Option implied price distribution"
   <meta name="author" content="Andrea Cognolato">
   <meta name="dcterms.date" content="2022-10-30">
 
-  <title>Options and implied volatility</title>
+  <title>Option-implied stock price distributions</title>
   <style>
     code {
       white-space: pre-wrap;
@@ -315,6 +314,7 @@ title: "Option implied price distribution"
   <link href="/assets/02-price-dist-pipeline_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet"
     id="quarto-bootstrap" data-mode="light">
 
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
 
 </head>
 
@@ -328,21 +328,43 @@ title: "Option implied price distribution"
         <ul>
           <li><a href="#introduction" id="toc-introduction" class="nav-link active"
               data-scroll-target="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
-          <li><a href="#price" id="toc-price" class="nav-link" data-scroll-target="#price"><span
-                class="toc-section-number">2</span> Price</a></li>
-          <li><a href="#implied-volatility-iv" id="toc-implied-volatility-iv" class="nav-link"
-              data-scroll-target="#implied-volatility-iv"><span class="toc-section-number">3</span> Implied Volatility
-              (IV)</a></li>
-          <li><a href="#smoothed-iv" id="toc-smoothed-iv" class="nav-link" data-scroll-target="#smoothed-iv"><span
-                class="toc-section-number">4</span> Smoothed IV</a></li>
-          <li><a href="#interpolated-iv" id="toc-interpolated-iv" class="nav-link"
-              data-scroll-target="#interpolated-iv"><span class="toc-section-number">5</span> Interpolated IV</a></li>
-          <li><a href="#iv-interpolated-price" id="toc-iv-interpolated-price" class="nav-link"
-              data-scroll-target="#iv-interpolated-price"><span class="toc-section-number">6</span> IV-Interpolated
-              price</a></li>
-          <li><a href="#implied-price-pdf" id="toc-implied-price-pdf" class="nav-link"
-              data-scroll-target="#implied-price-pdf"><span class="toc-section-number">7</span> Implied price PDF</a>
+          <li><a href="#method" id="toc-method" class="nav-link" data-scroll-target="#method"><span
+                class="toc-section-number">2</span> Method</a>
+            <ul class="collapse">
+              <li><a href="#can-we-just-use-prices" id="toc-can-we-just-use-prices" class="nav-link"
+                  data-scroll-target="#can-we-just-use-prices"><span class="toc-section-number">2.1</span> Can we just
+                  use prices?</a></li>
+              <li><a href="#lets-work-in-iv-space" id="toc-lets-work-in-iv-space" class="nav-link"
+                  data-scroll-target="#lets-work-in-iv-space"><span class="toc-section-number">2.2</span> Let’s work in
+                  IV-space</a></li>
+            </ul>
           </li>
+          <li><a href="#implementation" id="toc-implementation" class="nav-link"
+              data-scroll-target="#implementation"><span class="toc-section-number">3</span> Implementation</a>
+            <ul class="collapse">
+              <li><a href="#price" id="toc-price" class="nav-link" data-scroll-target="#price"><span
+                    class="toc-section-number">3.1</span> Price</a></li>
+              <li><a href="#implied-volatility-iv" id="toc-implied-volatility-iv" class="nav-link"
+                  data-scroll-target="#implied-volatility-iv"><span class="toc-section-number">3.2</span> Implied
+                  Volatility (IV)</a></li>
+              <li><a href="#smoothed-iv" id="toc-smoothed-iv" class="nav-link" data-scroll-target="#smoothed-iv"><span
+                    class="toc-section-number">3.3</span> Smoothed IV</a></li>
+              <li><a href="#interpolated-iv" id="toc-interpolated-iv" class="nav-link"
+                  data-scroll-target="#interpolated-iv"><span class="toc-section-number">3.4</span> Interpolated IV</a>
+              </li>
+              <li><a href="#iv-interpolated-price" id="toc-iv-interpolated-price" class="nav-link"
+                  data-scroll-target="#iv-interpolated-price"><span class="toc-section-number">3.5</span>
+                  IV-Interpolated price</a></li>
+              <li><a href="#implied-price-pdf" id="toc-implied-price-pdf" class="nav-link"
+                  data-scroll-target="#implied-price-pdf"><span class="toc-section-number">3.6</span> Implied price
+                  PDF</a></li>
+            </ul>
+          </li>
+          <li><a href="#conclusion-and-future-work" id="toc-conclusion-and-future-work" class="nav-link"
+              data-scroll-target="#conclusion-and-future-work"><span class="toc-section-number">4</span> Conclusion and
+              future work</a></li>
+          <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span
+                class="toc-section-number">5</span> References</a></li>
         </ul>
       </nav>
     </div>
@@ -352,7 +374,7 @@ title: "Option implied price distribution"
         <div class="quarto-title">
           <div class="quarto-title-block">
             <div>
-              <h1 class="title">Options and implied volatility</h1><button type="button"
+              <h1 class="title">Option-implied stock price distributions</h1><button type="button"
                 class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown"
                 aria-expanded="false"><i class="bi"></i> Code</button>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu">
@@ -418,36 +440,86 @@ title: "Option implied price distribution"
           </div>
         </details>
       </div>
-      <section id="introduction" class="level2" data-number="1">
-        <h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span>
-          Introduction</h2>
-        <ul>
-          <li>Sources
-            <ul>
-              <li><a href="https://reasonabledeviations.com/2020/10/10/option-implied-pdfs-2/">Reasonable Deviations -
-                  Option-implied probability distributions, part 2</a></li>
-              <li><a
-                  href="https://www.morganstanley.com/content/dam/msdotcom/en/assets/pdfs/Options_Probabilities_Exhibit_Link.pdf">Morgan
-                  Stanley - How Options Implied Probabilities Are Calculated</a></li>
-            </ul>
-          </li>
-        </ul>
+      <section id="introduction" class="level1" data-number="1">
+        <h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+        <p>Options are financial contracts that give the buyer the right to purchase (or sell) the underlying asset at a
+          fixed price in a certain time period. The <em>strike</em> <span class="math inline">\(E\)</span> of an option
+          determines the price at which the underlying can be bought (for a call option) or sold (for a put option). The
+          <em>exiration</em> <span class="math inline">\(T\)</span> determines the date at which the contract stops
+          being valid.
+        </p>
+        <p>Option prices contain the market’s probabilistic forecast on the future price of the underlying. This is
+          because, in theory, the value of a call option <span class="math inline">\(V(S, t)\)</span> at time <span
+            class="math inline">\(t\)</span> on an underlying <span class="math inline">\(S\)</span> is given by:</p>
+        <p><span class="math display">\[ V(S, t) = e^{-r(T - t)} \mathbb{E}^{\mathbb{Q}} \left[ \text{max}(S - E, 0)
+            \right] \]</span></p>
+        <p>where <span class="math inline">\(\mathbb{E}^{\mathbb{Q}}[f(S)]\)</span> is the expectation of a function of
+          the underlying <span class="math inline">\(f(S)\)</span> under the <em>risk-neutral</em> probability measure
+          <span class="math inline">\(\mathbb{Q}\)</span>.
+        </p>
+        <p>We can recover the distribution (or probability meausure) of future prices <span
+            class="math inline">\(\mathbb{Q}\)</span> by “inverting” the expectation that determines the option prices.
+          How? In 1978 Breeden and Litzenberger gave us a formula that links option prices and the Probability
+          Distribution Function (PDF) of the risk-netral distribution:</p>
+        <p><span class="math display">\[ \frac{\partial^2 V}{\partial E^2} = e^{-r(T - t)} p_{\mathbb{Q}}(E)\]</span>
+        </p>
       </section>
-      <section id="price" class="level2" data-number="2">
-        <h2 data-number="2" class="anchored" data-anchor-id="price"><span class="header-section-number">2</span> Price
-        </h2>
-        <div class="cell" data-execution_count="41">
-          <div class="sourceCode cell-code" id="cb3">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ticker <span class="op">=</span> yf.Ticker(<span class="st">"AAPL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
-          </div>
-        </div>
-        <div class="cell" data-execution_count="148">
-          <details>
-            <summary>Code</summary>
-            <div class="sourceCode cell-code" id="cb4">
+      <section id="method" class="level1" data-number="2">
+        <h1 data-number="2"><span class="header-section-number">2</span> Method</h1>
+        <section id="can-we-just-use-prices" class="level2" data-number="2.1">
+          <h2 data-number="2.1" class="anchored" data-anchor-id="can-we-just-use-prices"><span
+              class="header-section-number">2.1</span> Can we just use prices?</h2>
+          <p>The simplest implementation applies the Breeden-Litzenberger formula directly to option prices by
+            approximating the second-order derivative with finite differences:</p>
+          <p><span class="math display">\[\begin{align*}
+
+              \frac{\partial^2 V}{\partial E^2} &amp; = e^{-r(T - t)} p_{\mathbb{Q}}(E) \\
+
+              \implies p_{\mathbb{Q}}(E) &amp; = e^{r(T - t)} \frac{\partial^2 V}{\partial E^2} \\
+
+              &amp; \approx e^{r(T - t)} \frac{V(E + \delta E) + 2 V(E) - V(E - \delta E)}{(\delta E)^2}
+
+              \end{align*}\]</span></p>
+          <p>Unfortunately, the option’s strikes aren’t close enough to one another get a good approximation of the
+            second derivative. For underlyings in the $100-200 range, the strikes are usually $5 apart from each other.
+          </p>
+          <p>To improve the finite difference approximation we can interpolate the prices. Unfortunately this can lead
+            to arbitrages, because a linear or, worse, a concave price interpolation implies a zero or negative (!)
+            value in the implied future price PDF.</p>
+        </section>
+        <section id="lets-work-in-iv-space" class="level2" data-number="2.2">
+          <h2 data-number="2.2" class="anchored" data-anchor-id="lets-work-in-iv-space"><span
+              class="header-section-number">2.2</span> Let’s work in IV-space</h2>
+          <p>Instead of directly interpolating the option’s prices, we take a step backwards and interpolate one of the
+            parameters that determine the price of an option.</p>
+          <p>The price of an option is determined by several variables and parameters, and the full formula is:</p>
+          <p><span class="math display">\[ \text{option price} = V(S, t; \sigma, r, D, E, T)\]</span></p>
+          <p>where: * <span class="math inline">\(S\)</span> is the price of the underlying asset * <span
+              class="math inline">\(t\)</span> is the time to expiration (in years) * <span
+              class="math inline">\(\sigma\)</span> is the volatility (annualized standard deviation of the returns) of
+            the underlying * <span class="math inline">\(r\)</span> is the interest rate (annualized, compounded
+            continuously) * <span class="math inline">\(D\)</span> is the dividend yield of the asset, e.g.&nbsp;a stock
+            * <span class="math inline">\(E\)</span> is the strike price * <span class="math inline">\(T\)</span> is the
+            expiration date</p>
+        </section>
+      </section>
+      <section id="implementation" class="level1" data-number="3">
+        <h1 data-number="3"><span class="header-section-number">3</span> Implementation</h1>
+        <section id="price" class="level2" data-number="3.1">
+          <h2 data-number="3.1" class="anchored" data-anchor-id="price"><span class="header-section-number">3.1</span>
+            Price</h2>
+          <div class="cell" data-execution_count="205">
+            <div class="sourceCode cell-code" id="cb3">
               <pre
-                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> decorate_price_axes(ax: plt.Axes):</span>
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ticker <span class="op">=</span> yf.Ticker(<span class="st">"AAPL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
+          </div>
+          <div class="cell" data-execution_count="206">
+            <details>
+              <summary>Code</summary>
+              <div class="sourceCode cell-code" id="cb4">
+                <pre
+                  class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> decorate_price_axes(ax: plt.Axes):</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    ax.axvline(ticker.info[<span class="st">"currentPrice"</span>], ls<span class="op">=</span><span class="st">"--"</span>, c<span class="op">=</span><span class="st">"k"</span>, label<span class="op">=</span><span class="st">"Current price"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    ax.xaxis.set_major_formatter(<span class="st">"$</span><span class="sc">{x:.0f}</span><span class="st">"</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    ax.yaxis.set_major_formatter(<span class="st">"$</span><span class="sc">{x:.0f}</span><span class="st">"</span>)</span>
@@ -461,13 +533,13 @@ title: "Option implied price distribution"
 <span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"Strike"</span>)</span>
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">"Implied volatility"</span>)</span>
 <span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    ax.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
-            </div>
-          </details>
-        </div>
-        <div class="cell" data-execution_count="149">
-          <div class="sourceCode cell-code" id="cb5">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>prices <span class="op">=</span> (</span>
+              </div>
+            </details>
+          </div>
+          <div class="cell" data-execution_count="207">
+            <div class="sourceCode cell-code" id="cb5">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>prices <span class="op">=</span> (</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    ticker.option_chain(date<span class="op">=</span><span class="st">"2023-02-17"</span>)</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    .calls.rename(columns<span class="op">=</span>{<span class="st">"lastPrice"</span>: <span class="st">"last_price"</span>})[</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>        [<span class="st">"strike"</span>, <span class="st">"bid"</span>, <span class="st">"ask"</span>, <span class="st">"last_price"</span>]</span>
@@ -475,14 +547,14 @@ title: "Option implied price distribution"
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    .assign(mid_price<span class="op">=</span><span class="kw">lambda</span> df: (df[<span class="st">"bid"</span>] <span class="op">+</span> df[<span class="st">"ask"</span>]) <span class="op">/</span> <span class="dv">2</span>)</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    .set_index(<span class="st">"strike"</span>)[[<span class="st">"mid_price"</span>, <span class="st">"last_price"</span>]]</span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
           </div>
-        </div>
-        <div class="cell" data-execution_count="150">
-          <details>
-            <summary>Code</summary>
-            <div class="sourceCode cell-code" id="cb6">
-              <pre
-                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> prices.plot(</span>
+          <div class="cell" data-execution_count="208">
+            <details>
+              <summary>Code</summary>
+              <div class="sourceCode cell-code" id="cb6">
+                <pre
+                  class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> prices.plot(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    style<span class="op">=</span><span class="st">"+"</span>,</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    xlabel<span class="op">=</span><span class="st">"Strike"</span>,</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    ylabel<span class="op">=</span><span class="st">"Option price"</span>,</span>
@@ -490,20 +562,20 @@ title: "Option implied price distribution"
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>decorate_price_axes(ax)</span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+              </div>
+            </details>
+            <div class="cell-output cell-output-display">
+              <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
             </div>
-          </details>
-          <div class="cell-output cell-output-display">
-            <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-7-output-1.png" class="img-fluid"></p>
           </div>
-        </div>
-      </section>
-      <section id="implied-volatility-iv" class="level2" data-number="3">
-        <h2 data-number="3" class="anchored" data-anchor-id="implied-volatility-iv"><span
-            class="header-section-number">3</span> Implied Volatility (IV)</h2>
-        <div class="cell" data-execution_count="6">
-          <div class="sourceCode cell-code" id="cb7">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> call_option_value_black_scholes(</span>
+        </section>
+        <section id="implied-volatility-iv" class="level2" data-number="3.2">
+          <h2 data-number="3.2" class="anchored" data-anchor-id="implied-volatility-iv"><span
+              class="header-section-number">3.2</span> Implied Volatility (IV)</h2>
+          <div class="cell" data-execution_count="6">
+            <div class="sourceCode cell-code" id="cb7">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> call_option_value_black_scholes(</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    S,</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    t,</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    sigma,</span>
@@ -521,12 +593,12 @@ title: "Option implied price distribution"
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    V <span class="op">=</span> S <span class="op">*</span> np.exp(<span class="op">-</span>D <span class="op">*</span> tau) <span class="op">*</span> N(d1) <span class="op">-</span> E <span class="op">*</span> np.exp(<span class="op">-</span>r <span class="op">*</span> tau) <span class="op">*</span> N(d2)</span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> V</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
           </div>
-        </div>
-        <div class="cell" data-execution_count="7">
-          <div class="sourceCode cell-code" id="cb8">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> value_to_iv(V, E, S, t, r, D, T):</span>
+          <div class="cell" data-execution_count="7">
+            <div class="sourceCode cell-code" id="cb8">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> value_to_iv(V, E, S, t, r, D, T):</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    optimization_result <span class="op">=</span> minimize_scalar(</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        fun<span class="op">=</span><span class="kw">lambda</span> sigma: (</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>            V <span class="op">-</span> call_option_value_black_scholes(S, t, sigma <span class="op">+</span> <span class="fl">1e-8</span>, r, D, E, T)</span>
@@ -536,12 +608,12 @@ title: "Option implied price distribution"
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> optimization_result.success</span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> optimization_result.x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
           </div>
-        </div>
-        <div class="cell" data-execution_count="8">
-          <div class="sourceCode cell-code" id="cb9">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> ticker.info[<span class="st">"currentPrice"</span>]</span>
+          <div class="cell" data-execution_count="8">
+            <div class="sourceCode cell-code" id="cb9">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>S <span class="op">=</span> ticker.info[<span class="st">"currentPrice"</span>]</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>r <span class="op">=</span> <span class="fl">0.0325</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> <span class="fl">0.0059</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="fl">1.0</span></span>
@@ -554,58 +626,58 @@ title: "Option implied price distribution"
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>ivs[<span class="st">"iv"</span>] <span class="op">=</span> [</span>
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    value_to_iv(V, E, S, t, r, D, T) <span class="cf">for</span> E, V <span class="kw">in</span> <span class="bu">zip</span>(prices.index, prices[<span class="st">"mid_price"</span>])</span>
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
-          </div>
-        </div>
-        <div class="cell" data-execution_count="151">
-          <details>
-            <summary>Code</summary>
-            <div class="sourceCode cell-code" id="cb10">
-              <pre
-                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> ivs.plot(title<span class="op">=</span><span class="st">"Implied Volatility (IV) for every strike"</span>, style<span class="op">=</span><span class="st">"+"</span>)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>decorate_iv_axes(ax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
             </div>
-          </details>
-          <div class="cell-output cell-output-display">
-            <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
           </div>
-        </div>
-      </section>
-      <section id="smoothed-iv" class="level2" data-number="4">
-        <h2 data-number="4" class="anchored" data-anchor-id="smoothed-iv"><span class="header-section-number">4</span>
-          Smoothed IV</h2>
-        <div class="cell" data-execution_count="110">
-          <div class="sourceCode cell-code" id="cb11">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>smoothed_ivs <span class="op">=</span> (</span>
+          <div class="cell" data-execution_count="151">
+            <details>
+              <summary>Code</summary>
+              <div class="sourceCode cell-code" id="cb10">
+                <pre
+                  class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> ivs.plot(title<span class="op">=</span><span class="st">"Implied Volatility (IV) for every strike"</span>, style<span class="op">=</span><span class="st">"+"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>decorate_iv_axes(ax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+              </div>
+            </details>
+            <div class="cell-output cell-output-display">
+              <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-11-output-1.png" class="img-fluid"></p>
+            </div>
+          </div>
+        </section>
+        <section id="smoothed-iv" class="level2" data-number="3.3">
+          <h2 data-number="3.3" class="anchored" data-anchor-id="smoothed-iv"><span
+              class="header-section-number">3.3</span> Smoothed IV</h2>
+          <div class="cell" data-execution_count="110">
+            <div class="sourceCode cell-code" id="cb11">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>smoothed_ivs <span class="op">=</span> (</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    ivs.rolling(window<span class="op">=</span><span class="dv">7</span>, center<span class="op">=</span><span class="va">True</span>, win_type<span class="op">=</span><span class="st">"gaussian"</span>)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    .mean(std<span class="op">=</span><span class="dv">2</span>)</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    .dropna()</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    .rename(columns<span class="op">=</span>{<span class="st">"iv"</span>: <span class="st">"smoothed_iv"</span>})</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
           </div>
-        </div>
-        <div class="cell" data-execution_count="152">
-          <details>
-            <summary>Code</summary>
-            <div class="sourceCode cell-code" id="cb12">
-              <pre
-                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> ivs.plot(title<span class="op">=</span><span class="st">"IV vs smoothed IV for every strike"</span>, style<span class="op">=</span><span class="st">"+"</span>)</span>
+          <div class="cell" data-execution_count="152">
+            <details>
+              <summary>Code</summary>
+              <div class="sourceCode cell-code" id="cb12">
+                <pre
+                  class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> ivs.plot(title<span class="op">=</span><span class="st">"IV vs smoothed IV for every strike"</span>, style<span class="op">=</span><span class="st">"+"</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>smoothed_ivs.plot(ax<span class="op">=</span>ax, style<span class="op">=</span><span class="st">"."</span>)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>decorate_iv_axes(ax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+              </div>
+            </details>
+            <div class="cell-output cell-output-display">
+              <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
             </div>
-          </details>
-          <div class="cell-output cell-output-display">
-            <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-13-output-1.png" class="img-fluid"></p>
           </div>
-        </div>
-      </section>
-      <section id="interpolated-iv" class="level2" data-number="5">
-        <h2 data-number="5" class="anchored" data-anchor-id="interpolated-iv"><span
-            class="header-section-number">5</span> Interpolated IV</h2>
-        <div class="cell" data-execution_count="193">
-          <div class="sourceCode cell-code" id="cb13">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>upsampling_rate <span class="op">=</span> <span class="dv">50</span></span>
+        </section>
+        <section id="interpolated-iv" class="level2" data-number="3.4">
+          <h2 data-number="3.4" class="anchored" data-anchor-id="interpolated-iv"><span
+              class="header-section-number">3.4</span> Interpolated IV</h2>
+          <div class="cell" data-execution_count="193">
+            <div class="sourceCode cell-code" id="cb13">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>upsampling_rate <span class="op">=</span> <span class="dv">50</span></span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>interpolated_ivs <span class="op">=</span> smoothed_ivs.reindex(</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    np.linspace(</span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>        smoothed_ivs.index.<span class="bu">min</span>(),</span>
@@ -617,82 +689,102 @@ title: "Option implied price distribution"
 <span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>)[</span>
 <span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"interpolated_iv"</span>]</span>
 <span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
           </div>
-        </div>
-        <div class="cell" data-execution_count="194">
-          <details>
-            <summary>Code</summary>
-            <div class="sourceCode cell-code" id="cb14">
-              <pre
-                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> ivs.plot(style<span class="op">=</span><span class="st">"+"</span>, title<span class="op">=</span><span class="st">"IV vs smoothed IV vs interpolated IV for every strike"</span>)</span>
+          <div class="cell" data-execution_count="194">
+            <details>
+              <summary>Code</summary>
+              <div class="sourceCode cell-code" id="cb14">
+                <pre
+                  class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> ivs.plot(style<span class="op">=</span><span class="st">"+"</span>, title<span class="op">=</span><span class="st">"IV vs smoothed IV vs interpolated IV for every strike"</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>smoothed_ivs.plot(ax<span class="op">=</span>ax, style<span class="op">=</span><span class="st">"."</span>)</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>interpolated_ivs.plot(ax<span class="op">=</span>ax, style<span class="op">=</span><span class="st">"-"</span>)</span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>decorate_iv_axes(ax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+              </div>
+            </details>
+            <div class="cell-output cell-output-display">
+              <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
             </div>
-          </details>
-          <div class="cell-output cell-output-display">
-            <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-15-output-1.png" class="img-fluid"></p>
           </div>
-        </div>
-      </section>
-      <section id="iv-interpolated-price" class="level2" data-number="6">
-        <h2 data-number="6" class="anchored" data-anchor-id="iv-interpolated-price"><span
-            class="header-section-number">6</span> IV-Interpolated price</h2>
-        <div class="cell" data-execution_count="195">
-          <div class="sourceCode cell-code" id="cb15">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>interpolated_prices <span class="op">=</span> pd.DataFrame(index<span class="op">=</span>interpolated_ivs.index)</span>
+        </section>
+        <section id="iv-interpolated-price" class="level2" data-number="3.5">
+          <h2 data-number="3.5" class="anchored" data-anchor-id="iv-interpolated-price"><span
+              class="header-section-number">3.5</span> IV-Interpolated price</h2>
+          <div class="cell" data-execution_count="195">
+            <div class="sourceCode cell-code" id="cb15">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>interpolated_prices <span class="op">=</span> pd.DataFrame(index<span class="op">=</span>interpolated_ivs.index)</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>interpolated_prices[<span class="st">"interpolated_price"</span>] <span class="op">=</span> [</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    call_option_value_black_scholes(S, t, sigma, r, D, E, T)</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> E, sigma <span class="kw">in</span> <span class="bu">zip</span>(interpolated_ivs.index, interpolated_ivs[<span class="st">"interpolated_iv"</span>])</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
           </div>
-        </div>
-        <div class="cell" data-execution_count="196">
-          <details>
-            <summary>Code</summary>
-            <div class="sourceCode cell-code" id="cb16">
-              <pre
-                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> prices[[<span class="st">"mid_price"</span>]].plot(style<span class="op">=</span><span class="st">"+"</span>, title<span class="op">=</span><span class="st">"Mid prive vs IV-interpolated price"</span>)</span>
+          <div class="cell" data-execution_count="196">
+            <details>
+              <summary>Code</summary>
+              <div class="sourceCode cell-code" id="cb16">
+                <pre
+                  class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> prices[[<span class="st">"mid_price"</span>]].plot(style<span class="op">=</span><span class="st">"+"</span>, title<span class="op">=</span><span class="st">"Mid prive vs IV-interpolated price"</span>)</span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>interpolated_prices.plot(style<span class="op">=</span><span class="st">"-"</span>, ax<span class="op">=</span>ax)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>decorate_price_axes(ax)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+              </div>
+            </details>
+            <div class="cell-output cell-output-display">
+              <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
             </div>
-          </details>
-          <div class="cell-output cell-output-display">
-            <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-17-output-1.png" class="img-fluid"></p>
           </div>
-        </div>
-      </section>
-      <section id="implied-price-pdf" class="level2" data-number="7">
-        <h2 data-number="7" class="anchored" data-anchor-id="implied-price-pdf"><span
-            class="header-section-number">7</span> Implied price PDF</h2>
-        <div class="cell" data-execution_count="197">
-          <div class="sourceCode cell-code" id="cb17">
-            <pre
-              class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>implied_price_pdf <span class="op">=</span> interpolated_prices.pipe(</span>
+        </section>
+        <section id="implied-price-pdf" class="level2" data-number="3.6">
+          <h2 data-number="3.6" class="anchored" data-anchor-id="implied-price-pdf"><span
+              class="header-section-number">3.6</span> Implied price PDF</h2>
+          <div class="cell" data-execution_count="197">
+            <div class="sourceCode cell-code" id="cb17">
+              <pre
+                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>implied_price_pdf <span class="op">=</span> interpolated_prices.pipe(</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">lambda</span> df: df.shift(<span class="op">-</span><span class="dv">1</span>) <span class="op">-</span> <span class="dv">2</span> <span class="op">*</span> df <span class="op">+</span> df.shift(<span class="dv">1</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>).dropna().transform(<span class="kw">lambda</span> df: df <span class="op">/</span> df.<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+            </div>
           </div>
-        </div>
-        <div class="cell" data-execution_count="198">
-          <details>
-            <summary>Code</summary>
-            <div class="sourceCode cell-code" id="cb18">
-              <pre
-                class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> implied_price_pdf.plot(</span>
+          <div class="cell" data-execution_count="199">
+            <details>
+              <summary>Code</summary>
+              <div class="sourceCode cell-code" id="cb18">
+                <pre
+                  class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> implied_price_pdf.plot(</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    style<span class="op">=</span><span class="st">"-"</span>, xlabel<span class="op">=</span><span class="st">"Price"</span>, ylabel<span class="op">=</span><span class="st">"p"</span>, title<span class="op">=</span><span class="st">"Implied price distribution"</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>ax.axvline(ticker.info[<span class="st">"currentPrice"</span>], ls<span class="op">=</span><span class="st">"--"</span>, c<span class="op">=</span><span class="st">"k"</span>, label<span class="op">=</span><span class="st">"Current price"</span>)</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>ax.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre>
+              </div>
+            </details>
+            <div class="cell-output cell-output-display">
+              <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-19-output-1.png" class="img-fluid"></p>
             </div>
-          </details>
-          <div class="cell-output cell-output-display" data-execution_count="198">
-            <pre><code>&lt;matplotlib.legend.Legend at 0x294e26e60&gt;</code></pre>
           </div>
-          <div class="cell-output cell-output-display">
-            <p><img src="/assets/02-price-dist-pipeline_files/figure-html/cell-19-output-2.png" class="img-fluid"></p>
-          </div>
-        </div>
+        </section>
+      </section>
+      <section id="conclusion-and-future-work" class="level1" data-number="4">
+        <h1 data-number="4"><span class="header-section-number">4</span> Conclusion and future work</h1>
+        <p>TODO(Andrea): write</p>
+      </section>
+      <section id="references" class="level1" data-number="5">
+        <h1 data-number="5"><span class="header-section-number">5</span> References</h1>
+        <ul>
+          <li><a
+              href="https://www.wiley.com/en-us/Paul+Wilmott+Introduces+Quantitative+Finance%2C+2nd+Edition-p-9781118836798">Paul
+              Wilmott Introduces Quantitative Finance, 2nd Edition</a></li>
+          <li><a href="https://faculty.baruch.cuny.edu/lwu/890/BreedenLitzenberger78.pdf">Breeden, Litzenberger - Prices
+              of State-Contingent Claims Implicit in Option Prices</a></li>
+          <li><a href="https://reasonabledeviations.com/2020/10/10/option-implied-pdfs-2/">Reasonable Deviations -
+              Option-implied probability distributions, part 2</a></li>
+          <li><a
+              href="https://www.morganstanley.com/content/dam/msdotcom/en/assets/pdfs/Options_Probabilities_Exhibit_Link.pdf">Morgan
+              Stanley - How Options Implied Probabilities Are Calculated</a></li>
+          <li><a href="https://quant.stackexchange.com/questions/55239/explaining-the-risk-neutral-measure">Quant
+              StackExchange - Explaining the Risk Netural Measure</a></li>
+        </ul>
       </section>
 
     </main>

@@ -21,11 +21,18 @@ bundle exec jekyll serve --livereload
 
 ### Homepage
 
-> TODO(Andrea): explain tailwind setup
-
 ```shell
 # install tailwindcss (needed only once)
 npm i tailwindcss
 # rebuild the css on changes
 npx tailwindcss -i index-style.css -o index-style.out.css --watch
+```
+
+### Importing quarto documents
+
+```shell
+cp ../quarto-playground/02-price-dist-pipeline.html _posts/2022-10-30-option-implied-stock-price-distributions.html
+cp -r ../quarto-playground/02-price-dist-pipeline_files assets/
+# add /assets to all resource links
+# add ---\n--- at the beginning of the document
 ```
