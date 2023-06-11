@@ -4,6 +4,7 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://mrandri19.github.io"
 github_username: mrandri19
 google_analytics: G-FBTQYT7Z06
+description: "my blog"
 
 # Build settings
 markdown: kramdown
