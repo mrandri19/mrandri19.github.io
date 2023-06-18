@@ -2,6 +2,9 @@
 
 ## Architecture
 
+-   every html or markdown file has a corresponding directory in assets
+-   every directory in assets optionally contains css, img, js, font, pdf
 
-every html or markdown file has a corresponding directory in assets
-every directory in assets optionally contains css, img, js, font
+## Building
+
+tput reset && TRACE=1 ./build.sh

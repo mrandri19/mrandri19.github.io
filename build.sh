@@ -11,4 +11,7 @@ BUILD_DIR="_site"
 rm -rf "$BUILD_DIR" && mkdir "$BUILD_DIR"
 
 cp index.html "$BUILD_DIR"
+
+cp -r blog "$BUILD_DIR"
+
 cp -r assets "$BUILD_DIR"
