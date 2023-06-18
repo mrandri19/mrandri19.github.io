@@ -3,11 +3,11 @@ layout: post
 title: "What is the ELBO in Variational Inference?"
 ---
 
-<script src="/assets/common/katex/contrib/auto-render.min.js"></script>
-<script>
-renderMathInElement(document.body, {delimiters: [
-    {left: "$", right: "$", display: false},
-])
+<script
+    defer
+    src="/assets/common/katex/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body);"
+>
 </script>
 
 ## Bayesian Inference
@@ -22,7 +22,7 @@ In Bayesian Inference, there are **three main objects** we want to study:
 - The **distribution of parameters** $\theta \sim \Theta$. Parameters describe the process that generates the observed data and cannot be observed directly.
   In our height measurement example, having picked a normal distribution for the observations, we can say that our parameters are the distribution's mean and variance i.e. $\theta = \{\mu, \sigma^2\}$.
   Crucially, we need to specify the distribution of all parameters before seeing any observation. For example, we could say that the mean comes from a standard normal distribution and the variance comes from a standard half-normal distribution i.e.
-  $\mu \sim N(0, 1^2)$, and $ \sigma^2 \sim N^+(0, 1^2)$.
+  $\mu \sim N(0, 1^2)$, and $\sigma^2 \sim N^+(0, 1^2)$.
   Our complete model then would be that $\text{height} \sim N(\mu, \sigma^2)$.
 
 - The **posterior distribution** $p\left(\theta \mid y \right)$ connects observations and parameters by specifying the distribution of parameters conditional on the value of the observations.
@@ -113,7 +113,6 @@ q^*\left( \theta \right)
     \middle\|
     p\left(\theta \mid y\right)
 \right)
-
 $$
 
 ### Solving the variational optimization problem
@@ -122,7 +121,6 @@ Let's **write down the definition of KL-divergence** and apply the properties of
 
 $$
 \begin{aligned}
-
 \text{KL}\left(
     q\left( \theta \right)
     \middle\|
@@ -140,7 +138,6 @@ $$
     \right)
 }
 d\theta \\
-
 &=
 \int{
     q\left( \theta \right)
@@ -155,7 +152,6 @@ d\theta \\
     \right]
 }
 d\theta \\
-
 \end{aligned}
 $$
 
@@ -165,13 +161,11 @@ Let's work on the right hand side and **remove the true posterior by using Bayes
 
 $$
 \begin{aligned}
-
 \text{KL}\left(
     q\left( \theta \right)
     \middle\|
     p\left(\theta \mid y\right)
 \right)
-
 &=
 \int{
     q\left( \theta \right)
@@ -186,7 +180,6 @@ $$
     \right]
 }
 d\theta \\
-
 &=
 \int{
     q\left( \theta \right)
@@ -206,7 +199,6 @@ d\theta \\
     \right]
 }
 d\theta \\
-
 &=
 \int{
     q\left( \theta \right)
@@ -225,7 +217,6 @@ d\theta \\
     \right]
 }
 d\theta \\
-
 &=
 \int{
     q\left( \theta \right)
@@ -242,7 +233,6 @@ d\theta \\
     \right]
 }
 d\theta \\
-
 &=
 \int{
     q\left( \theta \right)
@@ -266,7 +256,6 @@ d\theta \\
     d\theta
 }
 \\
-
 &=
 \int{
     q\left( \theta \right)
@@ -300,13 +289,11 @@ We can now notice that **the first term is a KL-divergence**, and that
 
 $$
 \begin{aligned}
-
 \text{KL}\left(
     q\left( \theta \right)
     \middle\|
     p\left(\theta \mid y\right)
 \right)
-
 &=
 \int{
     q\left( \theta \right)
@@ -332,7 +319,6 @@ $$
     d\theta
 }
 \\
-
 &=
 \text{KL}\left(
     q\left( \theta \right)

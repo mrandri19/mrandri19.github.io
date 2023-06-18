@@ -1,7 +1,5 @@
 ---
-layout: post
 title: "How much of npm can you break?"
-author: andrea
 ---
 
 ## Story

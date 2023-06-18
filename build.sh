@@ -21,6 +21,7 @@ cp -r "$SOURCE_DIR"/blog "$BUILD_DIR"
 find _site/blog -type f -name "*.md" -exec \
     pandoc \
     --standalone \
+    --template="$SOURCE_DIR"/templates/default.html \
     --from markdown \
     --katex="/assets/common/katex/" \
     --to html \

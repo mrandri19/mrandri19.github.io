@@ -5,6 +5,7 @@
 -   every html or markdown file in src has a corresponding directory in assets
     -   i.e. index.html has assets/index
     -   i.e. blog/index.html has assets/blog/index
+-   the templates folder is not copied
 -   every directory in assets optionally contains css, img, js, font, pdf
     -   i.e. index.html has assets/index/{css, fonts, img, pdf}
 -   common assets, i.e. shared between pages, live in /assets/common/{css, fonts, img, pdf}
@@ -22,6 +23,11 @@
 
 ```shell
 tput reset && TRACE=1 ./build.sh
+```
+
+**Hot reloading**
+```shell
+find src -type f | TRACE=1 entr ./build.sh
 ```
 
 **Serving locally**
