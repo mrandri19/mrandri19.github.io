@@ -97,17 +97,17 @@ Our model will be $Y = X\beta + \epsilon$ where $\epsilon \sim \mathcal{N}(0,\si
 
 Let's write the likelihood for multivariate linear regresssion, i.e. how likely it it to observe the data $\mathcal{D}$, given a certain linear model specified by $\beta$.
 
-{% raw %}
+$$
 \\[p(\mathcal{D}\mid \theta) = p((X,Y)\mid \beta) = p(Y=\mathcal{N}(X\beta,\sigma^2I)) = (2\pi\sigma^2)^{-k/2}exp\{-\frac{1}{2\sigma^2}(Y-X\beta)^T(Y-X\beta)\}\\]
-{% endraw %}
+$$
 
 The last expression was obtained by substituting the Gaussian PDF with mean $\mu=X\beta$ and covariance matrix $\Sigma=\sigma^2 I$.
 
 Also, since all of the observations $X, Y$ are I.I.D. we can factorize the likelihood as:
 
-{% raw %}
+$$
 \\[p(\mathcal{D}\mid \theta) = p((X,Y)\mid \beta) = p(Y=\mathcal{N}(X\beta,\sigma^2I)) = \prod\limits_{i=1}^{n} p(y_i = \mathcal{N}(x_i\beta, \sigma^2))\\]
-{% endraw %}
+$$
 
 #### Visualization
 
@@ -206,9 +206,9 @@ How do we find these pairs of likelihood and priors? The usual approach is to lo
 
 For a Normal likelihood with known variance, the conjugate prior is another Normal distribution with parameters $\mu_\beta$ and $\Sigma_\beta$. The parameter $\mu_\beta$ describes the initial values for $\beta$ and $\Sigma_\beta$ describes how uncertain we are of these values.
 
-{% raw %}
+$$
 \\[p(\theta) = p(\beta) = \mathcal{N}(\mu_\beta, \Sigma_\beta)\\]
-{% endraw %}
+$$
 
 <div class="codecell" markdown="1">
 <div class="input_area" markdown="1">
@@ -237,29 +237,29 @@ heatmap(
 
 Using this prior, the formula for our posterior now looks like this:
 
-{% raw %}
+$$
 \\[p(\beta \mid (X,Y)) \propto p((X,Y)\mid \beta) p(\beta)\\]
-{% endraw %}
+$$
 
-{% raw %}
+$$
 \\[p(\beta \mid (X,Y)) = \mathcal{N}(X\beta,\sigma^2) \times \mathcal{N}(\mu_\beta,\Sigma_\beta) = \mathcal{N}(\mu_\beta^{new},\Sigma_\beta^{{new}})\\]
-{% endraw %}
+$$
 
 The posterior only depends on $\mu_\beta^{new}$ and $\Sigma_{\beta}^{new}$ which can be calculated using the prior and the newly observed data. Recall that $\sigma^2$ is the variance of the data model's noise.
 
-{% raw %}
+$$
 
 \\[
 \Sigma_\beta^{new} = (\Sigma_\beta^{-1} + X^TX)^{-1} \sigma^2
 \\]
-{% endraw %}
+$$
 
-{% raw %}
+$$
 \\[
 \mu_\beta^{new} = (\Sigma_\beta^{-1} + X^TX)^{-1} (\Sigma_\beta^{-1}\mu_\beta + X^TY)
 \\]
 
-{% endraw %}
+$$
 
 Since matrix inversions and multiplications have cubic time complexity, each update will cost us $O(d^3)$ where $d$ is the number of features.
 
@@ -325,16 +325,16 @@ prior = MvNormal(μᵦ, Σᵦ)
 
 Then, using the posterior hyperparameter update formulas, let's implement the update function. The update function takes a prior and our data, and return the posterior distribution. Notice how by using Julia's unicode support, we can have our code closely resembling the math.
 
-{% raw %}
+$$
 \\[
 \Sigma_\beta^{new} = (\Sigma_\beta^{-1} + X^TX)^{-1} \sigma^2
 \\]
-{% endraw %}
-{% raw %}
+$$
+$$
 \\[
 \mu_\beta^{new} = (\Sigma_\beta^{-1} + X^TX)^{-1} (\Sigma_\beta^{-1}\mu_\beta + X^TY)
 \\]
-{% endraw %}
+$$
 
 <div class="codecell" markdown="1">
 <div class="input_area" markdown="1">

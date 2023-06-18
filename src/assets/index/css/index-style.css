@@ -15,8 +15,8 @@
 } */
 
 @font-face {
-  font-family: Source Serif Pro;
-  src: url('./Source_Serif_Pro/SourceSerif4-Regular.ttf');
+    font-family: Source Serif Pro;
+    src: url('./Source_Serif_Pro/SourceSerif4-Regular.ttf');
 }
 
 main ul li {
@@ -24,7 +24,7 @@ main ul li {
 }
 
 main ul a {
-    @apply no-underline hover:underline text-blue-500;
+    @apply no-underline hover: underline text-blue-500;
 }
 
 p {
@@ -37,8 +37,10 @@ main ul img {
 
 .cf:before,
 .cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+    content: " ";
+    /* 1 */
+    display: table;
+    /* 2 */
 }
 
 .cf:after {

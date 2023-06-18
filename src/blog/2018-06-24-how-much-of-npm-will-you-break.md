@@ -74,7 +74,7 @@ of `jayson` (197 dependencies, if you were wondering).
 My first optimization was removing the recursion: counting the number of unique
 dependent packages boils down to a Depth First Search.
 
-{% highlight python %}
+```python
 tree = Tree()
 
 def dfs(leaf):
@@ -87,7 +87,7 @@ def dfs(leaf):
 
 dfs(tree)
 
-{% endhighlight %}
+```
 
 <span id="backnote1"></span>
 This is a recursive implementation of a depth first search but it is not very
@@ -96,7 +96,7 @@ efficient, especially on languages without TCO (tail call optimization).[<sup>[1
 To rewrite this without any form of recursion a [stack](https://en.wikipedia.org/wiki/Stack_(abstract_data_type))
 is needed and you can rewrite the pseudocode like this.
 
-{% highlight python %}
+```python
 tree = Tree()
 
 s = Stack()
@@ -111,7 +111,7 @@ while not s.isEmpty():
     # Fill the stack with its children
     for child in node.childer:
         s.push(child)
-{% endhighlight %}
+```
 
 Unfortunately this optimization, while precious for later, right now was almost useless:
 the average time needed to count the dependencies of `jayson` went from `20.5-21s`
@@ -126,7 +126,7 @@ The main issue was that every time we need to get a pacakge's dependencies, all
 of the lines in the JSON file need to be scanned to find the dependencies. This
 is $$O(n)$$, especially slow if that $$n$$ is around 1.8 Million.
 
-{% highlight c++ %}
+```cpp
 vector<string> deps;
 
 int n = 0;
@@ -147,12 +147,12 @@ for (const auto& row : rows.GetArray()) {
         }
     }
 }
-{% endhighlight %}
+```
 
 For example: to get all of the packages that depend on `is-odd` you need to scan
 all of the lines and you will find something like this:
 
-{% highlight json %}
+```json
 {"id":"3kencoder","key":["is-odd","3kencoder",""],"value":1},
 {"id":"a_react_reflux_demo","key":["is-odd","a_react_reflux_demo","this is a demo just"],"value":1},
 {"id":"dk_2018_1_1","key":["is-odd","dk_2018_1_1","狙击时刻"],"value":1},
@@ -166,7 +166,7 @@ all of the lines and you will find something like this:
 {"id":"react-native-version-manager","key":["is-odd","react-native-version-manager","Get version of application(Gradle) using react-native "],"value":1},
 {"id":"react-redux-demo1","key":["is-odd","react-redux-demo1","thi is a demo just"],"value":1},
 {"id":"vue-size-tracker","key":["is-odd","vue-size-tracker","Track size of screen, window, element"],"value":1},
-{% endhighlight %}
+```
 
 <span id="backnote2"></span>
 If this were a database then adding an index on the `key` column would be enough,
@@ -183,7 +183,7 @@ In [the Rust version](https://github.com/mrandri19/jenga) the hasmap is built li
 For each line in the file, get the id of the package and its dependent, then insert
 it into the hashmap which maps a package's id to its dependents id.
 
-{% highlight rust %}
+```rust
 type DependeciesMap = HashMap<String, Vec<String>>;
 
 fn create_dependencies_map(dependencies_path: &Path) -> Result<DependeciesMap> {
@@ -209,7 +209,7 @@ fn create_dependencies_map(dependencies_path: &Path) -> Result<DependeciesMap> {
 
     Ok(dependents)
 }
-{% endhighlight %}
+```
 
 
 This map gets created in less than 3 seconds and querying for `lodash`, the

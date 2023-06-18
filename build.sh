@@ -16,5 +16,14 @@ cp "$SOURCE_DIR"/404.html "$BUILD_DIR"
 cp "$SOURCE_DIR"/hes_my_quant.pdf "$BUILD_DIR"
 
 cp -r "$SOURCE_DIR"/blog "$BUILD_DIR"
+find _site/blog -type f -name "*.md" -exec \
+    pandoc \
+    --standalone \
+    --from markdown \
+    --to html \
+    --output {}.html \
+    --css /assets/common/css/common.css {} \;
+
+rm -rf "$BUILD_DIR"/blog/*.md
 
 cp -r "$SOURCE_DIR"/assets "$BUILD_DIR"
