@@ -3,13 +3,11 @@ layout: post
 title: "What is the ELBO in Variational Inference?"
 ---
 
-<link rel="stylesheet" href="/assets/katex/katex.min.css">
-<script defer src="/assets/katex/katex.min.js"></script>
-<script
-    defer
-    src="/assets/katex/contrib/auto-render.min.js"
-    onload="renderMathInElement(document.body);"
->
+<script src="/assets/common/katex/contrib/auto-render.min.js"></script>
+<script>
+renderMathInElement(document.body, {delimiters: [
+    {left: "$", right: "$", display: false},
+])
 </script>
 
 ## Bayesian Inference
@@ -18,18 +16,18 @@ title: "What is the ELBO in Variational Inference?"
 
 In Bayesian Inference, there are **three main objects** we want to study:
 
-- The **distribution of observations** $$y \sim Y$$. Under the Bayesian framework, we believe that the observed data is sampled from a probability distribution.
-  For example, if we measure the height of every person in a group of people, we could assume that the observations come from a Normal distribution i.e. $$\text{height} \sim N$$.
+- The **distribution of observations** $y \sim Y$. Under the Bayesian framework, we believe that the observed data is sampled from a probability distribution.
+  For example, if we measure the height of every person in a group of people, we could assume that the observations come from a Normal distribution i.e. $\text{height} \sim N$.
 
-- The **distribution of parameters** $$\theta \sim \Theta$$. Parameters describe the process that generates the observed data and cannot be observed directly.
-  In our height measurement example, having picked a normal distribution for the observations, we can say that our parameters are the distribution's mean and variance i.e. $$\theta = \{\mu, \sigma^2\}$$.
+- The **distribution of parameters** $\theta \sim \Theta$. Parameters describe the process that generates the observed data and cannot be observed directly.
+  In our height measurement example, having picked a normal distribution for the observations, we can say that our parameters are the distribution's mean and variance i.e. $\theta = \{\mu, \sigma^2\}$.
   Crucially, we need to specify the distribution of all parameters before seeing any observation. For example, we could say that the mean comes from a standard normal distribution and the variance comes from a standard half-normal distribution i.e.
-  $$\mu \sim N(0, 1^2)$$, and $$ \sigma^2 \sim N^+(0, 1^2)$$.
-  Our complete model then would be that $$\text{height} \sim N(\mu, \sigma^2)$$.
+  $\mu \sim N(0, 1^2)$, and $ \sigma^2 \sim N^+(0, 1^2)$.
+  Our complete model then would be that $\text{height} \sim N(\mu, \sigma^2)$.
 
-- The **posterior distribution** $$p\left(\theta \mid y \right)$$ connects observations and parameters by specifying the distribution of parameters conditional on the value of the observations.
+- The **posterior distribution** $p\left(\theta \mid y \right)$ connects observations and parameters by specifying the distribution of parameters conditional on the value of the observations.
   In our example, it would tell us what the mean and the variance of the height are.
-  A possible posterior distribution could be $$\mu \mid y \sim N(1.79, 0.05^2)$$ and $$\sigma^2 \mid y \sim N^+(0.10, 0.03^2)$$.
+  A possible posterior distribution could be $\mu \mid y \sim N(1.79, 0.05^2)$ and $\sigma^2 \mid y \sim N^+(0.10, 0.03^2)$.
 
 ### Bayes' theorem, likelihood, prior, and evidence
 
@@ -56,8 +54,8 @@ $$
   }
 $$
 
-We define our model by directly choosing the **prior** $$p\left( \theta \right)$$ and the **likelihood** $$p\left(y \mid \theta\right)$$ so they are usually easy to evaluate.
-The **evidence** $$p\left( y \right)$$ however, is not clearly computable, especially when written in this formulation.
+We define our model by directly choosing the **prior** $p\left( \theta \right)$ and the **likelihood** $p\left(y \mid \theta\right)$ so they are usually easy to evaluate.
+The **evidence** $p\left( y \right)$ however, is not clearly computable, especially when written in this formulation.
 
 ### Law of total probability and intractability of the evidence integral
 
@@ -79,10 +77,10 @@ Because of this, **we cannot directly use Bayes' theorem to compute our posterio
 ### Approximate variational posterior
 
 Given that we cannot directly know the posterior's PDF (and thus its distribution) by applying Bayes' theorem, let's do something else.
-What if, instead of getting the exact posterior distribution, we got "close enough" by finding a distribution $$q\left( \theta \right)$$ that is very similar to the posterior $$p\left(\theta \mid y\right)$$ and also very easy to compute?
-Let's call this distribution $$q\left( \theta \right)$$ **the variational posterior**.
+What if, instead of getting the exact posterior distribution, we got "close enough" by finding a distribution $q\left( \theta \right)$ that is very similar to the posterior $p\left(\theta \mid y\right)$ and also very easy to compute?
+Let's call this distribution $q\left( \theta \right)$ **the variational posterior**.
 
-What does it mean for $$q\left( \theta \right)$$ to be "close" to $$p\left(\theta \mid y\right)$$? To answer that, we need a notion of distance between distributions. The distance we are going to use is the **KL-divergence**:
+What does it mean for $q\left( \theta \right)$ to be "close" to $p\left(\theta \mid y\right)$? To answer that, we need a notion of distance between distributions. The distance we are going to use is the **KL-divergence**:
 
 $$
 \text{KL}\left(
@@ -161,7 +159,7 @@ d\theta \\
 \end{aligned}
 $$
 
-The main problem with this expression is that our true posterior $$p\left(\theta \mid y\right)$$ is on both sides of the expression.
+The main problem with this expression is that our true posterior $p\left(\theta \mid y\right)$ is on both sides of the expression.
 Let's work on the right hand side and **remove the true posterior by using Bayes' theorem** and the properies of logarithms:
 
 
@@ -298,7 +296,7 @@ d\theta \\
 $$
 
 We can now notice that **the first term is a KL-divergence**, and that
-**in the last term, $$\log p\left( \theta \right)$$ can be extracted from the integral**, which sums up to 1:
+**in the last term, $\log p\left( \theta \right)$ can be extracted from the integral**, which sums up to 1:
 
 $$
 \begin{aligned}
@@ -403,8 +401,8 @@ $$
 
 ### The ELBO
 
-The final step requires noticing that **$$\log{p(y)}$$ is constant w.r.t. $$\theta$$**.
-Thus, choosing a $$\theta$$ that increases the first right term will make the second term smaller.
+The final step requires noticing that **$\log{p(y)}$ is constant w.r.t. $\theta$**.
+Thus, choosing a $\theta$ that increases the first right term will make the second term smaller.
 
 $$
 \overbrace{
@@ -459,5 +457,5 @@ $$
     \middle\|
     p\left(\theta \right)
 \right)
-$$.
+$$
 
