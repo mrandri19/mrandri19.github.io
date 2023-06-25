@@ -3,13 +3,6 @@ layout: post
 title: "What is the ELBO in Variational Inference?"
 ---
 
-<script
-    defer
-    src="/assets/common/katex/contrib/auto-render.min.js"
-    onload="renderMathInElement(document.body);"
->
-</script>
-
 ## Bayesian Inference
 
 ### The three main objects of Bayesian inference

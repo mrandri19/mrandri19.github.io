@@ -26,7 +26,7 @@ find _site/blog -type f -name "*.md" -exec \
     --katex="/assets/common/katex/" \
     --to html \
     --output {}.html \
-    --css /assets/common/css/common.css {} \;
+    {} \;
 
 rm -rf "$BUILD_DIR"/blog/*.md
 
