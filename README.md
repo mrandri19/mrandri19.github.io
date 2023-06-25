@@ -28,11 +28,32 @@ npm i tailwindcss
 npx tailwindcss -i index-style.css -o index-style.out.css --watch
 ```
 
-### Importing quarto documents
+### Converting notebooks to markdown
 
 ```shell
-cp ../quarto-playground/02-price-dist-pipeline.html _posts/2022-10-30-option-implied-stock-price-distributions.html
-cp -r ../quarto-playground/02-price-dist-pipeline_files assets/
-# add /assets to all resource links
-# add ---\n--- at the beginning of the document
+pandoc \
+    --from ipynb \
+    --to gfm-raw_html+raw_attribute \
+    --output 05-introduction-to-variational-inference.md \
+    --standalone \
+    --extract-media=assets/images/introduction-to-variational-inference \
+    05-introduction-to-variational-inference.ipynb
+```
+
+### Installing ruby and running bundle on ARM64 macs
+
+```shell
+brew install openssl@1.1
+
+export PATH="$(brew --prefix)/opt/openssl@1.1/bin:$PATH"
+export LDFLAGS="-L$(brew --prefix)/opt/openssl@1.1/lib"
+export CPPFLAGS="-I$(brew --prefix)/opt/openssl@1.1/include"
+export PKG_CONFIG_PATH="$(brew --prefix)/opt/openssl@1.1/lib/pkgconfig"
+
+rvm autolibs disable
+
+export RUBY_CFLAGS=-DUSE_FFI_CLOSURE_ALLOC
+export optflags="-Wno-error=implicit-function-declaration"
+
+rvm install 2.7.3 --with-openssl-dir=$(brew --prefix)/opt/openssl@1.1
 ```
