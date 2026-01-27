@@ -15,8 +15,12 @@
 } */
 
 @font-face {
-  font-family: Source Serif Pro;
-  src: url('./Source_Serif_Pro/SourceSerif4-Regular.ttf');
+    font-family: Source Serif Pro;
+    src: url('./Source_Serif_Pro/SourceSerif4-Regular.ttf');
+}
+
+main>section {
+    @apply mb-7;
 }
 
 main ul li {
@@ -25,6 +29,14 @@ main ul li {
 
 main ul ul li {
     @apply mb-1;
+}
+
+#projects>section>h3 {
+    @apply border-t border-gray-300 dark:border-gray-700 pt-2 mt-4;
+}
+
+#projects>section:first-of-type>h3 {
+    @apply border-t-0 mt-0;
 }
 
 main ul a {
@@ -45,8 +57,10 @@ main ul img {
 
 .cf:before,
 .cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+    content: " ";
+    /* 1 */
+    display: table;
+    /* 2 */
 }
 
 .cf:after {
