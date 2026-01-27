@@ -589,10 +589,6 @@ video {
   position: fixed;
 }
 
-.float-left {
-  float: left;
-}
-
 .clear-both {
   clear: both;
 }
@@ -614,8 +610,8 @@ video {
   margin-bottom: 0.25rem;
 }
 
-.mr-2 {
-  margin-right: 0.5rem;
+.ml-4 {
+  margin-left: 1rem;
 }
 
 .inline {
@@ -642,24 +638,52 @@ video {
   width: 25%;
 }
 
-.w-3\/4 {
-  width: 75%;
+.min-w-0 {
+  min-width: 0px;
 }
 
 .max-w-screen-lg {
   max-width: 1024px;
 }
 
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.shrink-0 {
+  flex-shrink: 0;
+}
+
+.list-inside {
+  list-style-position: inside;
+}
+
+.list-disc {
+  list-style-type: disc;
+}
+
 .flex-row {
   flex-direction: row;
+}
+
+.flex-row-reverse {
+  flex-direction: row-reverse;
 }
 
 .flex-wrap {
   flex-wrap: wrap;
 }
 
+.items-start {
+  align-items: flex-start;
+}
+
 .justify-center {
   justify-content: center;
+}
+
+.gap-2 {
+  gap: 0.5rem;
 }
 
 .gap-x-4 {
@@ -681,16 +705,16 @@ video {
   padding-right: 1rem;
 }
 
-.pr-2 {
-  padding-right: 0.5rem;
-}
-
 .text-center {
   text-align: center;
 }
 
 .font-sans {
   font-family: sans-serif;
+}
+
+.font-serif {
+  font-family: 'Source Serif Pro', serif;
 }
 
 .text-base {
@@ -728,6 +752,12 @@ video {
           text-decoration-line: none;
 }
 
+.shadow-md {
+  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+}
+
 /* @font-face {
   font-family: Source Sans Pro;
   src: url('./Source_Sans_Pro/SourceSansPro-Regular.ttf');
@@ -750,6 +780,10 @@ main ul li {
   margin-bottom: 1.25rem;
 }
 
+main ul ul li {
+  margin-bottom: 0.25rem;
+}
+
 main ul a {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity));
@@ -763,7 +797,12 @@ main ul a:hover {
 }
 
 p {
+  margin-bottom: 0.5rem;
   font-family: 'Source Serif Pro', serif;
+}
+
+p:last-child {
+  margin-bottom: 0px;
 }
 
 main ul img {
@@ -813,9 +852,5 @@ main ul img {
 @media (min-width: 1024px) {
   .lg\:w-1\/6 {
     width: 16.666667%;
-  }
-
-  .lg\:w-5\/6 {
-    width: 83.333333%;
   }
 }

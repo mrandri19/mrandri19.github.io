@@ -23,12 +23,20 @@ main ul li {
     @apply mb-5;
 }
 
+main ul ul li {
+    @apply mb-1;
+}
+
 main ul a {
     @apply no-underline hover:underline text-blue-500;
 }
 
 p {
-    @apply font-serif;
+    @apply font-serif mb-2;
+}
+
+p:last-child {
+    @apply mb-0;
 }
 
 main ul img {
