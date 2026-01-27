@@ -622,6 +622,10 @@ video {
   margin-left: 1rem;
 }
 
+.mr-2 {
+  margin-right: 0.5rem;
+}
+
 .inline {
   display: inline;
 }
@@ -748,6 +752,10 @@ video {
   color: rgb(59 130 246 / var(--tw-text-opacity));
 }
 
+.text-gray-400\/60 {
+  color: rgb(156 163 175 / 0.6);
+}
+
 .no-underline {
   -webkit-text-decoration-line: none;
           text-decoration-line: none;
@@ -783,6 +791,17 @@ main>section {
 
 main ul li {
   margin-bottom: 1.25rem;
+}
+
+#projects ul > li:not(.cf) {
+  display: flex;
+}
+
+#projects ul > li:not(.cf)::before {
+  content: "•";
+  margin-right: 0.5rem;
+  flex-shrink: 0;
+  color: rgb(156 163 175 / 0.6);
 }
 
 main ul ul li {
