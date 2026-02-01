@@ -602,6 +602,11 @@ video {
   margin-right: auto;
 }
 
+.my-4 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .mb-3 {
   margin-bottom: 0.75rem;
 }
@@ -740,6 +745,10 @@ video {
 
 .font-bold {
   font-weight: 700;
+}
+
+.leading-\[3\.5rem\] {
+  line-height: 3.5rem;
 }
 
 .text-gray-900 {
