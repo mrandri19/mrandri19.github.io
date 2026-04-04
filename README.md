@@ -5,12 +5,12 @@
 ### Blog
 
 ```shell
-# Use rvm to install ruby2.7 (needed for jekyll 3.9, which is required by github-pages 219)
-rvm install 2.7
-# Set ruby2.7 as default
-rvm --default 2.7
-# Use ruby2.7 in this shell
-rvm use 2.7
+# Use rvm to install ruby2.7.3 (needed for jekyll 3.9, which is required by github-pages 219)
+rvm install 2.7.3
+# Set ruby2.7.3 as default
+rvm --default 2.7.3
+# Use ruby2.7.3 in this shell
+rvm use 2.7.3
 
 cd mrandri19.github.io
 # Download dependencies described in Gemfile and update Gemfile.lock
