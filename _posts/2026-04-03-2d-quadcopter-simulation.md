@@ -16,6 +16,8 @@ title: "Simulating a 2D quadcopter"
 In this post, we build a simple simulation of a 2D (planar) quadcopter.
 We will derive the equations of motion, rewrite them in state-space form, and simulate the resulting system in Python.
 
+## Problem setup and coordinates
+
 <!-- FBD axes -->
 We start with the free-body diagram shown below.
 We choose $$y$$ as the horizontal axis and $$z$$ as the vertical axis.
@@ -25,6 +27,7 @@ By the right-hand rule, the $$x$$ axis points out of the page.
 <!-- FBD body and forces -->
 We model the quadcopter body as a rigid body located at $$C$$ with mass $$m$$ and two arms of length $$\ell$$.
 The body can rotate in the $$yz$$ plane by an angle $$\phi$$.
+We take $$\phi > 0$$ to mean a counterclockwise rotation when looking along the positive $$x$$ axis.
 Gravity acts downward with magnitude $$mg$$.
 Each arm carries a propeller that generates a thrust force, denoted by $$F_1$$ and $$F_2$$, perpendicular to the body.
 
@@ -32,6 +35,8 @@ Each arm carries a propeller that generates a thrust force, denoted by $$F_1$$ a
     <img src="/assets/images/2d-quadcopter-simulation/free-body-diagram.svg"
     style="max-width: 50%; display: block; margin: auto;"/>
 </figure>
+
+## Deriving the equations of motion
 
 <!-- FBD to equations of motion, notation -->
 From this free-body diagram, we can derive the equations of motion.
@@ -61,6 +66,8 @@ I \ddot{\phi} &= (F_1 - F_2) \ell
 
 \end{aligned}
 $$
+
+## Converting to state-space form
 
 <!-- Equations of motion to state-space representation -->
 To simulate the system numerically, it is convenient to rewrite it in state-space form.
@@ -120,6 +127,8 @@ f(\mathbf{x}, \mathbf{u}) =
 \end{bmatrix}
 $$
 
+
+## Simulating the system in Python
 
 <!-- Python simulation -->
 We can now simulate this state-space model in Python.
@@ -208,5 +217,7 @@ plt.show()
 
 </details>
 
+<br />
 
-AI-NOTE: this post was written fully by a human and then proofread and slightly edited by gpt-5.4 default (via codex). All edits were accepted by the author.
+> Note about AI usage: This post was written fully by a human and then proofread
+> and slightly edited by gpt-5.4 default (via codex).
