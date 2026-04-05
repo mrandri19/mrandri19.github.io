@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Simulating a 2D quadcopter"
+title: "Simulating a 2D quadcopter from scratch"
 ---
 
 <link rel="stylesheet" href="/assets/katex/katex.min.css">
