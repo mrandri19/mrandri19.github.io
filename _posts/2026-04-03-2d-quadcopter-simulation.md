@@ -27,7 +27,7 @@ By the right-hand rule, the $$x$$ axis points out of the page.
 <!-- FBD body and forces -->
 We model the quadcopter body as a rigid body located at $$C$$ with mass $$m$$ and two arms of length $$\ell$$.
 The body can rotate in the $$yz$$ plane by an angle $$\phi$$.
-We take $$\phi > 0$$ to mean a counterclockwise rotation when looking along the positive $$x$$ axis.
+We take $$\phi > 0$$ to mean a counterclockwise rotation that goes from $$y$$ to $$z$$.
 Gravity acts downward with magnitude $$mg$$.
 Each arm carries a propeller that generates a thrust force, denoted by $$F_1$$ and $$F_2$$, perpendicular to the body.
 
@@ -182,42 +182,85 @@ for i in range(n_steps - 1):
 
 That is the complete simulation pipeline: derive the equations of motion, convert them to state-space form, and integrate them numerically in Python.
 
+## Running the simulation
+
+We confirm that our simulation performs as expected with the plot shown below.
+As expected, the $$y$$ position and $$\phi$$ angle stay constant, as well as their respective velocities $$\dot{y}$$ and $$\dot{\phi}$$.
+In this constant-input, zero-torque case, the vertical acceleration is constant, so the $$z$$ position grows quadratically and the $$\dot{z}$$ velocity grows linearly.
+
+<figure>
+    <img src="/assets/images/2d-quadcopter-simulation/matplotlib-plot-1.png"
+    style="max-width: 100%; display: block; margin: auto;"/>
+</figure>
+
+Let's now apply a nonzero torque input $$u_2$$ and also increase the total thrust $$u_1$$.
+Changing the inputs to:
+
+```python
+d_input = 2
+u = np.zeros(shape=(n_steps, d_input))
+u[:, 0] = m * g + 0.5
+u[:, 1] = 5e-5
+```
+
+And running the simulation gives us the plot below.
+The angle slowly increases from 0 to approximately 3 radians, so the quadcopter rotates until it is nearly upside down.
+It gains height initially, but as $$\phi$$ increases, the vertical acceleration
+$$\ddot{z} = \frac{u_1}{m}\cos\phi - g$$ decreases because the vertical component of thrust shrinks.
+Once $$\frac{u_1}{m}\cos\phi < g$$, gravity dominates and the quadcopter starts falling.
+
+<figure>
+    <img src="/assets/images/2d-quadcopter-simulation/matplotlib-plot-2.png"
+    style="max-width: 100%; display: block; margin: auto;"/>
+</figure>
+
+> Note about LLM usage: This post was written fully by a human and proofread and minimally edited by gpt-5.4 default (via codex).
+
 <details>
 <summary>
-Matplotlib plotting code and plots.
+Appendix: plotting code
 </summary>
 
 {% highlight python %}
-import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt  # noqa: E402
+from matplotlib.ticker import MultipleLocator  # noqa: E402
 
-fig, axes = plt.subplots(nrows=3, sharex=True, figsize=(6, 6))
-axes[0].plot(t, x[:, 0], label="y")
-axes[0].plot(t, x[:, 1], label="z")
-axes[0].plot(t, x[:, 2], label="phi")
-axes[0].set_title("q")
-axes[1].plot(t, x[:, 3], label="ydot")
-axes[1].plot(t, x[:, 4], label="zdot")
-axes[1].plot(t, x[:, 5], label="phidot")
-axes[1].set_title("q dot")
-axes[2].plot(t, u[:, 0], label="u0")
-axes[2].plot(t, u[:, 1], label="u1")
-axes[2].set_title("u")
+fig, axes = plt.subplots(nrows=3, sharex=True, figsize=(9, 7))
+
+ax0, ax0r = axes[0], axes[0].twinx()
+ax0.plot(t, x[:, 0], label="y", color="C0")
+ax0.plot(t, x[:, 1], label="z", color="C1")
+ax0r.plot(t, x[:, 2], label="$\\phi$", color="C2")
+ax0.set_ylabel("Position [m]")
+ax0r.set_ylabel("Angle [rad]")
+ax0.set_title("Position states")
+lines0 = ax0.get_lines() + ax0r.get_lines()
+ax0.legend(handles=lines0, labels=[line.get_label() for line in lines0])
+
+ax1, ax1r = axes[1], axes[1].twinx()
+ax1.plot(t, x[:, 3], label="$\\dot{y}$", color="C0")
+ax1.plot(t, x[:, 4], label="$\\dot{z}$", color="C1")
+ax1r.plot(t, x[:, 5], label="$\\dot{\\phi}$", color="C2")
+ax1.set_ylabel("Linear velocity [m/s]")
+ax1r.set_ylabel("Angular velocity [rad/s]")
+ax1.set_title("Velocity states")
+lines1 = ax1.get_lines() + ax1r.get_lines()
+ax1.legend(handles=lines1, labels=[line.get_label() for line in lines1])
+
+axes[2].plot(t, u[:, 0], label="$u_1$")
+axes[2].plot(t, u[:, 1], label="$u_2$")
+axes[2].set_title("Inputs")
+axes[2].set_ylabel("Input [N]")
+axes[2].legend()
+
 for ax in axes:
-    ax.legend(loc="upper right")
+    ax.xaxis.set_major_locator(MultipleLocator(1))
     ax.set_xlabel("time [s]")
     ax.grid(visible=True)
+
+fig.suptitle("2D Quadcopter Simulation")
 fig.tight_layout()
 plt.show()
 {% endhighlight %}
 
-<figure>
-    <img src="/assets/images/2d-quadcopter-simulation/matplotlib-plot.png"
-    style="max-width: 75%; display: block; margin: auto;"/>
-</figure>
-
 </details>
-
-<br />
-
-> Note about AI usage: This post was written fully by a human and then proofread
-> and slightly edited by gpt-5.4 default (via codex).
