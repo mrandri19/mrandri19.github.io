@@ -13,7 +13,7 @@ title: "Simulating a 2D quadcopter from scratch"
 </script>
 
 <!-- Introduction -->
-In this post, we build a simple simulation of a 2D (planar) quadcopter.
+In this post, we build a simple simulation of a 2D (planar) quadcopter, a type of drone with four propellers.
 We will derive the equations of motion, rewrite them in state-space form, and simulate the resulting system in Python.
 
 ## Problem setup and coordinates
@@ -72,7 +72,7 @@ $$
 <!-- Equations of motion to state-space representation -->
 To simulate the system numerically, it is convenient to rewrite it in state-space form.
 For that, we must define the state $$\mathbf{x}$$, the minimal set of variables that describes the system, and the input $$\mathbf{u}$$, the variables we control.
-Our goal is an equation of the form:
+Our goal is to express how the system evolves over time in the form:
 
 $$
 \mathbf{\dot{x}} = f(\mathbf{x}, \mathbf{u})
@@ -159,7 +159,7 @@ def dynamics(x: NDArray, u: NDArray) -> NDArray:
     )
 ```
 
-With the dynamics defined, we solve the first-order ordinary differential equation with Euler's method.
+With the dynamics defined, we solve the first-order ordinary differential equation with Euler's method to calculate the full trajectory.
 We initialize the state at zero, so the quadcopter starts at the origin with no velocity and no rotation.
 We choose a constant input $$u_1 = F_1 + F_2 = mg + 0.01$$ so the quadcopter produces slightly more thrust than its weight and slowly ascends.
 We set $$u_2 = 0$$ so there is no net torque and the vehicle does not rotate.
@@ -184,6 +184,8 @@ That is the complete simulation pipeline: derive the equations of motion, conver
 
 ## Running the simulation
 
+### Zero-torque case
+
 We confirm that our simulation performs as expected with the plot shown below.
 As expected, the $$y$$ position and $$\phi$$ angle stay constant, as well as their respective velocities $$\dot{y}$$ and $$\dot{\phi}$$.
 In this constant-input, zero-torque case, the vertical acceleration is constant, so the $$z$$ position grows quadratically and the $$\dot{z}$$ velocity grows linearly.
@@ -193,14 +195,39 @@ In this constant-input, zero-torque case, the vertical acceleration is constant,
     style="max-width: 100%; display: block; margin: auto;"/>
 </figure>
 
+In addition to the static plots, I implemented a small visualizer that animates the quadcopter in the $$yz$$ plane using the simulated state trajectory.
+
+<div style="
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    text-align: center;
+    margin-bottom: 1.5rem;">
+  <div>
+    <p style="margin: auto;">Simulation visualizer</p>
+    <canvas id="canvas-sim-viz" style="display: block;"></canvas>
+  </div>
+</div>
+
+### Non-zero torque case
+
 Let's now apply a nonzero torque input $$u_2$$ and also increase the total thrust $$u_1$$.
-Changing the inputs to:
+Since this simple model does not include ground contact, we stop the simulation once the quadcopter crosses below $$z = 0$$, which we treat as ground level:
 
 ```python
 d_input = 2
 u = np.zeros(shape=(n_steps, d_input))
 u[:, 0] = m * g + 0.5
 u[:, 1] = 5e-5
+
+eps = 1e-8
+for i in range(n_steps - 1):
+    if x[i, 1] < -eps:  # Quadcopter crashes, stop the simulation.
+        t = t[:i]
+        x = x[:i, :]
+        u = u[:i, :]
+        break
+    x[i + 1] = x[i] + dynamics(x[i], u[i]) * dt
 ```
 
 And running the simulation gives us the plot below.
@@ -213,6 +240,20 @@ Once $$\frac{u_1}{m}\cos\phi < g$$, gravity dominates and the quadcopter starts 
     <img src="/assets/images/2d-quadcopter-simulation/matplotlib-plot-2.png"
     style="max-width: 100%; display: block; margin: auto;"/>
 </figure>
+
+<div style="
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    text-align: center;
+    margin-bottom: 1.5rem;">
+  <div>
+    <p style="margin: auto;">Simulation visualizer</p>
+    <canvas id="canvas-sim-viz-2" style="display: block;"></canvas>
+  </div>
+</div>
+
+<script src="/assets/js/2d-quadcopter-simulation/sim-viz.js"></script>
 
 > Note about LLM usage: This post was written fully by a human and proofread and minimally edited by gpt-5.4 default (via codex).
 
