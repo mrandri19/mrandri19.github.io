@@ -16,6 +16,9 @@ title: "Simulating a 2D quadcopter from scratch"
 In this post, we build a simple simulation of a 2D (planar) quadcopter, a type of drone with four propellers.
 We will derive the equations of motion, rewrite them in state-space form, and simulate the resulting system in Python.
 
+Why simulate a quadcopter at all? If you want to design a controller, or train a reinforcement learning agent, you first need a model you can run in software.
+This post builds that first simulation step from scratch in 2D, so we can understand the dynamics before moving on to control.
+
 ## Problem setup and coordinates
 
 <!-- FBD axes -->
