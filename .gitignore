@@ -1,5 +1,5 @@
-_site
-.sass-cache
-.jekyll-metadata
-.vscode
+dist/
+.astro/
 node_modules/
+.vscode
+_site/
