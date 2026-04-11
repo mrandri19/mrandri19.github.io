@@ -1,0 +1,54 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+
+function parsePostDate(slug: string): Date {
+  const [year, month, day] = slug.split('-');
+  return new Date(`${year}-${month}-${day}`);
+}
+
+function postUrl(slug: string): string {
+  const [year, month, day, ...rest] = slug.split('-');
+  return `/${year}/${month}/${day}/${rest.join('-')}.html`;
+}
+
+const sortedPosts = allPosts.sort(
+  (a, b) => parsePostDate(b.slug).getTime() - parsePostDate(a.slug).getTime()
+);
+---
+
+<BaseLayout title="Blog — Andrea Cognolato">
+  <div class="container mx-auto max-w-screen-md px-4">
+    <header class="py-4 mb-6 border-b border-gray-200 dark:border-gray-700">
+      <nav class="flex gap-6 text-[1.125rem]">
+        <a class="text-blue-500 hover:underline" href="/blog">Blog</a>
+        <a class="text-blue-500 hover:underline" href="/">Homepage</a>
+      </nav>
+    </header>
+
+    <div class="prose prose-lg dark:prose-invert max-w-none">
+      <h1 class="font-serif">Blog</h1>
+      <ul>
+        {sortedPosts.map((post) => {
+          const date = parsePostDate(post.slug);
+          const formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          });
+          return (
+            <li>
+              <time class="text-gray-500 dark:text-gray-400 text-sm not-prose" datetime={date.toISOString()}>
+                {formattedDate}
+              </time>
+              <br />
+              <a href={postUrl(post.slug)} class="text-blue-500 no-underline hover:underline">{post.data.title}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </div>
+</BaseLayout>
