@@ -19,12 +19,13 @@ title: "Simulating a 3D quadcopter from scratch"
 -   newton-euler equations of motion
     -   deriving equations of motion
 -   choosing how to go to state space
-        euler angles vs body rates / angular velocities, quaternion vs body rates
+    -   euler angles vs body rates / angular velocities, quaternion vs body rates
+    -   quaternion derivatives
 -   choosing our inputs and how mixer transates from input to forces
 -   implementation (in Python)
 -   works!
 -   bonus, visualization via rerun.io
--   bonus, rust implementation in gymnasium environment format
+-   bonus, rust implementation (next post I say)
 -->
 
 Our series on quadcopter simulation and control continues with this post, which explains how to model a 3D quadcopter.
@@ -112,10 +113,11 @@ I \dot{\omega} + \omega \times I \omega &=
 \end{aligned}
 $$
 
+<!-- Equations of motion to state-space representation: re-arranging -->
 Let's now start re-arranging the equations so that we can write our system in
 state-space form.
 First, let's define mass-normalized thrust as $$\mathbf{c} = \frac{1}{m} (\mathbf{F_1} + \mathbf{F_2} + \mathbf{F_3} + \mathbf{F_4})$$.
-Then define $$\Tau$$ as the vector of torques.
+Then let $$\Tau$$ be the vector of torques defined above.
 With this, we can move all terms to the right-hand side to only have derivatives of (linear) velocity and angular velocity on the left-hand side.
 
 $$
@@ -127,9 +129,104 @@ $$
 \end{aligned}
 $$
 
-TODO
+<!-- State-space representation: input and state parametrization -->
+
+Our goal is to express how the system evolves over time in the form:
+
+$$
+\mathbf{\dot{x}} = f(\mathbf{x}, \mathbf{u})
+$$
+
+In our case, our input is simply the motor forces $$\mathbf{u} = \left[ \mathbf{F_1}, \mathbf{F_2}, \mathbf{F_3}, \mathbf{F_4} \right]^T$$.
+Parametrizing the state is more complicated: we want a first-order system, so we include velocities $$\mathbf{v}$$ and $$\omega$$ in the state.
+<!-- euler angles vs body rates / angular velocities, quaternion vs body rates -->
+But what should our zeroth-order quantities be?
+For translations, it's easy, we will use position $$\mathbf{p}$$ whose derivative is the velocity.
+For rotations, it turns out that the best parametrization is the quaternion $$q$$.
+This results in a 13-dimensional (3 + 4 + 3 + 3) state:
+
+$$
+\mathbf{x} = \left[\mathbf{p}, q, \mathbf{v}, \omega \right]^T
+$$
+
+Which we use to write our system as:
+
+$$
+\mathbf{\dot{x}} =
+
+\begin{bmatrix}
+    \mathbf{\dot{p}} \\
+    \dot{q} \\
+    \mathbf{\dot{v}} \\
+    \dot{\omega}
+\end{bmatrix} =
+
+f(\mathbf{x}, \mathbf{u}) =
+
+\begin{bmatrix}
+    \mathbf{v} \\
+    ? \\
+    -\mathbf{g} + \text{rotate}(q, \mathbf{c}) \\
+    I^{-1} (\Tau - \omega \times I \omega)
+\end{bmatrix}
+$$
+
+<!-- quaternion derivatives -->
+But what's the derivative of a quaternion?
+Answering this question rigorously requires mathematics beyond my comfort level.
+But below is my attempt at a proof of the formula we will use.
+The proof comes from [Quaternion differentiation](https://fgiesen.wordpress.com/2012/08/24/quaternion-differentiation), adapted to this post's notation.
+
+Let $$q(0) = q$$ be our attitude quaternion at time $$t=0$$.
+We denote quaternion multiplication between quatenions $$q_a$$ and $$q_b$$ with $$q_a \otimes q_b$$.
+Our quadcopter rotates by $$ \omega \cdot 1$$ in one unit of time.
+Let $$q_{\omega}$$ be the quaternion representing the rotation.
+This means that at time $$t = 1$$, we have $$q(1) = q \otimes q_{\omega}$$.
+And, by induction, $$q(t) = q \otimes q_{\omega}^t$$ at time $$t$$.
+
+Any unit quaternion can be represented as the exponential of a pure imaginary quaternion, just like any complex number $$z$$ can be written as the exponential of a pure imaginary number $$i\theta$$ or $$z = e^{i\theta}$$.
+We call $$\omega^{\wedge}$$ the pure imaginary quaternion (a 4D quantity) created from the 3D angular velocity $$\omega$$ or $$\omega^{\wedge} = \left(0, \omega_1, \omega_2, \omega_3 \right)$$.
+This lets us write $$q_{\omega} = e^{\frac{1}{2} \omega^{\wedge}}$$ and $$q_{\omega}^t = e^{\frac{1}{2} \omega^{\wedge} t}$$.
+The additional factor $$\frac{1}{2}$$ is a result of how quaternions are a "double cover" of rotations, an artifact of the particular representation of $$\text{SO}(3)$$ we picked.
+
+Putting everything together:
+
+$$q(t) = q \otimes e^{\frac{1}{2} \omega^{\wedge} t}$$
+
+and differentiating:
+
+$$
+\begin{aligned}
+
+\dot{q(t)} &= q \otimes e^{\frac{1}{2} \omega^{\wedge} t} \otimes \frac{1}{2} \omega^{\wedge} \\
+
+\dot{q(t)} &= q(t) \otimes \frac{1}{2} \omega^{\wedge}
+
+\end{aligned}
+$$
+
+That's it! We've made it, and can finally write the full state-space formulation of our system:
+
+$$
+\mathbf{\dot{x}} =
+
+\begin{bmatrix}
+    \mathbf{\dot{p}} \\
+    \dot{q} \\
+    \mathbf{\dot{v}} \\
+    \dot{\omega}
+\end{bmatrix} =
+
+f(\mathbf{x}, \mathbf{u}) =
+
+\begin{bmatrix}
+    \mathbf{v} \\
+    q \otimes \frac{1}{2} \omega^{\wedge} \\
+    -\mathbf{g} + \text{rotate}(q, \mathbf{c}) \\
+    I^{-1} (\Tau - \omega \times I \omega)
+\end{bmatrix}
+$$
 
 ## Sources
 -   [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768)
 -   [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4)
--   [Quaternion differentiation](https://fgiesen.wordpress.com/2012/08/24/quaternion-differentiation)
