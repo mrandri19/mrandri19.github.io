@@ -23,7 +23,7 @@ title: "Simulating a 3D quadcopter from scratch"
     -   quaternion derivatives
 -   choosing our inputs and how mixer transates from input to forces
 -   implementation (in Python)
--   works!
+-   viz, it works!
 -   bonus, visualization via rerun.io
 -   bonus, rust implementation (next post I say)
 -->
@@ -46,7 +46,7 @@ Our model uses both.
 
 <!-- FBD body, forces, and torques. Position and attitude. -->
 The quadcopter is made of four rods of length $$\ell$$ laid in a "+" pattern around the center $$C$$.
-There is a spinning propeller the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\tau_{i}$$ opposite to the propeller spin direction.
+There is a spinning propeller the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\tau_{i} = F_i / k$$ opposite to the propeller spin direction.
 The quadcopter can have arbitrary position and attitude (i.e. its orientation).
 Let $$\mathbf{p}$$ be the position vector from origin $$O$$ to center of mass $$C$$.
 Let $$q$$ be the quaternion that rotates a vector’s coordinates from the body frame to the world frame, representing the attitude.
@@ -205,7 +205,7 @@ $$
 \end{aligned}
 $$
 
-That's it! We've made it, and can finally write the full state-space formulation of our system:
+That's it! We've made it through the proof, and can finally write the state-space formulation of our system:
 
 $$
 \mathbf{\dot{x}} =
@@ -227,6 +227,86 @@ f(\mathbf{x}, \mathbf{u}) =
 \end{bmatrix}
 $$
 
-## Sources
--   [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768)
--   [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4)
+<!-- choosing our inputs and how mixer transates from input to forces -->
+The last bit we need to handle is how to parametrize our inputs $$u$$ and how they translate into our forces $$F_i$$.
+This choice is a bit arbitrary, but following [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768) and [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4) we use mass-normalized thrust and angular velocities.
+We call the inputs $$u_c$$ for mass-normalized thrust and $$u_p, u_q, u_r$$ for angular velocities.
+The function mapping inputs to forces is called "mixer".
+For more details on how to extend this to more shapes and propellers check out [Motor Mixer Theory](https://cookierobotics.com/066/).
+These equations can be derived with a simple (but easy to get wrong) geometric argument from the free body diagram.
+
+Let $$F_t = \frac{u_c m}{4} $$, and remembering that $$k$$ is the propeller-drag ration, then our mixer is:
+
+$$
+\begin{aligned}
+
+\begin{bmatrix}
+F_1 \\
+F_2 \\
+F_3 \\
+F_4
+\end{bmatrix}
+
+= \text{mixer}\left(
+\begin{bmatrix}
+u_c \\
+u_p \\
+u_q \\
+u_r
+\end{bmatrix}
+\right) =
+
+\begin{bmatrix}
+F_t - u_q / 2L + k u_r / 4 \\
+F_t + u_p / 2L - k u_r / 4 \\
+F_t + u_q / 2L + k u_r / 4 \\
+F_t - u_p / 2L - k u_r / 4
+\end{bmatrix}
+
+\end{aligned}
+$$
+
+## Simulating the system in Python
+
+<!-- implementation (in Python) -->
+
+We can now simulate this state-space model in Python.
+First, we define the physical parameters, the dynamics function, and the mixer function:
+
+```python
+g = 9.81  # [m/s*s] gravity
+m = 0.8  # [kg] mass
+L = 0.5  # [m] arm length
+k = 100  # [] thrust / drag ratio.
+I = np.diag([0.001, 0.001, 0.002])  # noqa: E741  # inertia matrix.
+I_inv = np.linalg.inv(I)
+
+
+def dynamics(x: NDArray, u: NDArray) -> NDArray:
+    F1, F2, F3, F4 = mixer(u)
+
+    q, v, omega = x[3:7], x[7:10], x[10:13]
+    c = np.array([0, 0, (F1 + F2 + F3 + F4) / m])
+    tau1, tau2, tau3, tau4 = F1 / k, F2 / k, F3 / k, F4 / k
+    Tau = np.array([L * (F2 - F4), L * (F3 - F1), tau1 - tau2 + tau3 - tau4])
+
+    return np.concat(
+        [
+            v,
+            0.5 * quat_mul(q, np.array([0, *omega])),
+            np.array([0, 0, -g]) + rot_vec_by_quat(q, c),
+            I_inv @ (Tau - np.cross(omega, I @ omega)),
+        ]
+    )
+
+def mixer(u: NDArray) -> NDArray:
+    u_c, u_p, u_q, u_r = u
+    F_t = u_c * m / 4
+    F1 = F_t - u_q / (2 * L) + k * u_r / 4
+    F2 = F_t + u_p / (2 * L) - k * u_r / 4
+    F3 = F_t + u_q / (2 * L) + k * u_r / 4
+    F4 = F_t - u_p / (2 * L) - k * u_r / 4
+    return np.array([F1, F2, F3, F4])
+```
+
+TODO
