@@ -29,7 +29,7 @@ title: "Simulating a 3D quadcopter from scratch"
 -->
 
 Our series on quadcopter simulation and control continues with this post, which explains how to model a 3D quadcopter.
-We will derive the equations of motion, introduce quaternions and quaternion derivatives, transform them the state-space form, and finally simulate the system in Python.
+We will derive the equations of motion, introduce quaternions and quaternion derivatives, transform them into state-space form, and finally simulate the system in Python.
 
 This post will be longer and more technical than the previous post, which covers the 2D case.
 As it turns out, the problem becomes more complicated in 3D and requires more advanced parts of math.
@@ -46,7 +46,7 @@ Our model uses both.
 
 <!-- FBD body, forces, and torques. Position and attitude. -->
 The quadcopter is made of four rods of length $$\ell$$ laid in a "+" pattern around the center $$C$$.
-There is a spinning propeller the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\tau_{i} = F_i / k$$ opposite to the propeller spin direction.
+There is a spinning propeller at the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\tau_{i} = F_i / k$$ opposite to the propeller spin direction.
 The quadcopter can have arbitrary position and attitude (i.e. its orientation).
 Let $$\mathbf{p}$$ be the position vector from origin $$O$$ to center of mass $$C$$.
 Let $$q$$ be the quaternion that rotates a vector’s coordinates from the body frame to the world frame, representing the attitude.
@@ -59,7 +59,7 @@ Let $$q$$ be the quaternion that rotates a vector’s coordinates from the body 
 <!-- Aside: what are quaternions, where to learn about them, why we use them -->
 Let's briefly talk about quaternions, as I expect most people to not be familiar with them.
 Quaternions, unit quaternions to be precise, are a way to represent rotations.
-Rotations, especially in 3D, are strange obects as they don't live in the usual $$\mathbb{R}^3$$ like position or velocity vectors.
+Rotations, especially in 3D, are strange objects as they don't live in the usual $$\mathbb{R}^3$$ like position or velocity vectors.
 Instead, rotations live in a space called the 3D special orthogonal group, or $$\text{SO}(3)$$.
 Representing $$\text{SO}(3)$$ objects in $$\mathbb{R}^3$$ is possible, for example using Euler angles, but leads to issues like singularities and numerical instability.
 For our purposes, representing attitude with quaternions leads to simpler, more efficient, and more numerically stable code.
@@ -91,9 +91,10 @@ To convert our simple expression for thrusts from body frame into world frame, w
 To rotate the body frame vector to world frame we use the attitude quaternion $$q$$.
 
 <!-- Deriving equations of motion: rotation -->
-We derive rotation equations (in body frame) from the free-body diagram by seeing how each force or torque influences each rotation axis.
-If the second motor speeds up, increasing $$F_2$$, angle $$\phi$$ (roll) will increase.
-If the fourth motor speeds up, $$F_4$$ increases and $$\phi$$ decreases.
+We derive the rotation equations in the body frame by seeing how each force or torque affects each rotation axis.
+We denote rotations about the body-frame axes by roll $$\phi$$, pitch $$\theta$$, and yaw $$\psi$$.
+If the second motor speeds up, increasing $$F_2$$, roll $$\phi$$ will increase.
+If the fourth motor speeds up, increasing $$F_4$$, roll $$\phi$$ will decrease.
 Thus the force couple $$(F_2 - F_4)$$, multiplied by arm length $$\ell$$ will form the torque on the $$x'$$ axis.
 The same argument holds for $$F_1, F_3$$ and $$\theta$$ (pitch) on the $$y'$$ axis.
 Finally, for $$\psi$$ (yaw) on the $$z'$$ axis, we simply add together all propeller drag torques $$\tau_i$$.
@@ -107,18 +108,32 @@ I \dot{\omega} + \omega \times I \omega &=
 \begin{bmatrix}
     \ell (F_2 - F_4) \\
     \ell (F_3 - F_1) \\
-    \mathbf{\tau_1} - \mathbf{\tau_2} + \mathbf{\tau_3} - \mathbf{\tau_4}
+    \tau_1 - \tau_2 + \tau_3 - \tau_4
 \end{bmatrix}
 
 \end{aligned}
 $$
 
 <!-- Equations of motion to state-space representation: re-arranging -->
-Let's now start re-arranging the equations so that we can write our system in
-state-space form.
-First, let's define mass-normalized thrust as $$\mathbf{c} = \frac{1}{m} (\mathbf{F_1} + \mathbf{F_2} + \mathbf{F_3} + \mathbf{F_4})$$.
-Then let $$\Tau$$ be the vector of torques defined above.
-With this, we can move all terms to the right-hand side to only have derivatives of (linear) velocity and angular velocity on the left-hand side.
+Let's now start re-arranging the equations so that we can write our system in state-space form.
+First, let's define mass-normalized thrust $$c$$ and torques $$\Tau$$:
+
+$$
+\begin{aligned}
+
+\mathbf{c} &= \frac{1}{m} (\mathbf{F_1} + \mathbf{F_2} + \mathbf{F_3} + \mathbf{F_4}) \\
+
+\Tau &=
+\begin{bmatrix}
+    \ell (F_2 - F_4) \\
+    \ell (F_3 - F_1) \\
+    \tau_1 - \tau_2 + \tau_3 - \tau_4
+\end{bmatrix}
+
+\end{aligned}
+$$
+
+With these defined, we isolate the derivatives of (linear) velocity and angular velocity on the left-hand side:
 
 $$
 \begin{aligned}
@@ -178,14 +193,14 @@ But below is my attempt at a proof of the formula we will use.
 The proof comes from [Quaternion differentiation](https://fgiesen.wordpress.com/2012/08/24/quaternion-differentiation), adapted to this post's notation.
 
 Let $$q(0) = q$$ be our attitude quaternion at time $$t=0$$.
-We denote quaternion multiplication between quatenions $$q_a$$ and $$q_b$$ with $$q_a \otimes q_b$$.
+We denote quaternion multiplication between quaternions $$q_a$$ and $$q_b$$ with $$q_a \otimes q_b$$.
 Our quadcopter rotates by $$ \omega \cdot 1$$ in one unit of time.
 Let $$q_{\omega}$$ be the quaternion representing the rotation.
-This means that at time $$t = 1$$, we have $$q(1) = q \otimes q_{\omega}$$.
-And, by induction, $$q(t) = q \otimes q_{\omega}^t$$ at time $$t$$.
+This means that at time $$t = 1$$, we have $$q(1) = q \otimes q_{\omega}$$ (notice how the transformation is applied on the right).
+And, by induction, $$q(t) = q \otimes q_{\omega}^t$$ at time $$t$$ (this is only true for small, instantaneous, time steps as $$\omega$$ itself changes through time).
 
 Any unit quaternion can be represented as the exponential of a pure imaginary quaternion, just like any complex number $$z$$ can be written as the exponential of a pure imaginary number $$i\theta$$ or $$z = e^{i\theta}$$.
-We call $$\omega^{\wedge}$$ the pure imaginary quaternion (a 4D quantity) created from the 3D angular velocity $$\omega$$ or $$\omega^{\wedge} = \left(0, \omega_1, \omega_2, \omega_3 \right)$$.
+We call $$\omega^{\wedge}$$ the pure imaginary quaternion (a 4D quantity) created from the 3D angular velocity $$\omega$$ (in the body frame) or $$\omega^{\wedge} = \left(0, \omega_1, \omega_2, \omega_3 \right)$$.
 This lets us write $$q_{\omega} = e^{\frac{1}{2} \omega^{\wedge}}$$ and $$q_{\omega}^t = e^{\frac{1}{2} \omega^{\wedge} t}$$.
 The additional factor $$\frac{1}{2}$$ is a result of how quaternions are a "double cover" of rotations, an artifact of the particular representation of $$\text{SO}(3)$$ we picked.
 
@@ -229,8 +244,8 @@ $$
 
 <!-- choosing our inputs and how mixer transates from input to forces -->
 The last bit we need to handle is how to parametrize our inputs $$u$$ and how they translate into our forces $$F_i$$.
-This choice is a bit arbitrary, but following [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768) and [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4) we use mass-normalized thrust and angular velocities.
-We call the inputs $$u_c$$ for mass-normalized thrust and $$u_p, u_q, u_r$$ for angular velocities.
+This choice is a bit arbitrary, but following [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768) and [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4) we use mass-normalized and three rotational control inputs..
+We call the inputs $$u_c$$ for mass-normalized thrust and $$u_p, u_q, u_r$$ for roll, pitch, and yaw control.
 The function mapping inputs to forces is called "mixer".
 For more details on how to extend this to more shapes and propellers check out [Motor Mixer Theory](https://cookierobotics.com/066/).
 These equations can be derived with a simple (but easy to get wrong) geometric argument from the free body diagram.
@@ -257,10 +272,10 @@ u_r
 \right) =
 
 \begin{bmatrix}
-F_t - u_q / 2L + k u_r / 4 \\
-F_t + u_p / 2L - k u_r / 4 \\
-F_t + u_q / 2L + k u_r / 4 \\
-F_t - u_p / 2L - k u_r / 4
+F_t - u_q / 2\ell + u_r / 4k \\
+F_t + u_p / 2\ell - u_r / 4k \\
+F_t + u_q / 2\ell + u_r / 4k \\
+F_t - u_p / 2\ell - u_r / 4k
 \end{bmatrix}
 
 \end{aligned}
@@ -270,7 +285,7 @@ $$
 ## Simulating the system in Python
 
 We can now simulate the system in Python.
-First, we define the physical parameters, the dynamics function, and the mixer function:
+First, we define the physical parameters, the dynamics function, and the mixer function.
 
 ```python
 g = 9.81  # [m/s*s] gravity
@@ -301,18 +316,18 @@ def dynamics(x: NDArray, u: NDArray) -> NDArray:
 def mixer(u: NDArray) -> NDArray:
     u_c, u_p, u_q, u_r = u
     F_t = u_c * m / 4
-    F1 = F_t - u_q / (2 * L) + k * u_r / 4
-    F2 = F_t + u_p / (2 * L) - k * u_r / 4
-    F3 = F_t + u_q / (2 * L) + k * u_r / 4
-    F4 = F_t - u_p / (2 * L) - k * u_r / 4
+    F1 = F_t - u_q / (2 * L) + u_r / (4 * k)
+    F2 = F_t + u_p / (2 * L) - u_r / (4 * k)
+    F3 = F_t + u_q / (2 * L) + u_r / (4 * k)
+    F4 = F_t - u_p / (2 * L) - u_r / (4 * k)
     return np.array([F1, F2, F3, F4])
 ```
 
 With the dynamics (and mixer) defined, we use Euler's method to solve the first-order ordinary differential equations.
 We initialize the quadcopter two meters above the origin at $$\mathbf{p}=(0, 0, 2)$$.
-A "zero" rotation is an unit quaternion $$(1, 0, 0, 0)$$.
+A "zero" rotation is a unit quaternion $$(1, 0, 0, 0)$$.
 We set the mass-normalized thrust $$u_c$$ to be just above $$g$$, to make the quadcopter go up.
-We set the input yaw rate $$u_r$$ to a function that: goes to 1, stays at 1 for 1 second, goes to zero, stays at zero for 1 second, goes to -1 and stays there for 1 more second, then finally goes to 0.
+We set the yaw control input $$u_r$$ to a piecewise-constant function: it is 1 for one second, then 0 for one second, then -1 for one second, and finally 0 again.
 
 ```python
 t_start = 0.0
@@ -324,12 +339,12 @@ dt = t[1] - t[0]
 d_state = 13  # 13 = 3 (position) + 4 (attitude quaternion) + 3 (speed) + 3 (body rate).
 x = np.zeros((n_steps, d_state))
 x[0, 2] = 2  # start at z=2
-x[0, 3:7] = np.array([1, 0, 0, 0])  # setup quaternion to have unit length.
+x[0, 3:7] = np.array([1, 0, 0, 0])  # initialize quaternion to unit length.
 
 d_input = 4
 u = np.zeros((n_steps, d_input))
 u[:, 0] = 9.81 + 0.05
-u[:, 3] = 1e-3 * (
+u[:, 3] = 10 * (
     np.heaviside(t - 1, 1)
     - np.heaviside(t - 2, 1)
     - np.heaviside(t - 3, 1)
@@ -339,7 +354,7 @@ u[:, 3] = 1e-3 * (
 for i in range(n_steps - 1):
     x[i + 1, :] = x[i, :] + dynamics(x[i], u[i]) * dt
 
-    # Normalize quaternion (its norm can change due to numerical precision).
+    # Normalize quaternion (drifts as we use Euler instead of proper Lie integrator).
     q = x[i + 1, 3:7]
     x[i + 1, 3:7] = q / np.linalg.norm(q)
 ```
