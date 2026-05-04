@@ -22,7 +22,7 @@ title: "Simulating a 3D quadcopter from scratch"
     -   euler angles vs body rates / angular velocities, quaternion vs body rates
     -   quaternion derivatives
 -   choosing our inputs and how mixer transates from input to forces
--   implementation (in Python)
+-   Python implementation
 -   viz, it works!
 -   bonus, visualization via rerun.io
 -   bonus, rust implementation (next post I say)
@@ -235,7 +235,7 @@ The function mapping inputs to forces is called "mixer".
 For more details on how to extend this to more shapes and propellers check out [Motor Mixer Theory](https://cookierobotics.com/066/).
 These equations can be derived with a simple (but easy to get wrong) geometric argument from the free body diagram.
 
-Let $$F_t = \frac{u_c m}{4} $$, and remembering that $$k$$ is the propeller-drag ration, then our mixer is:
+Let $$F_t = \frac{u_c m}{4} $$, and remembering that $$k$$ is the propeller-drag ratio, then our mixer is:
 
 $$
 \begin{aligned}
@@ -266,11 +266,10 @@ F_t - u_p / 2L - k u_r / 4
 \end{aligned}
 $$
 
+<!-- Python implementation -->
 ## Simulating the system in Python
 
-<!-- implementation (in Python) -->
-
-We can now simulate this state-space model in Python.
+We can now simulate the system in Python.
 First, we define the physical parameters, the dynamics function, and the mixer function:
 
 ```python
@@ -308,5 +307,45 @@ def mixer(u: NDArray) -> NDArray:
     F4 = F_t - u_p / (2 * L) - k * u_r / 4
     return np.array([F1, F2, F3, F4])
 ```
+
+With the dynamics (and mixer) defined, we use Euler's method to solve the first-order ordinary differential equations.
+We initialize the quadcopter two meters above the origin at $$\mathbf{p}=(0, 0, 2)$$.
+A "zero" rotation is an unit quaternion $$(1, 0, 0, 0)$$.
+We set the mass-normalized thrust $$u_c$$ to be just above $$g$$, to make the quadcopter go up.
+We set the input yaw rate $$u_r$$ to a function that: goes to 1, stays at 1 for 1 second, goes to zero, stays at zero for 1 second, goes to -1 and stays there for 1 more second, then finally goes to 0.
+
+```python
+t_start = 0.0
+t_stop = 10.0
+n_steps = 10_000
+t = np.linspace(t_start, t_stop, n_steps)
+dt = t[1] - t[0]
+
+d_state = 13  # 13 = 3 (position) + 4 (attitude quaternion) + 3 (speed) + 3 (body rate).
+x = np.zeros((n_steps, d_state))
+x[0, 2] = 2  # start at z=2
+x[0, 3:7] = np.array([1, 0, 0, 0])  # setup quaternion to have unit length.
+
+d_input = 4
+u = np.zeros((n_steps, d_input))
+u[:, 0] = 9.81 + 0.05
+u[:, 3] = 1e-3 * (
+    np.heaviside(t - 1, 1)
+    - np.heaviside(t - 2, 1)
+    - np.heaviside(t - 3, 1)
+    + np.heaviside(t - 4, 1)
+)
+
+for i in range(n_steps - 1):
+    x[i + 1, :] = x[i, :] + dynamics(x[i], u[i]) * dt
+
+    # Normalize quaternion (its norm can change due to numerical precision).
+    q = x[i + 1, 3:7]
+    x[i + 1, 3:7] = q / np.linalg.norm(q)
+```
+
+That is the complete simulation pipeline: derive the equations of motion, convert them to state-space form, and integrate them numerically in Python.
+
+## Running the simulation
 
 TODO
