@@ -46,7 +46,7 @@ Our model uses both.
 
 <!-- FBD body, forces, and torques. Position and attitude. -->
 The quadcopter is made of four rods of length $$\ell$$ laid in a "+" pattern around the center $$C$$.
-There is a spinning propeller at the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\tau_{i} = F_i / k$$ opposite to the propeller spin direction.
+There is a spinning propeller at the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\mathbf{\tau_{i}} = \frac{\mathbf{F_i}}{k}$$ opposite to the propeller spin direction.
 The quadcopter can have arbitrary position and attitude (i.e. its orientation).
 Let $$\mathbf{p}$$ be the position vector from origin $$O$$ to center of mass $$C$$.
 Let $$q$$ be the quaternion that rotates a vector’s coordinates from the body frame to the world frame, representing the attitude.
@@ -116,7 +116,7 @@ $$
 
 <!-- Equations of motion to state-space representation: re-arranging -->
 Let's now start re-arranging the equations so that we can write our system in state-space form.
-First, let's define mass-normalized thrust $$c$$ and torques $$\Tau$$:
+First, let's define mass-normalized thrust $$\mathbf{c}$$ and torques $$\Tau$$:
 
 $$
 \begin{aligned}
@@ -244,7 +244,7 @@ $$
 
 <!-- choosing our inputs and how mixer transates from input to forces -->
 The last bit we need to handle is how to parametrize our inputs $$u$$ and how they translate into our forces $$F_i$$.
-This choice is a bit arbitrary, but following [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768) and [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4) we use mass-normalized and three rotational control inputs..
+This choice is a bit arbitrary, but following [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768) and [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4) we use mass-normalized thrust and three rotational control inputs.
 We call the inputs $$u_c$$ for mass-normalized thrust and $$u_p, u_q, u_r$$ for roll, pitch, and yaw control.
 The function mapping inputs to forces is called "mixer".
 For more details on how to extend this to more shapes and propellers check out [Motor Mixer Theory](https://cookierobotics.com/066/).
@@ -288,7 +288,7 @@ We can now simulate the system in Python.
 First, we define the physical parameters, the dynamics function, and the mixer function.
 
 ```python
-g = 9.81  # [m/s*s] gravity
+g = 9.81  # [m/s^2] gravity
 m = 0.8  # [kg] mass
 L = 0.5  # [m] arm length
 k = 100  # [] thrust / drag ratio.
@@ -327,7 +327,7 @@ With the dynamics (and mixer) defined, we use Euler's method to solve the first-
 We initialize the quadcopter two meters above the origin at $$\mathbf{p}=(0, 0, 2)$$.
 A "zero" rotation is a unit quaternion $$(1, 0, 0, 0)$$.
 We set the mass-normalized thrust $$u_c$$ to be just above $$g$$, to make the quadcopter go up.
-We set the yaw control input $$u_r$$ to a piecewise-constant function: it is 1 for one second, then 0 for one second, then -1 for one second, and finally 0 again.
+We set the yaw control input $$u_r$$ to a piecewise-constant function: it is 0 at first, then 10 for one second, then 0 for one second, then -10 for one second, and finally 0 again.
 
 ```python
 t_start = 0.0
@@ -354,7 +354,7 @@ u[:, 3] = 10 * (
 for i in range(n_steps - 1):
     x[i + 1, :] = x[i, :] + dynamics(x[i], u[i]) * dt
 
-    # Normalize quaternion (drifts as we use Euler instead of proper Lie integrator).
+    # Quaternion drifts under Euler integration, so we renormalize it.
     q = x[i + 1, 3:7]
     x[i + 1, 3:7] = q / np.linalg.norm(q)
 ```
