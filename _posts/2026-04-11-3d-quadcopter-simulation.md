@@ -34,6 +34,8 @@ We will derive the equations of motion, introduce quaternions and quaternion der
 This post will be longer and more technical than the previous post, which covers the 2D case.
 As it turns out, the problem becomes more complicated in 3D and requires more advanced parts of math.
 
+## Problem setup and coordinates
+
 <!-- FBD axes, world (inertial) and body (non-intertial) frames -->
 The free-body diagram for the quadcopter is shown below.
 We use a right-hand coordinate frame with the $$z$$ axis for altitude.
@@ -46,7 +48,7 @@ Our model uses both.
 
 <!-- FBD body, forces, and torques. Position and attitude. -->
 The quadcopter is made of four rods of length $$\ell$$ laid in a "+" pattern around the center $$C$$.
-There is a spinning propeller at the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\mathbf{\tau_{i}} = \frac{\mathbf{F_i}}{k}$$ opposite to the propeller spin direction.
+There is a spinning propeller at the end of each rod, which generates thrust $$F_i$$ and, because of the propeller drag, a torque $$\tau_{i} = \frac{F_i}{k}$$ opposite to the propeller spin direction.
 The quadcopter can have arbitrary position and attitude (i.e. its orientation).
 Let $$\mathbf{p}$$ be the position vector from origin $$O$$ to center of mass $$C$$.
 Let $$q$$ be the quaternion that rotates a vector’s coordinates from the body frame to the world frame, representing the attitude.
@@ -56,6 +58,7 @@ Let $$q$$ be the quaternion that rotates a vector’s coordinates from the body 
     style="max-width: 70%; display: block; margin: auto;"/>
 </figure>
 
+### Quaternions
 <!-- Aside: what are quaternions, where to learn about them, why we use them -->
 Let's briefly talk about quaternions, as I expect most people to not be familiar with them.
 Quaternions, unit quaternions to be precise, are a way to represent rotations.
@@ -63,9 +66,10 @@ Rotations, especially in 3D, are strange objects as they don't live in the usual
 Instead, rotations live in a space called the 3D special orthogonal group, or $$\text{SO}(3)$$.
 Representing $$\text{SO}(3)$$ objects in $$\mathbb{R}^3$$ is possible, for example using Euler angles, but leads to issues like singularities and numerical instability.
 For our purposes, representing attitude with quaternions leads to simpler, more efficient, and more numerically stable code.
-To find out more, my favourite resource is [this video by Freya Holmer](https://www.youtube.com/watch?v=PMvIWws8WEo) paired with your favourite LLM for clarifications.
+To find out more, my favourite resource is [this video by Freya Holmer](https://www.youtube.com/watch?v=PMvIWws8WEo) paired with your favourite LLM for clarifications. <!-- TODO: rephrase -->
 We'll talk more about quaternions, specifically about their derivatives, later in the post.
 
+## Deriving the equations of motion
 <!-- Introducing Newton-Euler equations of motion -->
 Having introduced our free body diagram, let's write the Newton-Euler rigid body equations of motion.
 In 2D we could work with three scalar equations, two for position ($$y, z$$ axes) and one for rotation.
@@ -114,6 +118,7 @@ I \dot{\omega} + \omega \times I \omega &=
 \end{aligned}
 $$
 
+## Converting to state-space form
 <!-- Equations of motion to state-space representation: re-arranging -->
 Let's now start re-arranging the equations so that we can write our system in state-space form.
 First, let's define mass-normalized thrust $$\mathbf{c}$$ and torques $$\Tau$$:
@@ -145,7 +150,6 @@ $$
 $$
 
 <!-- State-space representation: input and state parametrization -->
-
 Our goal is to express how the system evolves over time in the form:
 
 $$
@@ -186,6 +190,7 @@ f(\mathbf{x}, \mathbf{u}) =
 \end{bmatrix}
 $$
 
+### Quaternion derivatives
 <!-- quaternion derivatives -->
 But what's the derivative of a quaternion?
 Answering this question rigorously requires mathematics beyond my comfort level.
