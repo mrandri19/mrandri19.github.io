@@ -275,6 +275,7 @@ $$
 
 We can now simulate the system in Python.
 First, we define the physical parameters, the dynamics function, and the mixer function.
+Code for the quaternion utility functions we use is in the appendix.
 
 ```python
 g = 9.81  # [m/s^2] gravity
@@ -325,7 +326,7 @@ n_steps = 10_000
 t = np.linspace(t_start, t_stop, n_steps)
 dt = t[1] - t[0]
 
-d_state = 13  # 13 = 3 (position) + 4 (attitude quaternion) + 3 (speed) + 3 (body rate).
+d_state = 13  # 13 = 3 (position) + 4 (attitude quaternion) + 3 (velocity) + 3 (body rate).
 x = np.zeros((n_steps, d_state))
 x[0, 2] = 2  # start at z=2
 x[0, 3:7] = np.array([1, 0, 0, 0])  # initialize quaternion to unit length.
@@ -352,4 +353,133 @@ That is the complete simulation pipeline: derive the equations of motion, conver
 
 ## Running the simulation
 
-TODO
+### Upwards acceleration and yaw input
+
+We run the simulation with the input parameters described above and check that it performs as expected.
+The quadcopter's position does not change in $$x$$ or $$y$$, but the $$z$$ coordinate increases as thrust is greater than gravitational acceleration.
+The stepwise yaw control causes yaw ($$\psi$$) to start at zero and grow to $$\approx 60^{\circ}$$.
+The body rates are labeled $$(p, q, r)$$, the conventional names for the body-frame angular velocity components $$\omega_{x'}, \omega_{y'}, \omega_{z'}$$.
+
+<figure>
+    <img src="/assets/images/3d-quadcopter-simulation/matplotlib-plot-1.png"
+    style="max-width: 100%; display: block; margin: auto;"/>
+</figure>
+
+### Translation via pitch and roll input
+
+To move the quadcopter horizontally, we tilt it: a non-zero roll or pitch points the thrust vector away from the world $$z$$ axis, leaving an unbalanced horizontal component that accelerates the body.
+We apply equal, brief pulses to the roll and pitch inputs $$u_p$$ and $$u_q$$: a positive pulse between $$t=1.0$$ and $$t=1.2$$, then a negative pulse between $$t=1.4$$ and $$t=1.6$$.
+Mass-normalized thrust $$u_c$$ is held just above $$g$$ as before, and yaw input $$u_r$$ is zero throughout.
+
+```python
+u = np.zeros((n_steps, d_input))
+u[:, 0] = 9.81 + 0.05
+u[:, 1] = u[:, 2] = 1e-3 * (
+    np.heaviside(t - 1.0, 1)
+    - np.heaviside(t - 1.2, 1)
+    - np.heaviside(t - 1.4, 1)
+    + np.heaviside(t - 1.6, 1)
+)
+```
+
+The plot below confirms the expected behavior.
+The body rates $$p$$ and $$q$$ show the input pulse and then return to zero, leaving roll $$\phi$$ and pitch $$\theta$$ tilted at a few degrees each.
+With no restoring torque in this open-loop system, the attitude stays tilted for the rest of the simulation.
+The tilted thrust vector then accelerates the quadcopter linearly: $$\dot{x}$$ grows positive and $$\dot{y}$$ grows negative, producing the linear drift in $$x$$ and $$y$$ position.
+The $$z$$ coordinate barely changes, since the vertical component of thrust, scaled by $$\cos\phi \cos\theta$$, remains close to $$g$$ at small tilt angles.
+
+<figure>
+    <img src="/assets/images/3d-quadcopter-simulation/matplotlib-plot-2.png"
+    style="max-width: 100%; display: block; margin: auto;"/>
+</figure>
+
+
+> Note about LLM usage: This post was written fully by a human and proofread and minimally edited by gpt-5.4 medium (via codex) and Opus 4.7 medium effort (via Claude).
+
+<details>
+<summary>
+Appendix: quaternion utility functions
+</summary>
+
+{% highlight python %}
+def rot_vec_by_quat(q: NDArray, v: NDArray) -> NDArray:
+    w = q[0]
+    q_vec = q[1:4]
+    t = 2.0 * np.cross(q_vec, v)
+    return v + w * t + np.cross(q_vec, t)
+
+
+def quat_mul(p: NDArray[np.float64], q: NDArray[np.float64]) -> NDArray[np.float64]:
+    pw, px, py, pz = p
+    qw, qx, qy, qz = q
+
+    r = np.empty(4, dtype=np.float64)
+
+    r[0] = pw * qw - px * qx - py * qy - pz * qz
+    r[1] = pw * qx + px * qw + py * qz - pz * qy
+    r[2] = pw * qy - px * qz + py * qw + pz * qx
+    r[3] = pw * qz + px * qy - py * qx + pz * qw
+
+    return r
+{% endhighlight %}
+
+</details>
+
+<details>
+<summary>
+Appendix: plotting code
+</summary>
+
+{% highlight python %}
+def quaternion_to_euler(q: NDArray) -> tuple[float, float, float]:
+    w, qx, qy, qz = q
+    phi = np.arctan2(2 * (w * qx + qy * qz), 1 - 2 * (qx**2 + qy**2))
+    theta = np.arcsin(2 * (w * qy - qz * qx))
+    psi = np.arctan2(2 * (w * qz + qx * qy), 1 - 2 * (qy**2 + qz**2))
+    return float(phi), float(theta), float(psi)
+
+
+euler = np.array([quaternion_to_euler(x[i, 3:7]) for i in range(n_steps)])
+
+fig, axes = plt.subplots(5, 1, figsize=(9, 8), sharex=True)
+
+for i, name in enumerate(["$x$", "$y$", "$z$"]):
+    axes[0].plot(t, x[:, i], label=name)
+axes[0].set_ylabel("Position [m]")
+axes[0].legend(loc="upper right")
+axes[0].grid(visible=True)
+
+for i, name in enumerate(["$q_w$", "$q_x$", "$q_y$", "$q_z$"]):
+    axes[1].plot(t, x[:, 3 + i], label=name)
+axes[1].set_ylabel("Attitude quaternion")
+axes[1].legend(loc="upper right")
+axes[1].grid(visible=True)
+
+for i, name in enumerate(["$\\phi$", "$\\theta$", "$\\psi$"]):
+    axes[2].plot(t, np.rad2deg(euler[:, i]), label=name)
+axes[2].set_ylabel("Euler angles [deg]")
+axes[2].legend(loc="upper right")
+axes[2].grid(visible=True)
+
+for i, name in enumerate(["$\\dot{x}$", "$\\dot{y}$", "$\\dot{z}$"]):
+    axes[3].plot(t, x[:, 7 + i], label=name)
+axes[3].set_ylabel("Velocity [m/s]")
+axes[3].legend(loc="upper right")
+axes[3].grid(visible=True)
+
+for i, name in enumerate(["$p$", "$q$", "$r$"]):
+    axes[4].plot(t, x[:, 10 + i], label=name)
+axes[4].set_ylabel("Body rate [rad/s]")
+axes[4].legend(loc="upper right")
+axes[4].grid(visible=True)
+
+axes[4].set_xlabel("Time [s]")
+axes[4].xaxis.set_major_locator(plt.MultipleLocator(1))
+
+fig.suptitle("3D Quadcopter Simulation")
+fig.tight_layout()
+plt.show()
+
+{% endhighlight %}
+
+</details>
