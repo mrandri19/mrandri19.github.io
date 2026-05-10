@@ -74,7 +74,7 @@ $$
 <!-- Deriving equations of motion: translation -->
 Let's now plug in the forces from the free-body diagram into the translation equations.
 In world frame where the axes are $$\{x, y, z\}$$, our quadcopter is subject to the gravitational force $$-m\mathbf{g}$$ where $$\mathbf{g} = \left[0, 0, g\right]^T_{\text{world}}$$.
-Additionally, each motor produces thrust $$\mathbf{F_i}$$ of magnitude $$F_i$$, but this vector is only easy to write in body frame, where the motors always point straight up, or $$\mathbf{F_i} = \left[0, 0, F_i\right]^T_{\text{body}}$$.
+Additionally, each motor produces thrust $$\mathbf{F_i}$$ of magnitude $$F_i$$, but this vector is only easy to write in body frame, where the motors always point straight up: $$\mathbf{F_i} = \left[0, 0, F_i\right]^T_{\text{body}}$$.
 To convert our simple expression for thrusts from body frame into world frame, we must rotate them.
 To rotate the body frame vector to world frame we use the attitude quaternion $$q$$.
 
@@ -182,13 +182,13 @@ The argument below follows [Quaternion differentiation](https://fgiesen.wordpres
 
 Let $$q(0) = q$$ be our attitude quaternion at time $$t=0$$.
 We denote quaternion multiplication between quaternions $$q_a$$ and $$q_b$$ with $$q_a \otimes q_b$$.
-Our quadcopter rotates by $$ \omega \cdot 1$$ in one unit of time.
+Our quadcopter rotates with angular velocity $$\omega$$, so over one unit of time it rotates by $$\omega$$ (treating $$\omega$$ as instantaneous).
 Let $$q_{\omega}$$ be the quaternion representing the rotation.
 This means that at time $$t = 1$$, we have $$q(1) = q \otimes q_{\omega}$$ (notice how the transformation is applied on the right).
 And, by induction, $$q(t) = q \otimes q_{\omega}^t$$ at time $$t$$ (this is only true for small, instantaneous time steps as $$\omega$$ itself changes through time).
 
 Any unit quaternion can be represented as the exponential of a pure imaginary quaternion, just like any complex number $$z$$ can be written as the exponential of a pure imaginary number $$i\theta$$ or $$z = e^{i\theta}$$.
-We call $$\omega^{\wedge}$$ the pure imaginary quaternion (a 4D quantity) created from the 3D angular velocity $$\omega$$ (in the body frame) or $$\omega^{\wedge} = \left(0, \omega_1, \omega_2, \omega_3 \right)$$.
+We call $$\omega^{\wedge}$$ the pure imaginary quaternion (a 4D quantity) created from the 3D angular velocity $$\omega$$ (in the body frame), that is $$\omega^{\wedge} = \left(0, \omega_1, \omega_2, \omega_3 \right)$$.
 This lets us write $$q_{\omega} = e^{\frac{1}{2} \omega^{\wedge}}$$ and $$q_{\omega}^t = e^{\frac{1}{2} \omega^{\wedge} t}$$.
 The additional factor $$\frac{1}{2}$$ is a result of how quaternions are a "double cover" of rotations, an artifact of the particular representation of $$\text{SO}(3)$$ we picked.
 
@@ -232,14 +232,14 @@ $$
 
 ### Input parameter and mixer equations
 <!-- choosing our inputs and how mixer transates from input to forces -->
-The last bit we need to handle is how to parametrize our inputs $$\mathbf{u}$$ and how they translate into our forces $$F_i$$.
+The last piece we need is how to parametrize our inputs $$\mathbf{u}$$ and how they translate into our forces $$F_i$$.
 This choice is a bit arbitrary, but following [Deep Drone Acrobatics](https://arxiv.org/abs/2006.05768) and [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4) we use mass-normalized thrust and three rotational control inputs.
 We call the inputs $$u_c$$ for mass-normalized thrust and $$u_p, u_q, u_r$$ for roll, pitch, and yaw control.
 The function mapping inputs to forces is called "mixer".
 For more details on how to extend this to more shapes and propellers check out [Motor Mixer Theory](https://cookierobotics.com/066/).
-These equations can be derived with a simple geometric argument from the free body diagram.
+We omit the derivation, which is a simple geometric argument from the free body diagram.
 
-Let $$F_t = \frac{u_c m}{4} $$, and remembering that $$k$$ is the propeller-drag ratio, then our mixer is:
+Let $$F_t = \frac{u_c m}{4} $$, with $$k$$ the propeller-drag ratio, then our mixer is:
 
 $$
 \begin{aligned}
