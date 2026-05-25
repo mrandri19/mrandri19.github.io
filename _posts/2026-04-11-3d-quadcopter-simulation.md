@@ -406,6 +406,12 @@ The $$z$$ coordinate barely changes, since the vertical component of thrust, sca
     style="max-width: 100%; display: block; margin: auto;"/>
 </figure>
 
+The Rerun visualization below shows the same trajectory in 3D, making it easier to see how a brief tilt input leads to persistent sideways drift in open loop.
+
+<figure>
+    <iframe src="https://app.rerun.io/version/0.28.2/?url=https://mrandri19.github.io/assets/images/3d-quadcopter-simulation/data.rrd"
+    style="width: 100%; height: 60vh; display: block; margin: auto;"></iframe>
+</figure>
 
 > Note about LLM usage: This post was written fully by a human and proofread and minimally edited by gpt-5.4 medium (via codex) and Opus 4.7 medium effort (via Claude).
 
