@@ -13,6 +13,7 @@ title: "Simulating a 3D quadcopter from scratch"
 </script>
 
 This post is the second post in our series on quadcopter simulation.
+If you want the simpler planar version first, the [previous post]({% post_url 2026-04-03-2d-quadcopter-simulation %}) derives and simulates the same ideas in 2D, but this post is fully standalone.
 Today, we simulate a three-dimensional quadcopter.
 We will derive the equations of motion, transform them into state-space form, and finally simulate the system in Python.
 Along the way, we introduce quaternions and quaternion derivatives.
@@ -55,6 +56,9 @@ We'll talk more about quaternions, specifically about their derivatives, later i
 
 ## Deriving the equations of motion
 <!-- Introducing Newton-Euler equations of motion -->
+To simulate the quadcopter, we need a differential equation that tells us how its state changes under a given motor input.
+That starts with the rigid-body equations of motion: once we know the translational and rotational accelerations, we can package them into a first-order state-space model and integrate it numerically.
+
 Having introduced our free body diagram, let's write the Newton-Euler rigid body equations of motion.
 In 2D we could work with three scalar equations, two for position ($$y, z$$ axes) and one for rotation.
 In 3D we have six equations: three for translation (in world frame), three for rotation (in body frame), written in vector form.
@@ -90,7 +94,7 @@ Finally, for $$\psi$$ (yaw) on the $$z'$$ axis, we simply add together all prope
 $$
 \begin{aligned}
 
-m \mathbf{\dot{v}} &= -m\mathbf{g} + \text{rotate}(q, \mathbf{F_1} + \mathbf{F_2} + \mathbf{F_3} + \mathbf{F_4}) \\
+m \mathbf{\dot{v}} &= -m\mathbf{g} + \text{rotate}(q, \sum_i \mathbf{F_i}) \\
 
 I \dot{\omega} + \omega \times I \omega &=
 \begin{bmatrix}
@@ -101,6 +105,10 @@ I \dot{\omega} + \omega \times I \omega &=
 
 \end{aligned}
 $$
+
+At this point we have expressions for translational acceleration $$\mathbf{\dot{v}}$$ and angular acceleration $$\dot{\omega}$$ in terms of thrusts and attitude.
+To get to a simulator, two pieces are still missing:
+the kinematics that connect these accelerations back to the state variables, and a mapping from control inputs to the four motor thrusts $$F_i$$.
 
 ## Converting to state-space form
 <!-- Equations of motion to state-space representation: re-arranging -->
@@ -140,7 +148,7 @@ $$
 \mathbf{\dot{x}} = f(\mathbf{x}, \mathbf{u})
 $$
 
-We describe later how the input $$\mathbf{u}$$ is parametrized, so we focus on the state.
+We describe later how the input $$\mathbf{u}$$ is parametrized, so for now we focus on the state and leave the force terms abstract.
 We want a first-order system, so we include velocities $$\mathbf{v}$$ and $$\omega$$ in the state.
 <!-- euler angles vs body rates / angular velocities, quaternion vs body rates -->
 But what should our zeroth-order quantities be?
@@ -173,6 +181,9 @@ f(\mathbf{x}, \mathbf{u}) =
     I^{-1} (\mathbf{\Tau} - \omega \times I \omega)
 \end{bmatrix}
 $$
+
+The only missing row is the quaternion derivative $$\dot{q}$$.
+The only remaining step is to specify how the input $$\mathbf{u}$$ determines $$\mathbf{c}$$ and $$\mathbf{\Tau}$$.
 
 ### Quaternion derivatives
 <!-- quaternion derivatives -->
@@ -258,9 +269,9 @@ u_p \\
 u_q \\
 u_r
 \end{bmatrix}
-\right) =
+\right) \\
 
-\begin{bmatrix}
+= \begin{bmatrix}
 F_t - u_q / 2\ell + u_r / 4k \\
 F_t + u_p / 2\ell - u_r / 4k \\
 F_t + u_q / 2\ell + u_r / 4k \\
@@ -269,6 +280,8 @@ F_t - u_p / 2\ell - u_r / 4k
 
 \end{aligned}
 $$
+
+Substituting these four thrusts into $$\mathbf{c}$$ and $$\mathbf{\Tau}$$ gives a fully specified system $$\mathbf{\dot{x}} = f(\mathbf{x}, \mathbf{u})$$.
 
 <!-- Python implementation -->
 ## Simulating the system in Python
