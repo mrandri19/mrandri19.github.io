@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(npx tailwindcss:*)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(grep -E \"\\\\.\\(html|css|js|yml|json|scss\\)$\")",
+      "Bash(grep:*)",
+      "Bash(wc -l /Users/andrea/Developer/mrandri19.github.io/_posts/*.md)",
+      "Bash(find:*)"
     ]
   }
 }

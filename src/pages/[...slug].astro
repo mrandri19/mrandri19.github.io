@@ -1,0 +1,27 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection } from 'astro:content';
+import PostLayout from '../layouts/PostLayout.astro';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('posts');
+  return posts.map((post) => {
+    const [year, month, day, ...rest] = post.slug.split('-');
+    const slug = rest.join('-');
+    return {
+      params: { slug: `${year}/${month}/${day}/${slug}` },
+      props: { post },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const [year, month, day] = post.slug.split('-');
+const date = new Date(`${year}-${month}-${day}`);
+---
+
+<PostLayout title={post.data.title} date={date}>
+  <Content />
+</PostLayout>
