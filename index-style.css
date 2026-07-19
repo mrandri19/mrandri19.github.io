@@ -27,11 +27,11 @@ main ul li {
     @apply mb-5;
 }
 
-#projects ul > li:not(.cf) {
+#projects ul>li:not(.cf) {
     @apply flex;
 }
 
-#projects ul > li:not(.cf)::before {
+#projects ul>li:not(.cf)::before {
     content: "•";
     @apply text-gray-400/60 mr-2 shrink-0;
 }
@@ -48,7 +48,7 @@ main ul ul li {
     @apply border-t-0 mt-0;
 }
 
-main ul a {
+main p a {
     @apply no-underline hover:underline text-blue-500;
 }
 
