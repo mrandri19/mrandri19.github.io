@@ -19,6 +19,10 @@ In this post we train a reinforcement learning policy to fly the quadcopter, fir
 The previous posts were tutorial-like, we started from a free body diagram and, step-by-step, arrived to simulation code.
 This post instead is more recipe-like, a collection of tricks and techniques I found useful to train an RL policy for quadcopter racing.
 There is no rigorous proof of why these methods work, only empirical.
+
+Because it is a recipe and not a walkthrough, the post shows only the code that matters for each decision.
+The full environment is on GitHub at [mrandri19/quadcopter-racing](https://github.com/mrandri19/quadcopter-racing).
+
 Here is the trained policy flying the eight-gate loop track.
 The visualizations throughout the post are made with [Rerun](https://rerun.io/).
 
@@ -88,8 +92,8 @@ Episode length grows smoothly from the first update, and the policy is near the 
 Now that we have shown that PPO plus our hyperparameters works on a toy task, let's develop the quadcopter environment and setup a simple hover reward.
 We will use [MuJoCo](https://mujoco.readthedocs.io/en/stable/overview.html) as our physics simulator.
 
-As mentioned in the introduction, this post is a recipe rather than a walkthrough, so we won't go through all the code necessary to implement the environment.
-You can find it on GitHub at [mrandri19/quadcopter-racing](https://github.com/mrandri19/quadcopter-racing).
+As said in the introduction, we won't go through all the code necessary to implement the environment, only the parts worth discussing.
+The rest is in [src/quadcopter_racing/part_2.py](https://github.com/mrandri19/quadcopter-racing/blob/main/src/quadcopter_racing/part_2.py).
 
 ### Action design: CTBR + P controller
 
