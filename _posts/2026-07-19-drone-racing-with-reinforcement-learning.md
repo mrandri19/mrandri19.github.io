@@ -19,21 +19,22 @@ In this post we train a reinforcement learning policy to fly the quadcopter, fir
 The previous posts were tutorial-like, we started from a free body diagram and, step-by-step, arrived to simulation code.
 This post instead is more recipe-like, a collection of tricks and techniques I found useful to train an RL policy for quadcopter racing.
 There is no rigorous proof of why these methods work, only empirical.
-Speaking of which, demo time (viz thanks to the 🐐s at Rerun)!
+Here is the trained policy flying the eight-gate loop track.
+The visualizations throughout the post are made with [Rerun](https://rerun.io/).
 
 <figure>
-    <iframe src="https://app.rerun.io/version/0.28.2/?url=https://mrandri19.github.io/assets/images/drone-racing-with-reinforcement-learning/split_s.rrd"
+    <iframe src="https://app.rerun.io/version/0.28.2/?url=https://mrandri19.github.io/assets/images/drone-racing-with-reinforcement-learning/circle.rrd"
     allow="local-network-access" style="width: 80vw; height: 60vh; display: block; margin-left: 50%; transform: translateX(-50%);"></iframe>
 </figure>
 
 ## An incremental approach
 
 Trying to implement a drone racing simulation, RL environment, reward, and model all at once just doesn't work.
-Too many things can be slightly off, affecting the policy's performace, with no good way of debugging it.
+Too many things can be slightly off, affecting the policy's performance, with no good way of debugging it.
 So we split the task in three stages, each building on top of each other:
 
 1. The "Hello, world! of RL": training a policy to solve the inverted pendulum control problem with PPO and a vectorized [stable-baselines3](https://stable-baselines3.readthedocs.io/) env.
-2. Building a custom quadcopter RL environment using MuJoCo, choosing action and observation spaces, splitting high-level RL-based and low-level P-controller, and an hovering reward.
+2. Building a custom quadcopter RL environment using MuJoCo, choosing action and observation spaces, splitting high-level RL-based and low-level P-controller, and a hovering reward.
 3. Extending the environment from hovering to racing, with a new reward, observation, and random initialization design.
 
 ## Solving inverted pendulum with vectorized PPO
@@ -64,17 +65,18 @@ def main() -> None:
 Let's briefly discuss our choice of hyperparameters:
 
 - Rollout size is `n_envs * n_steps`: with 128 environments and 512 steps each, PPO collects 65,536 transitions before every policy update.
-Having this batch be large enough is crucial, as we want variety in the dataset we used to train at each PPO update.
-- Number of PPO updates is `total_timesteps / rollout_size`. Given a large enough rollout size, it's then crucial that our model has enough times to "evolve" during the training process.
+Making this batch large enough matters, as we want variety in the dataset we train on at each PPO update.
+- Number of PPO updates is `total_timesteps / rollout_size`, so roughly 11 updates here.
+Given a large enough rollout size, the model also needs enough updates to "evolve" during training.
 This is not supervised learning, where the dataset is fixed.
 As the policy evolves, new patterns appear in the rollout data, so we want enough PPO updates to explore this space.
 - Number of gradient steps is `total_timesteps * n_epochs / batch_size`: each rollout is split into minibatches of `batch_size` and reused for `n_epochs` passes.
-Finally, the bigger the batch size, the less noisy the gradient but the fewer training iterations we do per PPO update.
+The bigger the batch size, the less noisy the gradient but the fewer training iterations we do per PPO update.
 
 ### Results
 
 On this environment, each alive step gives +1 reward, so episode length and reward will match exactly.
-Training runs for 750k timesteps across 128 parallel environments, or 12 PPO updates.
+Training runs for 750k timesteps across 128 parallel environments, or roughly 11 PPO updates.
 Episode length grows smoothly from the first update, and the policy is near the 1,000-step cap by 600k steps.
 
 <img src="/assets/images/drone-racing-with-reinforcement-learning/cartpole_training.svg" alt="Cartpole training curves: ep_len_mean and ep_rew_mean vs. timesteps." style="display: block; margin: auto; max-width: 100%;">
@@ -84,7 +86,8 @@ Episode length grows smoothly from the first update, and the policy is near the 
 Now that we have shown that PPO plus our hyperparameters works on a toy task, let's develop the quadcopter environment and setup a simple hover reward.
 We will use [MuJoCo](https://mujoco.readthedocs.io/en/stable/overview.html) as our physics simulator.
 
-As said before, we won't go through all the code necessary to implement it, you can find that on GitHub at [mrandri19/quadcopter-racing](https://github.com/mrandri19/quadcopter-racing).
+As mentioned in the introduction, this post is a recipe rather than a walkthrough, so we won't go through all the code necessary to implement the environment.
+You can find it on GitHub at [mrandri19/quadcopter-racing](https://github.com/mrandri19/quadcopter-racing).
 
 ### Action design: CTBR + P controller
 
@@ -116,11 +119,11 @@ def _controller(
     return motor
 ```
 
-CTBR is a much easier action space for the policy to learn than raw motor commands: the low-level controller handles the fast attitude-rate dynamics, while the policy to reason about thrust and desired rotation.
+CTBR is a much easier action space for the policy to learn than raw motor commands: the low-level controller handles the fast attitude-rate dynamics, while the policy reasons about thrust and desired rotation.
 This also helps when trying to deploy the policy on a real drone, as most controllers like Betaflight take in CTBR inputs.
 
 The code implements a simple proportional controller, with the exception of the term `np.cross(w, Jw)`.
-To undestand what it does, let's write Euler's rotation equation for the body-frame angular velocity $$\omega$$:
+To understand what it does, let's write Euler's rotation equation for the body-frame angular velocity $$\omega$$:
 
 $$
 J \dot{\omega} = \mathbf{\tau} - \omega \times J \omega
@@ -179,7 +182,7 @@ Using a potential-based reward turned out to be essential for fast training.
 ### Results
 
 We trained this hover environment against three different hover targets.
-For the exact hypeparameters refer to [src/quadcopter_racing/part_2.py](https://github.com/mrandri19/quadcopter-racing/blob/main/src/quadcopter_racing/part_2.py#L336)
+For the exact hyperparameters refer to [src/quadcopter_racing/part_2.py](https://github.com/mrandri19/quadcopter-racing/blob/main/src/quadcopter_racing/part_2.py#L336).
 In all three cases, `crash_rate` stays around 1 for millions of steps before collapsing sharply, then `distance_to_target_mean` keeps decreasing for the rest of training.
 
 <img src="/assets/images/drone-racing-with-reinforcement-learning/hover_training.svg" alt="Hover training curves for the three targets: crash_rate and distance_to_target_mean vs. timesteps." style="display: block; margin: auto; max-width: 100%;">
@@ -192,17 +195,17 @@ For that, we extend the hover environment into an eight-gate loop track.
 
 ### Next gate in observation
 
-We define two tracks: an eight-gate loop, one gate every 45 degrees around the origin at varying altitude, and a seven-gate split-S track (gate positions taken from Kaufmann2023's `track.yaml`, dropping their orientation since our gates are point targets, not oriented rectangles).
+We define two tracks: an eight-gate loop, one gate every 45 degrees around the origin at varying altitude, and a seven-gate split-S track (gate positions taken from the `track.yaml` released with Kaufmann et al.'s champion-level drone racing paper, dropping their orientation since our gates are point targets, not oriented rectangles).
 The split-S name comes from gates 4 and 5, which sit at the same $$(x, y)$$ but drop from $$z=3.4$$ to $$z=1.42$$, forcing a steep vertical dive between them.
 
-Regardless of the track, the position of the next gate gets appended to the observation, making the observation space to 16 dimensional:
+Regardless of the track, the position of the next gate gets appended to the observation, making the observation space 16-dimensional:
 
 ```python
 obs[:, 13:16] = target_gates
 ```
 
 As soon as we pass a gate, the environment updates the observation.
-Again, for more details check out the source code, in particular: [src/quadcopter_racing/part_3.py](https://github.com/mrandri19/quadcopter-racing/blob/main/src/quadcopter_racing/part_3.py#L218)
+Again, for more details check out the source code, in particular: [src/quadcopter_racing/part_3.py](https://github.com/mrandri19/quadcopter-racing/blob/main/src/quadcopter_racing/part_3.py#L218).
 
 ### Next-gate reward
 
@@ -256,21 +259,16 @@ We now also track `gates_passed_mean`, the mean number of gates passed per episo
 <img src="/assets/images/drone-racing-with-reinforcement-learning/circle_training.svg" alt="Circle-track training curves: crash_rate, distance_to_target_mean, and gates_passed_mean vs. timesteps." style="display: block; margin: auto; max-width: 100%;">
 
 
-The same takeoff pattern from the hover runs shows up again: `crash_rate` stays around for most of training, then collapses between 2.9M and 3.8M steps.
+The same takeoff pattern from the hover runs shows up again: `crash_rate` stays around 1 for most of training, then collapses between 2.9M and 3.8M steps.
 Past that point, `gates_passed_mean` keeps climbing steadily, reaching 3.71 gates per 400-step (8 second) episode by the end of training.
 That means the converged policy isn't just reaching one gate, it is chaining several gate passages together in a single episode, closer to the racing behavior we actually want.
 
-The Rerun visualization below shows the converged policy flying 24 seconds (1,200 steps), passing 21 gates:
-
-<figure>
-    <iframe src="https://app.rerun.io/version/0.28.2/?url=https://mrandri19.github.io/assets/images/drone-racing-with-reinforcement-learning/circle.rrd"
-    allow="local-network-access" style="width: 80vw; height: 60vh; display: block; margin-left: 50%; transform: translateX(-50%);"></iframe>
-</figure>
+The visualization at the top of the post is this converged policy, flying 24 seconds (1,200 steps) and passing 21 gates.
 
 <img src="/assets/images/drone-racing-with-reinforcement-learning/split_s_training.svg" alt="Split-S track training curves: crash_rate, distance_to_target_mean, and gates_passed_mean vs. timesteps." style="display: block; margin: auto; max-width: 100%;">
 
 
-`crash_rate` collapses to 0 around 6.7M steps, and `gates_passed_mean` reaches 3.55, right in line with `TRACK_CIRCLE`'s 3.71 at 5M steps.
+`crash_rate` collapses to 0 around 6.7M steps, and `gates_passed_mean` reaches 3.55, close to the circle track's 3.71 at 5M steps, though the two tracks have different gate spacing so the numbers are not directly comparable.
 The split-S track's irregular gate spacing and the steep vertical dive between gates 4 and 5 don't need a different reward or hyperparameters, just a longer takeoff window before PPO finds the working policy.
 
 The Rerun visualization below shows the converged policy flying 24 seconds (1,200 steps), passing 12 gates despite the harder vertical maneuver between gates 4 and 5:
@@ -282,21 +280,17 @@ The Rerun visualization below shows the converged policy flying 24 seconds (1,20
 
 ## Takeaways and what's next
 
-Any complex project requires decomposing the final objective into smaller milestones, and and RL project is no different.
+Any complex project requires decomposing the final objective into smaller milestones, and an RL project is no different.
 For this specific problem, it turns out that going from toy task to hovering to racing is a nice progression.
 
 Let's briefly discuss what the limitations currently are:
 
-We rely on perfect state estimation: the policy observes ground-truth position, attitude, and velocity, not sensor data like an IMO or camera
-If I were to address that, I would try to re-implement ["Demonstrating Agile Flight from Pixels without State Estimation"](https://arxiv.org/pdf/2406.12505)
-
-Simulation only, not deployed on real hardware.
-I don't own a physical drone and a racing track, but if I wanted to approach sim2read, I would start with massive domain randomization, like in
-["Demonstrating Agile Flight from Pixels without State Estimation"](https://arxiv.org/pdf/2406.12505) or sim2real2sim approaches like in
+1. We rely on perfect state estimation: the policy observes ground-truth position, attitude, and velocity, not sensor data like an IMU or camera.
+If I were to address that, I would try to re-implement ["Demonstrating Agile Flight from Pixels without State Estimation"](https://arxiv.org/pdf/2406.12505).
+2. Simulation only, not deployed on real hardware.
+I don't own a physical drone and a racing track, but if I wanted to approach sim2real, I would start with massive domain randomization, like in
+["Demonstrating Agile Flight from Pixels without State Estimation"](https://arxiv.org/pdf/2406.12505), or sim2real2sim approaches like in
 [Champion-level drone racing using deep reinforcement learning](https://www.nature.com/articles/s41586-023-06419-4).
-
-We must traing for each track, can't zero-shot to unseen track layouts.
-According to
-[Bridging Performance and Generalization in Reinforcement Learning for Agile Flight](https://arxiv.org/pdf/2606.27348)
-this is not that hard to solve.
-The recipe is simple: generate random racing tracks and train on a massively diverse dataset of them.
+3. We must train for each track, and can't zero-shot to unseen track layouts.
+[Bridging Performance and Generalization in Reinforcement Learning for Agile Flight](https://arxiv.org/abs/2606.27348)
+suggests this is tractable: they combine a procedural track generator with task switching driven by learning progress, and get a single policy that flies unseen tracks without test-time adaptation.
