@@ -81,6 +81,8 @@ Episode length grows smoothly from the first update, and the policy is near the 
 
 <img src="/assets/images/drone-racing-with-reinforcement-learning/cartpole_training.svg" alt="Cartpole training curves: ep_len_mean and ep_rew_mean vs. timesteps." style="display: block; margin: auto; max-width: 100%;">
 
+> Recipe: validate PPO and its hyperparameters on a toy task first, because it separates "the algorithm is misconfigured" from "my environment is wrong".
+
 ## Learning to hover with a custom quadcopter environment
 
 Now that we have shown that PPO plus our hyperparameters works on a toy task, let's develop the quadcopter environment and setup a simple hover reward.
@@ -141,6 +143,8 @@ $$
 The two $$\omega \times J\omega$$ terms cancel, resulting in a clean linear first-order response per axis.
 This is a small instance of feedback linearization (also called dynamic inversion): we use the known nonlinear dynamics to compute the exact torque that cancels their nonlinearity, so the remaining closed-loop system behaves like the simple linear system we designed the gain $$K_p$$ for.
 
+> Recipe: have the policy output CTBR and let a P controller close the rate loop, because the controller absorbs the fast attitude dynamics and the same interface runs on real hardware.
+
 ### Observation design
 
 The observation is the 13-dimensional MuJoCo free-body state: position, attitude quaternion, linear velocity, and body-frame angular velocity.
@@ -177,7 +181,7 @@ def _reward(
     return total, curr_potential
 ```
 
-Using a potential-based reward turned out to be essential for fast training.
+> Recipe: shape the reward as progress toward the target, not distance to it, because a distance penalty pays the same at every step while progress pays only for closing the gap.
 
 ### Results
 
@@ -186,6 +190,8 @@ For the exact hyperparameters refer to [src/quadcopter_racing/part_2.py](https:/
 In all three cases, `crash_rate` stays around 1 for millions of steps before collapsing sharply, then `distance_to_target_mean` keeps decreasing for the rest of training.
 
 <img src="/assets/images/drone-racing-with-reinforcement-learning/hover_training.svg" alt="Hover training curves for the three targets: crash_rate and distance_to_target_mean vs. timesteps." style="display: block; margin: auto; max-width: 100%;">
+
+> Recipe: expect `crash_rate` to sit at 1 for millions of steps and then collapse, because nothing in the reward pays off until the policy can stay airborne long enough to collect it.
 
 ## From hovering to racing
 
@@ -249,7 +255,7 @@ start_gate = self._gates[start_gate_ix, :]
 target_gate = self._gates[target_gate_ix, :]
 ```
 
-This turns one long, hard racing task into many short, varied one-gate tasks, which is a much easier curriculum for PPO to learn from.
+> Recipe: randomize the start gate on every reset, because it turns one long racing task into many short one-gate tasks and forces the policy to actually read the target gate from its observation.
 
 ### Results
 
@@ -282,6 +288,17 @@ The Rerun visualization below shows the converged policy flying 24 seconds (1,20
 
 Any complex project requires decomposing the final objective into smaller milestones, and an RL project is no different.
 For this specific problem, it turns out that going from toy task to hovering to racing is a nice progression.
+The whole post compresses to five rules:
+
+1. Validate PPO and its hyperparameters on a toy task first.
+2. Have the policy output CTBR and let a P controller close the rate loop.
+3. Shape the reward as progress toward the target, not distance to it.
+4. Randomize the start gate on every reset.
+5. Expect a long flat stretch at `crash_rate` 1 before anything works.
+
+Rules 1, 4, and 5 are about the training setup rather than the vehicle, and I would reach for them on any sparse-reward control problem.
+Rules 2 and 3 are quadcopter specific, though the underlying moves generalize: give the policy the easiest action space that still reaches the hardware, and pay for change rather than for state.
+Rules 3 and 4 are the two doing the most work here, and also the two I am reporting from my own runs rather than from an ablation.
 
 Let's briefly discuss what the limitations currently are:
 
